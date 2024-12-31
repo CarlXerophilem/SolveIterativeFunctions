@@ -1,2 +1,1 @@
-# IterativeFunction.github.io
-This site includes a function calculator, and many generating functions...
+
