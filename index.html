@@ -1,16 +1,38 @@
 <!DOCTYPE html>
+<html>
   <head>
-    <title> Iterative Function Calculator</title>
+    <title>Iterative Function Calculator</title>
+    <link rel="stylesheet" href="style.css">
   </head> 
   <body>
+    <h1>Iterative Function Calculator</h1>
     <section class="1">
-        Tes This site includes a function calculator, and many generating functions...
+        <h2>Enter Your Function</h2>
+    <form id="functionForm">
+            <label for="functionInput">Function:</label>
+            <input type="text" id="functionInput" placeholder="e.g., x^2 + 2x + 1">
+            <button type="button" onclick="calculate()">Calculate</button>
+        </form>
+        <p id="result"></p>
     </section>
 
     <footer class="background">
         <p class="text-footer">
-            First Update @2024/12/31
+            First Update @2024/12/31<br>
+            <a href="https://github.com/carlxerophilem/SolveIterativeFunctions" target="_blank">View on GitHub</a>
         </p>
     </footer>
+
+    <script>
+        function calculate() {
+            const input = document.getElementById('functionInput').value;
+            const result = document.getElementById('result');
+            if (input) {
+                result.textContent = `You entered: ${input}`;
+            } else {
+                result.textContent = 'Please enter a valid function.';
+            }
+        }
+    </script>
   </body>
 </html>
