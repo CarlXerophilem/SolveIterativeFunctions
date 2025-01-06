@@ -1,18 +1,174 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Iterative Function Calculator</title>
-    <link rel="stylesheet" href="style.css">
-  </head> 
-  <body>
-    <h1>Iterative Function Calculator</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compositae Calculator</title>
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta name="description" content="find the analytic iterates of an analytic function A(x)">
+    <meta name="keywords" content="iterative funcrional equations, Calculator, generating functions, half iterates">
+    <!--link rel="stylesheet" href="style.css"-->
+    <style type="text/css">
+      body {
+          background-color: hsla(240, 7%, 95%, 0.954);
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+          
+      }
+      div {
+          width: 600px;
+          margin: 5em auto;
+          padding: 2em;
+          background-color: #fdfdff;
+          border-radius: 0.5em;
+          box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+      }
+      canvas {
+            border: 1px solid black;
+      }
+      footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 0.9em;
+          color: #555;
+      }
+      </style>
+</head>
+<body>
+    <h1>Compositae Calculator</h1>
+    <p>Enter a function and parameters (in the format: f1,a,b,max_degree):</p>
+    <input type="text" id="inputFunction" placeholder="e.g., 2,3,4,5" style="width: 300px;">
+    <button onclick="calculate()">Calculate</button>
+    <h3>Result:</h3>
+    <p>Input Function: <span id="inputLatex"></span></p>
+    <p>Solution Function: <span id="solutionLatex"></span></p>
+    <canvas id="graph" width="800" height="400"></canvas>
 
-    <footer class="background">
-        <p class="text-footer">
-            First Update @2024/12/31<br>
-            <a href="https://github.com/carlxerophilem/SolveIterativeFunctions" target="_blank">View on GitHub</a>
-        </p>
-    </footer>
+    <script>
+        // Function to calculate Compositae coefficients
+        function F_composita(n, k, a, b) {
+            if (k > n) return 0;
+            return combination(n, k) * Math.pow(a, 2 * k - n) * Math.pow(b, n - k);
+        }
 
-  </body>
+        // Calculate combination (n choose k)
+        function combination(n, k) {
+            return factorial(n) / (factorial(k) * factorial(n - k));
+        }
+
+        // Calculate factorial
+        function factorial(num) {
+            if (num <= 1) return 1;
+            return num * factorial(num - 1);
+        }
+
+        // Recursive solver for A_composita
+        function compute_A_composita(n, k, f1, a, b, memo) {
+            const key = `${n},${k}`;
+            if (memo[key] !== undefined) return memo[key];
+
+            let result;
+            if (n === k) {
+                result = Math.pow(f1, n / 2);
+            } else if (n > k) {
+                let sum_term = 0;
+                for (let m = k + 1; m < n; m++) {
+                    sum_term += compute_A_composita(n, m, f1, a, b, memo) * 
+                                compute_A_composita(m, k, f1, a, b, memo);
+                }
+                result = (F_composita(n, k, a, b) - sum_term) / (Math.pow(f1, n / 2) + Math.pow(f1, k / 2));
+            } else {
+                result = 0;
+            }
+
+            memo[key] = result;
+            return result;
+        }
+
+        // Compute coefficients of A(x) using Composita
+        function compute_A_coefficients(maxDegree, f1, a, b) {
+            const coefficients = [];
+            const memo = {};
+            for (let n = 1; n <= maxDegree; n++) {
+                coefficients.push(compute_A_composita(n, 1, f1, a, b, memo));
+            }
+            return coefficients;
+        }
+
+        // Main function to trigger calculation
+        function calculate() {
+            const input = document.getElementById("inputFunction").value;
+            const [f1, a, b, maxDegree] = input.split(",").map(Number);
+
+            if (isNaN(f1) || isNaN(a) || isNaN(b) || isNaN(maxDegree) || f1 <= 0) {
+                document.getElementById("inputLatex").textContent = "";
+                document.getElementById("solutionLatex").textContent = "Invalid input. Please use valid positive numbers for f1.";
+                MathJax.typeset();
+                return;
+            }
+
+            // Generate input function LaTeX
+            const inputLatex = `f(x) = ${a}x^2 + ${b}x`;
+            document.getElementById("inputLatex").textContent = inputLatex;
+
+            // Compute coefficients
+            const coefficients = compute_A_coefficients(maxDegree, f1, a, b);
+
+            // Generate solution function LaTeX
+            const solutionLatex = `A(x) = ${coefficients.map((c, i) => `${c}x^{${i + 1}}`).join(" + ")}`;
+            document.getElementById("solutionLatex").textContent = solutionLatex;
+
+            // Render MathJax
+            MathJax.typeset();
+
+            // Plot graph
+            plot(coefficients, a, b);
+        }
+
+        // Function to plot graph using Hammer.js
+        function plot(coefficients, a, b) {
+            const canvas = document.getElementById("graph");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Plot input function
+            ctx.beginPath();
+            ctx.strokeStyle = "blue";
+            for (let x = -10; x < 10; x += 0.1) {
+                const y = a * x ** 2 + b * x;
+                if (x === -10) {
+                    ctx.moveTo(x + canvas.width / 2, canvas.height / 2 - y);
+                } else {
+                    ctx.lineTo(x + canvas.width / 2, canvas.height / 2 - y);
+                }
+            }
+            ctx.stroke();
+
+            // Plot solution function
+            ctx.beginPath();
+            ctx.strokeStyle = "red";
+            for (let x = -10; x < 10; x += 0.1) {
+                const y = coefficients.reduce((sum, coeff, i) => sum + coeff * x ** (i + 1), 0);
+                if (x === -10) {
+                    ctx.moveTo(x + canvas.width / 2, canvas.height / 2 - y);
+                } else {
+                    ctx.lineTo(x + canvas.width / 2, canvas.height / 2 - y);
+                }
+            }
+            ctx.stroke();
+        }
+    </script>
+     <div id="footer">
+        <div class="center"> 
+         <p>© First Update @2024/12/31 by CarlXerophilem</p><br> 
+         <!--line break here-->>
+         <p><a href="https://github.com/CarlXerophilem/SolveIterativeFunctions" target="_blank"> View on GitHub </a></p>
+         <script>document.write(window.additionalFooter||"");</script>
+        </div>
+      </div>
+</body>
 </html>
