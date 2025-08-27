@@ -1,1 +1,391 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Explorer: Iterative Functional Equations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured into four thematic, scrollable sections: 1) Introduction, 2) A Solvable Case Study ($f(f(x))=x^2-2$), 3) The Unsolvable Challenge ($f(f(x))=x^2+1$), and 4) Interactive Numerical Exploration. This non-linear, thematic structure was chosen over mirroring the report's layout to improve usability. It allows users to first grasp the core concepts, then directly compare the two key examples, and finally engage with an interactive tool. Navigation is facilitated by a sticky header, allowing users to jump between topics of interest, which is more effective for learning and exploration than a linear read-through. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Fixed points of F(x)=x^2-2 and F(x)=x^2+1. Goal: Compare dynamical behavior. Viz/Method: Two side-by-side line charts (Chart.js) showing each function against y=x. Interaction: Hovering over points on the chart reveals tooltips with coordinates. Justification: Visual comparison is the most effective way to highlight the critical difference (presence vs. absence of real fixed points). Library: Chart.js.
+        - Report Info: Iterative orbits of F(x)=x^2+1. Goal: Show divergence. Viz/Method: A dynamic table updated by a user-input field. Interaction: User enters a starting value x0, and the table populates with the first 5 iterates. Justification: An interactive table makes the concept of divergence more engaging and personal than a static table. Method: Vanilla JS.
+        - Report Info: Numerical approximation of f(x) for f(f(x))=x^2+1. Goal: Demonstrate a constructive solution. Viz/Method: A line chart displaying the approximated f(x) and the target F(x). Interaction: A slider controls the number of recursion iterations, and the chart for f(x) updates in real-time. Justification: This directly visualizes the impact of the approximation algorithm's depth, making an abstract concept tangible. Library: Chart.js.
+        - Report Info: Key mathematical concepts (Iteration, Conjugacy, Fixed Points). Goal: Inform. Viz/Method: Accordion-style collapsible sections with clear text and LaTeX formulas rendered via KaTeX. Interaction: Clicking a topic expands to show the explanation. Justification: Hides complexity and allows users to focus on one concept at a time, improving readability. Method: Vanilla JS + KaTeX.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #4A4A4A; }
+        .katex-display { display: block; margin: 1em 0; text-align: center; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #D97706; border-bottom-color: #D97706; }
+        .nav-link:hover { color: #D97706; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" xintegrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7zTDRGbadArOPiQZpFb5AFrU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" xintegrity="sha384-X/XCfB4uVvilMASIWJNAKU9ekL1AaCcVV+zhRxqn2NZRclqBBIgtQdy7pRTMDuva" crossorigin="anonymous"></script>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Functional Equations</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#introduction" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Introduction</a>
+                <a href="#solvable-case" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">A Solvable Case</a>
+                <a href="#unsolvable-challenge" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">The Challenge</a>
+                <a href="#interactive-explorer" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Interactive Explorer</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="introduction" class="mb-24 scroll-mt-20">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Understanding Iterative Functional Equations</h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+                This application explores the fascinating world of iterative functional equations, where the unknown is a function itself. We'll dissect the core concepts and compare a famously solvable equation with a deceptively similar one that has no simple solution, revealing deep insights into mathematical dynamics.
+            </p>
+            <div class="max-w-2xl mx-auto space-y-4">
+                <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-gray-700 flex justify-between items-center">
+                        What is Function Iteration?
+                        <span>&#9660;</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t">
+                            <p class="mb-4">Function iteration is the process of repeatedly applying a function to its own output. The n-th iterate, <span class="katex-inline" data-expr="f^{\circ n}(x)"></span>, is defined as:</p>
+                            <div class="katex-display" data-expr="f^{\circ 0}(x) = x \quad \text{and} \quad f^{\circ n+1}(x) = f(f^{\circ n}(x))"></div>
+                            <p>Our goal is to find a function's "half-iterate" or "functional square root," a function <span class="katex-inline" data-expr="f(x)"></span> such that its second iterate, <span class="katex-inline" data-expr="f(f(x))"></span> or <span class="katex-inline" data-expr="f^{\circ 2}(x)"></span>, equals a given function <span class="katex-inline" data-expr="F(x)"></span>.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="accordion-item bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-gray-700 flex justify-between items-center">
+                        What are Fixed Points?
+                        <span>&#9660;</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t">
+                            <p class="mb-4">A fixed point of a function is a value that does not change when the function is applied to it. In other words, <span class="katex-inline" data-expr="x"></span> is a fixed point of <span class="katex-inline" data-expr="F(x)"></span> if it satisfies the equation:</p>
+                            <div class="katex-display" data-expr="F(x) = x"></div>
+                            <p>The existence and nature of real fixed points are crucial for understanding a function's iterative behavior and determining if a simple solution to its functional equation exists. They act as anchors for the system's dynamics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <section id="solvable-case" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">A Solvable Case: <span class="katex-inline" data-expr="f(f(x)) = x^2 - 2"></span></h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+                This famous equation has an elegant, closed-form solution. The key to its solvability lies in its connection to Chebyshev polynomials and, critically, the presence of real fixed points. These points stabilize the function's dynamics, allowing for a predictable solution.
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                 <h3 class="text-xl font-semibold text-center mb-4">Fixed Point Analysis of <span class="katex-inline" data-expr="F(x) = x^2 - 2"></span></h3>
+                <div class="chart-container">
+                    <canvas id="solvableChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-gray-600">The graph of <span class="katex-inline" data-expr="F(x) = x^2 - 2"></span> (blue) intersects the line <span class="katex-inline" data-expr="y=x"></span> (dashed gray) at two points, <span class="katex-inline" data-expr="x=-1"></span> and <span class="katex-inline" data-expr="x=2"></span>. These are the two real fixed points.</p>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <section id="unsolvable-challenge" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">The Challenge: <span class="katex-inline" data-expr="f(f(x)) = x^2 + 1"></span></h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+                In contrast, this seemingly similar equation has no known closed-form solution. The fundamental difference is its dynamics: it lacks any real fixed points. This absence creates an unstable, divergent system that cannot be solved with standard algebraic techniques.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">Fixed Point Analysis of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span></h3>
+                    <div class="chart-container">
+                        <canvas id="unsolvableChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-gray-600">The graph of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span> (orange) never intersects the line <span class="katex-inline" data-expr="y=x"></span> (dashed gray). This visually confirms the absence of real fixed points.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">Exploring Divergent Orbits</h3>
+                    <p class="text-center text-gray-600 mb-4">Enter a starting value <span class="katex-inline" data-expr="x_0"></span> to see how the iterates of <span class="katex-inline" data-expr="F(x)=x^2+1"></span> quickly diverge to infinity.</p>
+                    <div class="flex justify-center items-center space-x-2 mb-4">
+                        <label for="x0_input" class="font-medium">x₀ =</label>
+                        <input type="number" id="x0_input" value="0" class="w-24 p-2 border border-gray-300 rounded-md text-center">
+                    </div>
+                    <table class="w-full text-center">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="py-2 font-medium">Iteration (n)</th>
+                                <th class="py-2 font-medium">Value (xₙ)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orbit-table">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <hr class="my-16 border-gray-200">
+
+        <section id="interactive-explorer" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Interactive Numerical Explorer</h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+                Since a closed-form solution is unavailable, we turn to numerical methods. We can approximate a solution for <span class="katex-inline" data-expr="f(x)"></span> using a recursive algorithm based on the relationship <span class="katex-inline" data-expr="f(x) = \sqrt{f(x^2+1)-1}"></span>. Use the slider to see how the approximation improves with more iterations.
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="mb-6 text-center">
+                    <label for="iterations-slider" class="block font-medium mb-2">Recursion Depth: <span id="iterations-label" class="font-bold text-amber-600">10</span></label>
+                    <input type="range" id="iterations-slider" min="1" max="20" value="10" class="w-full max-w-sm mx-auto">
+                </div>
+                <div class="chart-container">
+                    <canvas id="numericalSolutionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-100 mt-20">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p>An interactive visualization based on the report "Closed-form Solution of Iterative Functional Equation $f(f(x))=x^2-2$".</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            function renderKatex() {
+                document.querySelectorAll('.katex-inline, .katex-display').forEach(el => {
+                    katex.render(el.getAttribute('data-expr'), el, {
+                        throwOnError: false,
+                        displayMode: el.classList.contains('katex-display')
+                    });
+                });
+            }
+
+            renderKatex();
+
+            const chartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'x' }
+                    },
+                    y: {
+                        title: { display: true, text: 'y' },
+                        min: -5,
+                        max: 20
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += `(${context.parsed.x.toFixed(2)}, ${context.parsed.y.toFixed(2)})`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            const xValues = Array.from({ length: 101 }, (_, i) => (i - 50) * 0.1);
+
+            const solvableCtx = document.getElementById('solvableChart').getContext('2d');
+            new Chart(solvableCtx, {
+                type: 'line',
+                data: {
+                    labels: xValues.map(x => x.toFixed(1)),
+                    datasets: [
+                        {
+                            label: 'F(x) = x² - 2',
+                            data: xValues.map(x => x * x - 2),
+                            borderColor: 'rgb(59, 130, 246)',
+                            tension: 0.1,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'y = x',
+                            data: xValues.map(x => x),
+                            borderColor: 'rgb(156, 163, 175)',
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+
+            const unsolvableCtx = document.getElementById('unsolvableChart').getContext('2d');
+            new Chart(unsolvableCtx, {
+                type: 'line',
+                data: {
+                    labels: xValues.map(x => x.toFixed(1)),
+                    datasets: [
+                        {
+                            label: 'F(x) = x² + 1',
+                            data: xValues.map(x => x * x + 1),
+                            borderColor: 'rgb(249, 115, 22)',
+                            tension: 0.1,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'y = x',
+                            data: xValues.map(x => x),
+                            borderColor: 'rgb(156, 163, 175)',
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+
+            const x0Input = document.getElementById('x0_input');
+            const orbitTable = document.getElementById('orbit-table');
+
+            function updateOrbitTable() {
+                let x = parseFloat(x0Input.value);
+                if (isNaN(x)) return;
+                
+                orbitTable.innerHTML = '';
+                for (let i = 0; i <= 5; i++) {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b';
+                    const cell1 = document.createElement('td');
+                    cell1.className = 'py-2';
+                    cell1.textContent = i;
+                    const cell2 = document.createElement('td');
+                    cell2.className = 'py-2';
+                    cell2.textContent = x.toExponential(4);
+                    row.appendChild(cell1);
+                    row.appendChild(cell2);
+                    orbitTable.appendChild(row);
+                    x = x * x + 1;
+                }
+            }
+            x0Input.addEventListener('input', updateOrbitTable);
+            updateOrbitTable();
+
+            const iterationsSlider = document.getElementById('iterations-slider');
+            const iterationsLabel = document.getElementById('iterations-label');
+            const numericalCtx = document.getElementById('numericalSolutionChart').getContext('2d');
+            let numericalChart;
+            
+            const memo = new Map();
+            function numerical_f(x, iterations) {
+                const key = `${x}-${iterations}`;
+                if (memo.has(key)) return memo.get(key);
+
+                if (iterations <= 0) {
+                    return Math.pow(Math.abs(x), Math.sqrt(2));
+                }
+                const next_x = x * x + 1;
+                const f_of_next_x = numerical_f(next_x, iterations - 1);
+                const result_squared = f_of_next_x - 1;
+                
+                if (result_squared < 0) {
+                    memo.set(key, NaN);
+                    return NaN;
+                }
+                const result = Math.sqrt(result_squared);
+                memo.set(key, result);
+                return result;
+            }
+
+            function updateNumericalChart() {
+                const iterations = parseInt(iterationsSlider.value);
+                iterationsLabel.textContent = iterations;
+                memo.clear();
+                
+                const f_data = xValues.map(x => numerical_f(x, iterations));
+
+                if (numericalChart) {
+                    numericalChart.data.datasets[1].data = f_data;
+                    numericalChart.update();
+                } else {
+                    numericalChart = new Chart(numericalCtx, {
+                        type: 'line',
+                        data: {
+                            labels: xValues.map(x => x.toFixed(1)),
+                            datasets: [
+                                {
+                                    label: 'F(x) = x² + 1',
+                                    data: xValues.map(x => x * x + 1),
+                                    borderColor: 'rgb(249, 115, 22)',
+                                    tension: 0.1,
+                                    pointRadius: 0
+                                },
+                                {
+                                    label: 'Approximated f(x)',
+                                    data: f_data,
+                                    borderColor: 'rgb(22, 163, 74)',
+                                    tension: 0.1,
+                                    pointRadius: 0
+                                }
+                            ]
+                        },
+                        options: chartOptions
+                    });
+                }
+            }
+
+            iterationsSlider.addEventListener('input', updateNumericalChart);
+            updateNumericalChart();
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const headerHeight = document.getElementById('header').offsetHeight;
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - headerHeight - 20;
+                    if (pageYOffset >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.accordion-header').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const item = button.parentElement;
+                    item.classList.toggle('open');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        button.querySelector('span').style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        button.querySelector('span').style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
