@@ -20,7 +20,6 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #4A4A4A; }
-        .katex-display { display: block; margin: 1em 0; text-align: center; }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 350px; } }
         .nav-link { transition: color 0.3s, border-color 0.3s; }
@@ -28,6 +27,7 @@
         .nav-link:hover { color: #D97706; }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
     </style>
+    <link rel="stylesheet" href="css/latex-display.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" xintegrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7zTDRGbadArOPiQZpFb5AFrU" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" xintegrity="sha384-X/XCfB4uVvilMASIWJNAKU9ekL1AaCcVV+zhRxqn2NZRclqBBIgtQdy7pRTMDuva" crossorigin="anonymous"></script>
 </head>
@@ -40,8 +40,7 @@
                 <a href="#introduction" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Introduction</a>
                 <a href="#solvable-case" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">A Solvable Case</a>
                 <a href="#unsolvable-challenge" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">The Challenge</a>
-                <a href="#interactive-explorer" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Interactive Explorer</a>
-                <a href="#kruchini-calculator" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Composita Calculator</a>
+                <a href="calculators.html" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Calculators</a>
             </div>
         </nav>
     </header>
@@ -106,73 +105,27 @@
             <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
                 In contrast, this seemingly similar equation has no known closed-form solution. The fundamental difference is its dynamics: it lacks any real fixed points. This absence creates an unstable, divergent system that cannot be solved with standard algebraic techniques.
             </p>
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold text-center mb-4">Fixed Point Analysis of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span></h3>
-                    <div class="chart-container">
-                        <canvas id="unsolvableChart"></canvas>
-                    </div>
-                    <p class="text-center mt-4 text-gray-600">The graph of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span> (orange) never intersects the line <span class="katex-inline" data-expr="y=x"></span> (dashed gray). This visually confirms the absence of real fixed points.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold text-center mb-4">Exploring Divergent Orbits</h3>
-                    <p class="text-center text-gray-600 mb-4">Enter a starting value <span class="katex-inline" data-expr="x_0"></span> to see how the iterates of <span class="katex-inline" data-expr="F(x)=x^2+1"></span> quickly diverge to infinity.</p>
-                    <div class="flex justify-center items-center space-x-2 mb-4">
-                        <label for="x0_input" class="font-medium">x₀ =</label>
-                        <input type="number" id="x0_input" value="0" class="w-24 p-2 border border-gray-300 rounded-md text-center">
-                    </div>
-                    <table class="w-full text-center">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="py-2 font-medium">Iteration (n)</th>
-                                <th class="py-2 font-medium">Value (xₙ)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orbit-table">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-        
-        <hr class="my-16 border-gray-200">
-
-        <section id="interactive-explorer" class="mb-24 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Interactive Numerical Explorer</h2>
-            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
-                Since a closed-form solution is unavailable, we turn to numerical methods. We can approximate a solution for <span class="katex-inline" data-expr="f(x)"></span> using a recursive algorithm based on the relationship <span class="katex-inline" data-expr="f(x) = \sqrt{f(x^2+1)-1}"></span>. Use the slider to see how the approximation improves with more iterations.
-            </p>
             <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="mb-6 text-center">
-                    <label for="iterations-slider" class="block font-medium mb-2">Recursion Depth: <span id="iterations-label" class="font-bold text-amber-600">10</span></label>
-                    <input type="range" id="iterations-slider" min="1" max="20" value="10" class="w-full max-w-sm mx-auto">
-                </div>
+                <h3 class="text-xl font-semibold text-center mb-4">Fixed Point Analysis of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span></h3>
                 <div class="chart-container">
-                    <canvas id="numericalSolutionChart"></canvas>
+                    <canvas id="unsolvableChart"></canvas>
                 </div>
+                <p class="text-center mt-4 text-gray-600">The graph of <span class="katex-inline" data-expr="F(x) = x^2 + 1"></span> (orange) never intersects the line <span class="katex-inline" data-expr="y=x"></span> (dashed gray). This visually confirms the absence of real fixed points.</p>
+                <p class="text-center mt-4 text-gray-600">For interactive orbits and numerical approximations, open the dedicated <a href="calculators.html" class="text-amber-600 font-semibold underline">calculation workspace</a>.</p>
             </div>
         </section>
-
-        <hr class="my-16 border-gray-200">
         
-        <section id="kruchini-calculator" class="mb-24 scroll-mt-20">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Composita Calculator: <span class="katex-inline" data-expr="A(A(x)) = F(x) = ax^2+bx"></span></h2>
-            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
-                This section implements the recurrent formula by V.V. Kruchini to compute the composita "A^Δ(n,k)" for the solution function A(x). Enter the parameters for F(x) and the desired polynomial degree of A(x) to see the coefficients and a plot of both functions.
+        <hr class="my-16 border-gray-200">
+
+        <section id="calculator-workspace" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Calculator Workspace</h2>
+            <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-8">
+                All computation-heavy tools have been moved into a dedicated workspace to keep this overview fast and focused.
+                The calculators are now powered by an isolated algorithm engine so that future solvers can plug in without
+                altering the overview page.
             </p>
-            <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-                <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
-                    <p class="font-medium text-gray-700 whitespace-nowrap">Input (f1, a, b, maxDegree):</p>
-                    <input type="text" id="compositaInput" placeholder="e.g., 2,3,4,5" class="flex-grow p-2 border border-gray-300 rounded-md text-center">
-                    <button onclick="calculateComposita()" class="px-6 py-2 bg-amber-600 text-white font-semibold rounded-md shadow-md hover:bg-amber-700 transition">Calculate</button>
-                </div>
-                <div id="compositaResults" class="mb-6 space-y-2">
-                    <p class="text-gray-600">Input Function F(x): <span id="inputLatex" class="font-semibold text-gray-800"></span></p>
-                    <p class="text-gray-600">Solution Function A(x): <span id="solutionLatex" class="font-semibold text-gray-800"></span></p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="compositaChart"></canvas>
-                </div>
+            <div class="flex justify-center">
+                <a href="calculators.html" class="px-6 py-3 bg-amber-600 text-white font-semibold rounded-md shadow-md hover:bg-amber-700 transition">Open the calculators</a>
             </div>
         </section>
 
@@ -280,230 +233,6 @@
                 },
                 options: chartOptions
             });
-
-            const x0Input = document.getElementById('x0_input');
-            const orbitTable = document.getElementById('orbit-table');
-
-            function updateOrbitTable() {
-                let x = parseFloat(x0Input.value);
-                if (isNaN(x)) return;
-                
-                orbitTable.innerHTML = '';
-                for (let i = 0; i <= 5; i++) {
-                    const row = document.createElement('tr');
-                    row.className = 'border-b';
-                    const cell1 = document.createElement('td');
-                    cell1.className = 'py-2';
-                    cell1.textContent = i;
-                    const cell2 = document.createElement('td');
-                    cell2.className = 'py-2';
-                    cell2.textContent = x.toExponential(4);
-                    row.appendChild(cell1);
-                    row.appendChild(cell2);
-                    orbitTable.appendChild(row);
-                    x = x * x + 1;
-                }
-            }
-            x0Input.addEventListener('input', updateOrbitTable);
-            updateOrbitTable();
-
-            const iterationsSlider = document.getElementById('iterations-slider');
-            const iterationsLabel = document.getElementById('iterations-label');
-            const numericalCtx = document.getElementById('numericalSolutionChart').getContext('2d');
-            let numericalChart;
-            
-            const memo = new Map();
-            function numerical_f(x, iterations) {
-                const key = `${x}-${iterations}`;
-                if (memo.has(key)) return memo.get(key);
-
-                if (iterations <= 0) {
-                    return Math.pow(Math.abs(x), Math.sqrt(2));
-                }
-                const next_x = x * x + 1;
-                const f_of_next_x = numerical_f(next_x, iterations - 1);
-                const result_squared = f_of_next_x - 1;
-                
-                if (result_squared < 0) {
-                    memo.set(key, NaN);
-                    return NaN;
-                }
-                const result = Math.sqrt(result_squared);
-                memo.set(key, result);
-                return result;
-            }
-
-            function updateNumericalChart() {
-                const iterations = parseInt(iterationsSlider.value);
-                iterationsLabel.textContent = iterations;
-                memo.clear();
-                
-                const f_data = xValues.map(x => numerical_f(x, iterations));
-
-                if (numericalChart) {
-                    numericalChart.data.datasets[1].data = f_data;
-                    numericalChart.update();
-                } else {
-                    numericalChart = new Chart(numericalCtx, {
-                        type: 'line',
-                        data: {
-                            labels: xValues.map(x => x.toFixed(1)),
-                            datasets: [
-                                {
-                                    label: 'F(x) = x² + 1',
-                                    data: xValues.map(x => x * x + 1),
-                                    borderColor: 'rgb(249, 115, 22)',
-                                    tension: 0.1,
-                                    pointRadius: 0
-                                },
-                                {
-                                    label: 'Approximated f(x)',
-                                    data: f_data,
-                                    borderColor: 'rgb(22, 163, 74)',
-                                    tension: 0.1,
-                                    pointRadius: 0
-                                }
-                            ]
-                        },
-                        options: chartOptions
-                    });
-                }
-            }
-
-            iterationsSlider.addEventListener('input', updateNumericalChart);
-            updateNumericalChart();
-            
-            function factorial(num) {
-                if (num < 0) return NaN;
-                if (num === 0) return 1;
-                let result = 1;
-                for (let i = 2; i <= num; i++) {
-                    result *= i;
-                }
-                return result;
-            }
-
-            function combination(n, k) {
-                if (k < 0 || k > n) return 0;
-                if (k === 0 || k === n) return 1;
-                if (k > n / 2) k = n - k;
-                let res = 1;
-                for (let i = 1; i <= k; i++) {
-                    res = res * (n - i + 1) / i;
-                }
-                return res;
-            }
-            
-            function F_composita(n, k, a, b) {
-                if (k > n) return 0;
-                const coeff = combination(k, n - k);
-                return coeff * Math.pow(a, 2 * k - n) * Math.pow(b, n - k);
-            }
-
-            const memoComposita = {};
-            function compute_A_composita(n, k, f1, a, b) {
-                const key = `${n},${k}`;
-                if (memoComposita[key] !== undefined) return memoComposita[key];
-
-                if (n === k) {
-                    return Math.pow(f1, n / 2);
-                }
-                if (n < k) {
-                    return 0;
-                }
-
-                let sum_term = 0;
-                for (let m = k + 1; m < n; m++) {
-                    sum_term += compute_A_composita(n, m, f1, a, b) * compute_A_composita(m, k, f1, a, b);
-                }
-                
-                const result = (F_composita(n, k, a, b) - sum_term) / (Math.pow(f1, n / 2) + Math.pow(f1, k / 2));
-                memoComposita[key] = result;
-                return result;
-            }
-            
-            function compute_A_coefficients(maxDegree, f1, a, b) {
-                const coefficients = [];
-                for (let n = 1; n <= maxDegree; n++) {
-                    coefficients.push(compute_A_composita(n, 1, f1, a, b));
-                }
-                return coefficients;
-            }
-            
-            let compositaChart;
-            const compositaXValues = Array.from({ length: 101 }, (_, i) => (i - 50) * 0.1);
-
-            function plotCompositaChart(coefficients, a, b) {
-                const inputYValues = compositaXValues.map(x => a * x * x + b * x);
-                const solutionYValues = compositaXValues.map(x => coefficients.reduce((sum, coeff, i) => sum + coeff * Math.pow(x, i + 1), 0));
-                
-                const compositaCtx = document.getElementById('compositaChart').getContext('2d');
-                if (compositaChart) {
-                    compositaChart.data.datasets[0].data = inputYValues;
-                    compositaChart.data.datasets[1].data = solutionYValues;
-                    compositaChart.update();
-                } else {
-                    compositaChart = new Chart(compositaCtx, {
-                        type: 'line',
-                        data: {
-                            labels: compositaXValues.map(x => x.toFixed(1)),
-                            datasets: [
-                                {
-                                    label: 'F(x) = ax² + bx',
-                                    data: inputYValues,
-                                    borderColor: 'rgb(59, 130, 246)',
-                                    tension: 0.1,
-                                    pointRadius: 0
-                                },
-                                {
-                                    label: 'Solution A(x)',
-                                    data: solutionYValues,
-                                    borderColor: 'rgb(22, 163, 74)',
-                                    tension: 0.1,
-                                    pointRadius: 0
-                                }
-                            ]
-                        },
-                        options: {
-                            ...chartOptions,
-                            scales: {
-                                x: { title: { display: true, text: 'x' } },
-                                y: { title: { display: true, text: 'y' } }
-                            }
-                        }
-                    });
-                }
-            }
-
-            window.calculateComposita = function() {
-                const input = document.getElementById("compositaInput").value;
-                const [f1, a, b, maxDegree] = input.split(",").map(Number);
-                
-                const inputLatexEl = document.getElementById("inputLatex");
-                const solutionLatexEl = document.getElementById("solutionLatex");
-
-                if (isNaN(f1) || isNaN(a) || isNaN(b) || isNaN(maxDegree) || maxDegree <= 0) {
-                    inputLatexEl.textContent = "";
-                    solutionLatexEl.textContent = "Invalid input. Please use valid numbers and a positive integer for maxDegree.";
-                    return;
-                }
-                
-                inputLatexEl.setAttribute('data-expr', `F(x) = ${a}x^2 + ${b}x`);
-
-                memoComposita.clear();
-                const coefficients = compute_A_coefficients(maxDegree, f1, a, b);
-
-                let solutionLatex = `A(x) = `;
-                if (coefficients.length > 0) {
-                    solutionLatex += coefficients.map((c, i) => `${c.toFixed(4)}x^{${i + 1}}`).join(" + ");
-                } else {
-                    solutionLatex += "Coefficients could not be calculated.";
-                }
-                
-                solutionLatexEl.setAttribute('data-expr', solutionLatex);
-                renderKatex();
-                plotCompositaChart(coefficients, a, b);
-            }
 
             const sections = document.querySelectorAll('section');
             const navLinks = document.querySelectorAll('.nav-link');

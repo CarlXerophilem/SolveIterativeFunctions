@@ -1,0 +1,10 @@
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: center;
+}
+
+.katex-inline {
+  display: inline-block;
+  vertical-align: baseline;
+}
