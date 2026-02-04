@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iterative Function Calculators</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="ff.ico">
+  <link rel="stylesheet" href="css/latex-display.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" xintegrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7zTDRGbadArOPiQZpFb5AFrU" crossorigin="anonymous">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #4A4A4A; }
+    .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+    @media (min-width: 768px) { .chart-container { height: 350px; } }
+    .nav-link { transition: color 0.3s, border-color 0.3s; }
+    .nav-link.active { color: #D97706; border-bottom-color: #D97706; }
+    .nav-link:hover { color: #D97706; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" xintegrity="sha384-X/XCfB4uVvilMASIWJNAKU9ekL1AaCcVV+zhRxqn2NZRclqBBIgtQdy7pRTMDuva" crossorigin="anonymous"></script>
+</head>
+<body class="antialiased">
+  <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-gray-800">Functional Equation Calculators</h1>
+      <div class="hidden md:flex space-x-8">
+        <a href="index.html" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Overview</a>
+        <a href="#interactive-explorer" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Numerical Explorer</a>
+        <a href="#kruchini-calculator" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Composita Calculator</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container mx-auto px-6 py-12">
+    <section class="mb-16">
+      <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">Calculation Workspace</h2>
+      <p class="max-w-3xl mx-auto text-center text-lg text-gray-600">
+        This page consolidates all computation-heavy tools into a single, isolated workspace. The calculators are powered
+        by a small algorithm registry, so new equation solvers can be registered without rewriting UI components. For
+        example, future solvers can be injected into the registry and rendered here with dedicated sections.
+      </p>
+    </section>
+
+    <section id="interactive-explorer" class="mb-24 scroll-mt-20">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Interactive Numerical Explorer</h2>
+      <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+        Since a closed-form solution is unavailable, we turn to numerical methods. We can approximate a solution for
+        <span class="katex-inline" data-expr="f(x)"></span> using a recursive algorithm based on the relationship
+        <span class="katex-inline" data-expr="f(x) = \sqrt{f(x^2+1)-1}"></span>. Use the slider to see how the
+        approximation improves with more iterations.
+      </p>
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold text-center mb-4">Exploring Divergent Orbits</h3>
+          <p class="text-center text-gray-600 mb-4">Enter a starting value <span class="katex-inline" data-expr="x_0"></span> to see how the iterates of <span class="katex-inline" data-expr="F(x)=x^2+1"></span> quickly diverge to infinity.</p>
+          <div class="flex justify-center items-center space-x-2 mb-4">
+            <label for="x0_input" class="font-medium">x₀ =</label>
+            <input type="number" id="x0_input" value="0" class="w-24 p-2 border border-gray-300 rounded-md text-center">
+          </div>
+          <table class="w-full text-center">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 font-medium">Iteration (n)</th>
+                <th class="py-2 font-medium">Value (xₙ)</th>
+              </tr>
+            </thead>
+            <tbody id="orbit-table">
+            </tbody>
+          </table>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <div class="mb-6 text-center">
+            <label for="iterations-slider" class="block font-medium mb-2">Recursion Depth: <span id="iterations-label" class="font-bold text-amber-600">10</span></label>
+            <input type="range" id="iterations-slider" min="1" max="20" value="10" class="w-full max-w-sm mx-auto">
+          </div>
+          <div class="chart-container">
+            <canvas id="numericalSolutionChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="my-16 border-gray-200">
+
+    <section id="kruchini-calculator" class="mb-24 scroll-mt-20">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Composita Calculator: <span class="katex-inline" data-expr="A(A(x)) = F(x) = ax^2+bx"></span></h2>
+      <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">
+        This section implements the recurrent formula by V.V. Kruchini to compute the composita "A^Δ(n,k)" for the solution
+        function A(x). Enter the parameters for F(x) and the desired polynomial degree of A(x) to see the coefficients and a
+        plot of both functions.
+      </p>
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
+          <p class="font-medium text-gray-700 whitespace-nowrap">Input (f1, a, b, maxDegree):</p>
+          <input type="text" id="compositaInput" placeholder="e.g., 2,3,4,5" class="flex-grow p-2 border border-gray-300 rounded-md text-center">
+          <button onclick="calculateComposita()" class="px-6 py-2 bg-amber-600 text-white font-semibold rounded-md shadow-md hover:bg-amber-700 transition">Calculate</button>
+        </div>
+        <div id="compositaResults" class="mb-6 space-y-2">
+          <p class="text-gray-600">Input Function F(x): <span id="inputLatex" class="font-semibold text-gray-800"></span></p>
+          <p class="text-gray-600">Solution Function A(x): <span id="solutionLatex" class="font-semibold text-gray-800"></span></p>
+        </div>
+        <div class="chart-container">
+          <canvas id="compositaChart"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-100 mt-20">
+    <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+      <p class="mt-5 text-white">Created by <a href="https://gemini.google.com/app/">[Gemini 2.5 Flash]</a> and <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions/">CarlXerophilem</a>. &copy; 2025.</p>
+      <p class="mt-2 text-sm text-white">This work is licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="underline">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+    </div>
+  </footer>
+
+  <script src="js/calculator-engine.js" defer></script>
+  <script src="js/calculator-app.js" defer></script>
+</body>
+</html>
