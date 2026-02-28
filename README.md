@@ -7,11 +7,10 @@
 
 ## Example usage
   - for functions in the form:
-<p>
+
   $$
     f(f(x)) = ax^2 + b ,\quad a,b \in \mathbb{R}
   $$
-</p>
 
 ## Details
    - composita
