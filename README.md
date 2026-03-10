@@ -2,7 +2,7 @@
 # Iterative Function Calculator
 
 <p align = "center">
-  <img src = "" style="box-shadow: 2px 2px 8px 0px #5dd8fd;border-radius: 6px;"/>
+  <img src = "https://github.com/CarlXerophilem/SolveIterativeFunctions/blob/main/ff.ico" style="box-shadow: 2px 2px 8px 0px #5dd8fd;border-radius: 6px;"/>
 </p>
 
 ## Example usage
