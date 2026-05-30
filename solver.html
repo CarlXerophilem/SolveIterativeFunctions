@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solver — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="Iterative Function Solver">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-05-30">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Iterative Function Solver">
+    <meta property="og:description" content="Solve A(A(x))=F(x) using the Composita method with an interactive function grapher.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/solver.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-type="book" id="top">
+
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>window.addEventListener('load',function(){document.getElementById('loader').style.display='none';});</script>
+
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="theory.html" id="prev-link" title="Theory"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="solver.html" id="center-link">
+                <span class="hover-prev">Theory</span>
+                <span class="title-main">Solver</span>
+                <span class="hover-next">Composita</span>
+            </a>
+        </div>
+        <a href="composita.html" id="next-link" title="Composita"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <div class="container">
+        <section data-type="chapter" id="solver">
+
+            <div class="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#input-panel">1. Input: Define \(F(x)\)</a></li>
+                    <li><a href="#solution-panel">2. Solution: Computed \(A(x)\)</a></li>
+                    <li><a href="#grapher-panel">3. Interactive Grapher</a></li>
+                    <li><a href="#orbit-panel">4. Orbit Explorer</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>Iterative Function Solver</h1>
+                    <hr>
+
+                    <p>
+                        This page solves the functional equation \(A(A(x)) = F(x)\) for a given polynomial
+                        \(F(x) = f_1 x + f_2 x^2 + f_3 x^3 + \cdots\) using the
+                        <strong>Composita recurrence</strong> (Kruchinin &amp; Kruchinin, 2013). The solution
+                        \(A(x) = a_1 x + a_2 x^2 + \cdots\) is computed term-by-term and verified graphically.
+                    </p>
+
+                    <!-- Input Panel -->
+                    <div id="input-panel">
+                        <h2>1. Define the Target Function \(F(x)\)</h2>
+                        <p>Enter coefficients of \(F(x) = f_1 x + f_2 x^2 + f_3 x^3 + \cdots\) (constant term must be zero).</p>
+
+                        <div class="control-panel" style="justify-content:flex-start;">
+                            <div class="control-group">
+                                <label for="f1-input">\(f_1\) (linear)</label>
+                                <input type="number" id="f1-input" value="1" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="f2-input">\(f_2\) (quadratic)</label>
+                                <input type="number" id="f2-input" value="0" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="f3-input">\(f_3\) (cubic)</label>
+                                <input type="number" id="f3-input" value="1" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="f4-input">\(f_4\)</label>
+                                <input type="number" id="f4-input" value="0" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="f5-input">\(f_5\)</label>
+                                <input type="number" id="f5-input" value="0" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="maxn-input">Max degree</label>
+                                <input type="number" id="maxn-input" value="10" min="2" max="30" style="width:70px;">
+                            </div>
+                        </div>
+
+                        <div style="text-align:center; margin:1rem 0;">
+                            <button onclick="solveEquation()" id="solve-btn" style="font-size:1rem; padding:0.6rem 2rem;">
+                                <i class="fa-solid fa-play"></i> Solve \(A(A(x)) = F(x)\)
+                            </button>
+                            <span id="solve-status" style="margin-left:1rem; color:var(--footer-text);"></span>
+                        </div>
+
+                        <div style="text-align:center; margin:0.5rem 0;">
+                            <small style="color:var(--footer-text);">
+                                Presets:
+                                <a href="#" onclick="setPreset('x+x2');return false;">\(x+x^2\)</a> &bull;
+                                <a href="#" onclick="setPreset('x+2x2+x3');return false;">\(x+2x^2+x^3\)</a> &bull;
+                                <a href="#" onclick="setPreset('x+x3');return false;">\(x+x^3\)</a> &bull;
+                                <a href="#" onclick="setPreset('2x+x2');return false;">\(2x+x^2\)</a>
+                            </small>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Solution Panel -->
+                    <div id="solution-panel">
+                        <h2>2. Computed Solution \(A(x)\)</h2>
+                        <div class="results-panel" id="solution-results" style="display:none;">
+                            <div class="result-label">\(F(x)\) = <span id="display-F"></span></div>
+                            <div class="result-label">\(A(x)\) = <span id="display-A"></span></div>
+                            <div class="result-label mt-2">Max residual \(|A(A(x)) - F(x)|\) (coefficient-wise):
+                                <span id="display-residual" style="font-weight:700;color:#e74c3c;"></span>
+                            </div>
+                            <div class="result-label">Coefficient table:</div>
+                            <div style="overflow-x:auto;">
+                                <table id="coeff-table" style="font-size:0.85rem;">
+                                    <thead><tr><th>\(n\)</th><th>\(f_n\)</th><th>\(a_n\)</th><th>Residual</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Grapher Panel -->
+                    <div id="grapher-panel">
+                        <h2>3. Interactive Grapher</h2>
+                        <p>Compare \(A(x)\), \(A(A(x))\), and \(F(x)\). Drag to pan, use the controls below to adjust the view.</p>
+
+                        <div class="canvas-container">
+                            <canvas id="grapherCanvas" width="700" height="420"></canvas>
+                        </div>
+
+                        <div class="control-panel">
+                            <div class="control-group">
+                                <label for="xmin-input">\(x_{\min}\)</label>
+                                <input type="number" id="xmin-input" value="-2" step="any" style="width:80px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="xmax-input">\(x_{\max}\)</label>
+                                <input type="number" id="xmax-input" value="2" step="any" style="width:80px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="ymin-input">\(y_{\min}\)</label>
+                                <input type="number" id="ymin-input" value="-2" step="any" style="width:80px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="ymax-input">\(y_{\max}\)</label>
+                                <input type="number" id="ymax-input" value="5" step="any" style="width:80px;">
+                            </div>
+                            <button onclick="updateGrapher()" class="secondary" style="align-self:flex-end;">
+                                <i class="fa-solid fa-arrows-alt"></i> Update View
+                            </button>
+                            <button onclick="resetGrapherView()" class="secondary" style="align-self:flex-end;">
+                                <i class="fa-solid fa-rotate"></i> Reset
+                            </button>
+                        </div>
+
+                        <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
+                            <span style="color:#3498db;">&mdash; \(A(x)\)</span> &nbsp;
+                            <span style="color:#2ecc71;">&mdash; \(A(A(x))\)</span> &nbsp;
+                            <span style="color:#e74c3c;">&mdash; \(F(x)\)</span> &nbsp;
+                            <span style="color:#95a5a6;">&mdash; \(y=x\)</span>
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Orbit Explorer -->
+                    <div id="orbit-panel">
+                        <h2>4. Orbit Explorer</h2>
+                        <p>
+                            Explore the dynamics of \(F(x)\). Enter a starting value \(x_0\) to see the iterates
+                            \(x_{n+1} = F(x_n)\).
+                        </p>
+                        <div class="control-panel" style="justify-content:flex-start;">
+                            <div class="control-group">
+                                <label for="x0-input">\(x_0\)</label>
+                                <input type="number" id="x0-input" value="0.5" step="any" style="width:100px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="steps-input">Steps</label>
+                                <input type="number" id="steps-input" value="10" min="1" max="50" style="width:70px;">
+                            </div>
+                            <button onclick="computeOrbit()" id="orbit-btn">
+                                <i class="fa-solid fa-chart-line"></i> Compute Orbit
+                            </button>
+                        </div>
+                        <div class="results-panel" id="orbit-results" style="display:none;">
+                            <div style="overflow-x:auto;">
+                                <table id="orbit-table" style="font-size:0.85rem;">
+                                    <thead><tr><th>\(n\)</th><th>\(x_n\)</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+            </main>
+
+            <div class="nextPage">
+                <a href="composita.html">Next: Composita Calculator <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+
+    </div>
+
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <script src="js/engine.js"></script>
+    <script>
+        // ----- Solver state -----
+        let solverResult = null;
+        let fCoeffsInput = null;
+
+        // ----- Presets -----
+        function setPreset(name) {
+            // Note: The composita method requires polynomials with f(0)=0 and f(1)>0.
+            const presets = {
+                'x+x2':    { f1: 1,  f2: 1, f3: 0, f4: 0, f5: 0, label: 'x+x^2' },
+                'x+2x2+x3': { f1: 1, f2: 2, f3: 1, f4: 0, f5: 0, label: 'x+2x^2+x^3' },
+                'x+x3':    { f1: 1,  f2: 0, f3: 1, f4: 0, f5: 0, label: 'x+x^3' },
+                '2x+x2':   { f1: 2,  f2: 1, f3: 0, f4: 0, f5: 0, label: '2x+x^2' }
+            };
+            const p = presets[name];
+            if (!p) return;
+            document.getElementById('f1-input').value = p.f1;
+            document.getElementById('f2-input').value = p.f2;
+            document.getElementById('f3-input').value = p.f3;
+            document.getElementById('f4-input').value = p.f4;
+            document.getElementById('f5-input').value = p.f5;
+            solveEquation();
+        }
+
+        // ----- Solve -----
+        function solveEquation() {
+            const statusEl = document.getElementById('solve-status');
+            statusEl.textContent = 'Computing...';
+            document.getElementById('solve-btn').disabled = true;
+
+            setTimeout(function() {
+                try {
+                    const f1 = parseFloat(document.getElementById('f1-input').value) || 0;
+                    const f2 = parseFloat(document.getElementById('f2-input').value) || 0;
+                    const f3 = parseFloat(document.getElementById('f3-input').value) || 0;
+                    const f4 = parseFloat(document.getElementById('f4-input').value) || 0;
+                    const f5 = parseFloat(document.getElementById('f5-input').value) || 0;
+                    const maxN = parseInt(document.getElementById('maxn-input').value) || 10;
+
+                    // Build coefficient array (1-indexed)
+                    const fCoeffsRaw = [0, f1, f2, f3, f4, f5];
+                    // Pad to maxN+1
+                    const fCoeffs = [0];
+                    for (let i = 1; i <= maxN; i++) {
+                        fCoeffs[i] = (i < fCoeffsRaw.length) ? fCoeffsRaw[i] : 0;
+                    }
+
+                    fCoeffsInput = fCoeffs;
+
+                    const result = Engine.solveHalfIterate(fCoeffs, maxN);
+                    if (result.error) {
+                        statusEl.textContent = 'Error: ' + result.error;
+                        document.getElementById('solve-btn').disabled = false;
+                        return;
+                    }
+
+                    solverResult = result;
+
+                    // Display
+                    document.getElementById('solution-results').style.display = 'block';
+
+                    // F(x) display
+                    let fStr = '';
+                    for (let i = 1; i <= maxN; i++) {
+                        if (fCoeffs[i] !== 0 || i === 1) {
+                            const sign = fCoeffs[i] >= 0 ? (i === 1 ? '' : '+') : '';
+                            fStr += `${sign}${fCoeffs[i].toFixed(4)}x^{${i}}`;
+                        }
+                    }
+                    document.getElementById('display-F').textContent = fStr;
+
+                    // A(x) display
+                    let aStr = '';
+                    const a = result.coefficients;
+                    for (let i = 0; i < a.length; i++) {
+                        if (a[i] !== 0 || i === 0) {
+                            const sign = a[i] >= 0 ? (i === 0 ? '' : '+') : '';
+                            aStr += `${sign}${a[i].toFixed(6)}x^{${i+1}}`;
+                        }
+                    }
+                    document.getElementById('display-A').textContent = aStr;
+
+                    // Residual
+                    document.getElementById('display-residual').textContent =
+                        result.maxResidual.toExponential(4);
+
+                    // Coefficient table
+                    const tbody = document.querySelector('#coeff-table tbody');
+                    tbody.innerHTML = '';
+                    for (let n = 1; n <= maxN; n++) {
+                        const row = tbody.insertRow();
+                        row.insertCell(0).textContent = n;
+                        row.insertCell(1).textContent = (fCoeffs[n] || 0).toFixed(6);
+                        row.insertCell(2).textContent = (a[n-1] || 0).toFixed(6);
+                        row.insertCell(3).textContent = (result.residuals[n-1] || 0).toExponential(4);
+                    }
+
+                    statusEl.textContent = 'Done.';
+                    updateGrapher();
+                } catch (e) {
+                    statusEl.textContent = 'Error: ' + e.message;
+                }
+                document.getElementById('solve-btn').disabled = false;
+            }, 30);
+        }
+
+        // ----- Canvas Grapher -----
+        function updateGrapher() {
+            const canvas = document.getElementById('grapherCanvas');
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+
+            const xMin = parseFloat(document.getElementById('xmin-input').value);
+            const xMax = parseFloat(document.getElementById('xmax-input').value);
+            const yMin = parseFloat(document.getElementById('ymin-input').value);
+            const yMax = parseFloat(document.getElementById('ymax-input').value);
+
+            // Coordinate transforms
+            const toX = function(x) { return (x - xMin) / (xMax - xMin) * W; };
+            const toY = function(y) { return H - (y - yMin) / (yMax - yMin) * H; };
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--box-bg').trim() || '#fff';
+            ctx.fillRect(0, 0, W, H);
+
+            // Grid
+            ctx.strokeStyle = '#e8e8e8';
+            ctx.lineWidth = 0.5;
+            const xStep = (xMax - xMin) / 10;
+            const yStep = (yMax - yMin) / 10;
+            for (let i = 0; i <= 10; i++) {
+                const x = xMin + i * xStep;
+                ctx.beginPath();
+                ctx.moveTo(toX(x), 0);
+                ctx.lineTo(toX(x), H);
+                ctx.stroke();
+                const y = yMin + i * yStep;
+                ctx.beginPath();
+                ctx.moveTo(0, toY(y));
+                ctx.lineTo(W, toY(y));
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            // x-axis
+            if (yMin <= 0 && yMax >= 0) {
+                ctx.beginPath();
+                ctx.moveTo(0, toY(0));
+                ctx.lineTo(W, toY(0));
+                ctx.stroke();
+            }
+            // y-axis
+            if (xMin <= 0 && xMax >= 0) {
+                ctx.beginPath();
+                ctx.moveTo(toX(0), 0);
+                ctx.lineTo(toX(0), H);
+                ctx.stroke();
+            }
+
+            // Axis labels
+            ctx.fillStyle = '#888';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 10; i++) {
+                const x = xMin + i * xStep;
+                ctx.fillText(x.toFixed(1), toX(x), toY(0) + (yMin <= 0 && yMax >= 0 ? 15 : H - 5));
+            }
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 10; i++) {
+                const y = yMin + i * yStep;
+                ctx.fillText(y.toFixed(1), toX(0) - (xMin <= 0 && xMax >= 0 ? 5 : -W + 40), toY(y) + 4);
+            }
+
+            // Draw line y = x
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 6]);
+            ctx.beginPath();
+            ctx.moveTo(toX(Math.max(xMin, yMin)), toY(Math.max(xMin, yMin)));
+            ctx.lineTo(toX(Math.min(xMax, yMax)), toY(Math.min(xMax, yMax)));
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw F(x)
+            if (fCoeffsInput) {
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= W; px++) {
+                    const x = xMin + (px / W) * (xMax - xMin);
+                    const y = Engine.evalPolynomial(fCoeffsInput.slice(1), x);
+                    if (!isFinite(y)) { first = true; continue; }
+                    const py = toY(y);
+                    if (py < -1000 || py > H + 1000) { first = true; continue; }
+                    if (first) { ctx.moveTo(px, py); first = false; }
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+            }
+
+            // Draw A(x) and A(A(x))
+            if (solverResult && solverResult.coefficients) {
+                const a = solverResult.coefficients;
+                const aTable = solverResult.compositaTable;
+
+                // A(x)
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= W; px++) {
+                    const x = xMin + (px / W) * (xMax - xMin);
+                    const y = Engine.evalPolynomial(a, x);
+                    if (!isFinite(y)) { first = true; continue; }
+                    const py = toY(y);
+                    if (py < -1000 || py > H + 1000) { first = true; continue; }
+                    if (first) { ctx.moveTo(px, py); first = false; }
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+
+                // A(A(x))
+                ctx.strokeStyle = '#2ecc71';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 3]);
+                ctx.beginPath();
+                first = true;
+                for (let px = 0; px <= W; px++) {
+                    const x = xMin + (px / W) * (xMax - xMin);
+                    const y = Engine.evalComposition(a, aTable, x);
+                    if (!isFinite(y)) { first = true; continue; }
+                    const py = toY(y);
+                    if (py < -1000 || py > H + 1000) { first = true; continue; }
+                    if (first) { ctx.moveTo(px, py); first = false; }
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        function resetGrapherView() {
+            document.getElementById('xmin-input').value = '-2';
+            document.getElementById('xmax-input').value = '2';
+            document.getElementById('ymin-input').value = '-2';
+            document.getElementById('ymax-input').value = '5';
+            updateGrapher();
+        }
+
+        // ----- Orbit -----
+        function computeOrbit() {
+            if (!fCoeffsInput) {
+                alert('Please solve the equation first to define F(x).');
+                return;
+            }
+            const x0 = parseFloat(document.getElementById('x0-input').value);
+            const steps = parseInt(document.getElementById('steps-input').value);
+            if (isNaN(x0) || isNaN(steps)) return;
+
+            const F = function(x) { return Engine.evalPolynomial(fCoeffsInput.slice(1), x); };
+            const orbit = Engine.computeOrbit(F, x0, steps);
+
+            const results = document.getElementById('orbit-results');
+            results.style.display = 'block';
+            const tbody = document.querySelector('#orbit-table tbody');
+            tbody.innerHTML = '';
+            for (let i = 0; i < orbit.length; i++) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = i;
+                row.insertCell(1).textContent = isFinite(orbit[i]) ? orbit[i].toExponential(6) : '∞';
+            }
+        }
+
+        // ----- Init -----
+        document.addEventListener('DOMContentLoaded', function() {
+            // Default: solve x^2 + 1 case immediately
+            solveEquation();
+
+            // Keyboard shortcut for orbit
+            document.getElementById('x0-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') computeOrbit();
+            });
+        });
+
+        // ----- Dark mode -----
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+                // Redraw grapher after theme change
+                setTimeout(updateGrapher, 100);
+            });
+        })();
+    </script>
+
+</body>
+</html>

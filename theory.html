@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Theory — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="Theory of Iterative Functional Equations">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-05-29">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Theory of Iterative Functional Equations">
+    <meta property="og:description" content="Fixed points, conjugacy, and why f(f(x))=x^2-2 is solvable but f(f(x))=x^2+1 is not.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/theory.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <meta name="twitter:card" content="Theory of iterative functional equations.">
+    <meta name="twitter:title" content="Theory — Iterative Functional Equations">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-type="book" id="top">
+
+    <!-- Loader -->
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>
+        window.addEventListener('load', function(){
+            document.getElementById('loader').style.display = 'none';
+        });
+    </script>
+
+    <!-- Fixed Navigation Bar -->
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="index.html" id="prev-link" title="Home"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="theory.html" id="center-link">
+                <span class="hover-prev">Home</span>
+                <span class="title-main">Theory</span>
+                <span class="hover-next">Solver</span>
+            </a>
+        </div>
+        <a href="solver.html" id="next-link" title="Solver"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <section data-type="chapter" id="theory">
+
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section1">1. Function Iteration &amp; Half-Iterates</a></li>
+                    <li><a href="#section2">2. Fixed Points &amp; Their Dynamical Role</a></li>
+                    <li><a href="#section3">3. A Solvable Case: \(f(f(x)) = x^2 - 2\)</a></li>
+                    <li><a href="#section4">4. The Unsolvable Challenge: \(f(f(x)) = x^2 + 1\)</a></li>
+                    <li><a href="#section5">5. Conjugacy &amp; the General Picture</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>Theory of Iterative Functional Equations</h1>
+                    <hr>
+
+                    <!-- Section 1: Function Iteration -->
+                    <div id="section1">
+                        <h2>1. Function Iteration &amp; Half-Iterates</h2>
+                        <p>
+                            <strong>Function iteration</strong> is the process of applying a function repeatedly to its own output.
+                            The \(n\)-th iterate of a function \(f\), denoted \(f^{\circ n}\), is defined recursively by
+                            \[
+                            f^{\circ 0}(x) = x, \qquad f^{\circ n+1}(x) = f\bigl(f^{\circ n}(x)\bigr).
+                            \]
+                        </p>
+                        <p>
+                            An <strong>iterative functional equation</strong> asks: given a function \(F(x)\), find \(f(x)\) such that
+                            some iterate of \(f\) equals \(F\). The simplest non-trivial case is the <em>functional square root</em>
+                            or <em>half-iterate</em>:
+                            \[
+                            f^{\circ 2}(x) = f(f(x)) = F(x).
+                            \]
+                        </p>
+                        <p>
+                            This problem sits at the intersection of dynamical systems, functional equations, and enumerative
+                            combinatorics. While some equations admit elegant closed-form solutions, others resist any simple
+                            expression — and the difference often comes down to the presence or absence of real fixed points.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Definition (Functional Square Root).</strong> A function \(f: D \to D\) is a <em>functional
+                            square root</em> of \(F: D \to D\) if \(f(f(x)) = F(x)\) for all \(x \in D\). We also say
+                            \(f\) is a <em>half-iterate</em> of \(F\).
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 2: Fixed Points -->
+                    <div id="section2">
+                        <h2>2. Fixed Points &amp; Their Dynamical Role</h2>
+                        <p>
+                            A <strong>fixed point</strong> of a function \(F\) is a value \(x^*\) such that \(F(x^*) = x^*\).
+                            Fixed points are the anchors of iteration: they are points where the dynamics stand still.
+                        </p>
+                        <p>
+                            If \(f\) is a half-iterate of \(F\), then every fixed point of \(f\) is also a fixed point of \(F\).
+                            Moreover, any <em>cycle</em> of \(f\) of length 2 becomes a fixed point of \(F\):
+                            \[
+                            f(x) = y,\; f(y) = x \quad\Longrightarrow\quad F(x) = f(f(x)) = f(y) = x.
+                            \]
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Theorem (Necessary condition).</strong> If \(F\) has a half-iterate \(f\) on a domain
+                            \(D \subseteq \mathbb{R}\), then \(F\) must have either real fixed points or 2-cycles of \(f\)
+                            (which are fixed points of \(F\)). In particular, if \(F(x) > x\) for all \(x \in \mathbb{R}\),
+                            then \(F\) has no real half-iterate.
+                        </div>
+
+                        <p>Compare the two canonical examples:</p>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;" class="mb-2">
+                            <div class="canvas-container" style="padding:0.5rem;">
+                                <h4 style="text-align:center; margin:0.5rem;">\(F(x) = x^2 - 2\)</h4>
+                                <canvas id="solvableChart" style="max-height:280px;"></canvas>
+                                <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
+                                    Fixed points at \(x = -1\) and \(x = 2\).
+                                </p>
+                            </div>
+                            <div class="canvas-container" style="padding:0.5rem;">
+                                <h4 style="text-align:center; margin:0.5rem;">\(F(x) = x^2 + 1\)</h4>
+                                <canvas id="unsolvableChart" style="max-height:280px;"></canvas>
+                                <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
+                                    No real fixed points — the graph never meets \(y = x\).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 3: Solvable Case -->
+                    <div id="section3">
+                        <h2>3. A Solvable Case: \(f(f(x)) = x^2 - 2\)</h2>
+                        <p>
+                            The equation
+                            \[
+                            f(f(x)) = x^2 - 2
+                            \]
+                            has a well-known closed-form solution:
+                            \[
+                            f(x) = x^2 - 2 \quad\text{is its own half-iterate? No — let's check.}
+                            \]
+                            Actually, \((x^2-2)^2 - 2 = x^4 - 4x^2 + 2 \neq x^2 - 2\).
+                        </p>
+                        <p>
+                            The true solution connects to <strong>Chebyshev polynomials</strong>. Recall that
+                            \(T_n(\cos\theta) = \cos(n\theta)\). In particular,
+                            \[
+                            T_2(x) = 2x^2 - 1, \qquad T_2(T_2(x)) = T_4(x).
+                            \]
+                            By a linear change of variables, the equation \(f(f(x)) = x^2 - 2\) is solved by
+                            \[
+                            f(x) = 2\cos\bigl(\sqrt{2}\,\arccos(x/2)\bigr) \quad\text{for } |x| \le 2,
+                            \]
+                            or more elegantly, using the conjugacy \(h(x) = x + 1/x\):
+                            \[
+                            F(x) = x^2 - 2 = h^{-1}(h(x)^2), \qquad
+                            f(x) = h^{-1}\bigl(h(x)^{\sqrt{2}}\bigr).
+                            \]
+                        </p>
+
+                        <div class="practice">
+                            <strong>Example: Verifying the solution.</strong>
+                            Let \(h(x) = x + \frac{1}{x}\) for \(x > 0\). Then \(h^{-1}(y) = \frac{y + \sqrt{y^2-4}}{2}\).
+                            Define \(f(x) = h^{-1}\bigl([h(x)]^{\sqrt{2}}\bigr)\).
+                            Then
+                            \[
+                            f(f(x)) = h^{-1}\bigl([h(f(x))]^{\sqrt{2}}\bigr)
+                            = h^{-1}\bigl([h(x)]^{(\sqrt{2})^2}\bigr)
+                            = h^{-1}\bigl([h(x)]^2\bigr) = x^2 - 2.
+                            \]
+                            The critical insight: <strong>conjugacy to a power function</strong> makes iteration trivial.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 4: Unsolvable Challenge -->
+                    <div id="section4">
+                        <h2>4. The Unsolvable Challenge: \(f(f(x)) = x^2 + 1\)</h2>
+                        <p>
+                            In contrast, the equation
+                            \[
+                            f(f(x)) = x^2 + 1
+                            \]
+                            has <strong>no known closed-form solution</strong> on the real line. The fundamental reason is
+                            dynamical:
+                        </p>
+                        <ul>
+                            <li>\(F(x) = x^2 + 1 > x\) for all real \(x\), so the iterates \(x, F(x), F(F(x)), \ldots\)
+                            form a strictly increasing sequence diverging to \(+\infty\).</li>
+                            <li>There are no real fixed points, and no real 2-cycles.</li>
+                            <li>The equation \(x^2 + 1 = x\) has discriminant \(1 - 4 = -3 < 0\).</li>
+                        </ul>
+
+                        <div class="theorem">
+                            <strong>Theorem (Obstruction).</strong> If \(F: \mathbb{R} \to \mathbb{R}\) satisfies
+                            \(F(x) > x\) for all \(x\), then \(F\) has no continuous half-iterate \(f: \mathbb{R} \to \mathbb{R}\).
+                        </div>
+
+                        <details>
+                            <summary><strong>Proof</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    Suppose \(f(f(x)) = F(x) > x\) for all \(x\). Consider the orbit of any point \(x_0\) under
+                                    \(f\). If \(f(x_0) = x_0\), then \(F(x_0) = x_0\), contradicting \(F(x) > x\).
+                                    If \(f(x_0) > x_0\), then applying \(f\) (which must be increasing if continuous and
+                                    invertible) gives \(f(f(x_0)) > f(x_0)\), so \(F(x_0) > f(x_0) > x_0\).
+                                    Repeating, the sequence \(x_0, f(x_0), F(x_0), f(F(x_0)), \ldots\) is strictly
+                                    increasing. By continuity, \(f\) has no fixed points. But for a continuous function
+                                    on \(\mathbb{R}\) with no fixed points, we must have \(f(x) > x\) for all \(x\) or
+                                    \(f(x) < x\) for all \(x\). If \(f(x) > x\) for all \(x\), let \(x_0\) be arbitrary.
+                                    Then the sequence \(x_n = f^{\circ n}(x_0)\) is strictly increasing. If unbounded,
+                                    \(f(f(x_n)) = F(x_n)\) grows quadratically, forcing a contradiction with continuity.
+                                    If bounded, the limit \(L\) satisfies \(f(L) = L\), a fixed point, contradiction.
+                                    Hence no continuous solution exists on all of \(\mathbb{R}\).
+                                </p>
+                            </div>
+                        </details>
+
+                        <p>
+                            However, numerical solutions exist on restricted domains. The <strong>Composita method</strong>
+                            (Kruchinin &amp; Kruchinin, 2013) provides a systematic way to compute the coefficients of a
+                            formal power series for \(f(x)\) satisfying \(f(f(x)) = F(x)\). See the
+                            <a href="solver.html">Solver</a> page for an interactive implementation.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 5: Conjugacy -->
+                    <div id="section5">
+                        <h2>5. Conjugacy &amp; the General Picture</h2>
+                        <p>
+                            Two functions \(F\) and \(G\) are <strong>conjugate</strong> if there exists an invertible
+                            function \(h\) such that
+                            \[
+                            F = h^{-1} \circ G \circ h.
+                            \]
+                            Conjugacy preserves dynamical structure: fixed points, cycles, and iteration counts. If
+                            \(G\) is easy to iterate (e.g., \(G(x) = x^\alpha\)), then we can solve
+                            \(f(f(x)) = F(x)\) by:
+                        </p>
+                        <ol>
+                            <li>Find \(h\) such that \(F = h^{-1} \circ G \circ h\).</li>
+                            <li>Let \(g(x) = x^{\sqrt{\alpha}}\) (a half-iterate of \(G\)).</li>
+                            <li>Then \(f = h^{-1} \circ g \circ h\) satisfies \(f^{\circ 2} = F\).</li>
+                        </ol>
+
+                        <div class="practice">
+                            <strong>Key Insight.</strong> The solvability of \(f(f(x)) = F(x)\) hinges on whether \(F\)
+                            is conjugate to a simple function (like \(x^\alpha\) or a monomial) on a suitable domain.
+                            For \(F(x) = x^2 - 2\), the Chebyshev conjugacy \(h(x) = x + 1/x\) works. For
+                            \(F(x) = x^2 + 1\), no such conjugacy exists on \(\mathbb{R}\) because the dynamical
+                            behavior — no fixed points, monotonic divergence — cannot be matched by any power function
+                            on the real line.
+                        </div>
+
+                        <p>
+                            For a more general approach, the <strong>Composita</strong> of a generating function
+                            (see <a href="composita.html">Composita Calculator</a>) provides a combinatorial framework
+                            for manipulating iterates and compositions of formal power series, enabling systematic
+                            computation even when closed-form conjugacies are unavailable.
+                        </p>
+                    </div>
+
+                </article>
+            </main>
+
+            <!-- Next Page -->
+            <div class="nextPage">
+                <a href="solver.html">Next: Iterative Function Solver <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <!-- Fixed Point Charts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const xValues = Array.from({ length: 101 }, (_, i) => (i - 50) * 0.1);
+            const chartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                animation: false,
+                scales: {
+                    x: { title: { display: true, text: 'x', font: { size: 11 } }, ticks: { font: { size: 10 } } },
+                    y: { title: { display: true, text: 'y', font: { size: 11 } }, ticks: { font: { size: 10 } } }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 12 } }
+                }
+            };
+
+            new Chart(document.getElementById('solvableChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: xValues.map(x => x.toFixed(1)),
+                    datasets: [
+                        { label: 'F(x)=x²−2', data: xValues.map(x => x*x-2), borderColor: '#3498db', tension:0.1, pointRadius:0 },
+                        { label: 'y=x', data: xValues.map(x => x), borderColor: '#95a5a6', borderDash:[5,5], pointRadius:0 }
+                    ]
+                },
+                options: chartOptions
+            });
+
+            new Chart(document.getElementById('unsolvableChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: xValues.map(x => x.toFixed(1)),
+                    datasets: [
+                        { label: 'F(x)=x²+1', data: xValues.map(x => x*x+1), borderColor: '#e67e22', tension:0.1, pointRadius:0 },
+                        { label: 'y=x', data: xValues.map(x => x), borderColor: '#95a5a6', borderDash:[5,5], pointRadius:0 }
+                    ]
+                },
+                options: chartOptions
+            });
+        });
+    </script>
+
+    <!-- Dark mode toggle -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+
+</body>
+</html>

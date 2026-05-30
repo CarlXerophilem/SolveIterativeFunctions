@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Composita Calculator — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="Composita Calculator">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-05-30">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Composita Calculator">
+    <meta property="og:description" content="Interactive computation of the composita F^Δ(n,k) of generating functions.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/composita.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-type="book" id="top">
+
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>window.addEventListener('load',function(){document.getElementById('loader').style.display='none';});</script>
+
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="solver.html" id="prev-link" title="Solver"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="composita.html" id="center-link">
+                <span class="hover-prev">Solver</span>
+                <span class="title-main">Composita</span>
+                <span class="hover-next">Bibliography</span>
+            </a>
+        </div>
+        <a href="bibliography.html" id="next-link" title="Bibliography"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <div class="container">
+        <section data-type="chapter" id="composita">
+
+            <div class="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#definition">1. Definition of the Composita</a></li>
+                    <li><a href="#recurrence">2. Recurrence Formula</a></li>
+                    <li><a href="#calculator">3. Composita Calculator</a></li>
+                    <li><a href="#composition">4. Composition of Generating Functions</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+                    <h1>Composita of Generating Functions</h1>
+                    <hr>
+
+                    <!-- Section 1: Definition -->
+                    <div id="definition">
+                        <h2>1. Definition of the Composita</h2>
+                        <p>
+                            The <strong>composita</strong> of a generating function \(F(x) = \sum_{n>0} f(n) x^n\)
+                            (with \(f(0) = 0\)) is the function of two variables
+                            \[
+                            F^{\Delta}(n, k) = \sum_{\pi_k \in C_n} f(\lambda_1) f(\lambda_2) \cdots f(\lambda_k),
+                            \]
+                            where \(C_n\) is the set of all <em>compositions</em> of the integer \(n\), and
+                            \(\pi_k = (\lambda_1, \ldots, \lambda_k)\) is a composition of \(n\) into \(k\) parts
+                            with \(\sum_{i=1}^k \lambda_i = n\).
+                        </p>
+
+                        <div class="definition">
+                            <strong>Definition (Kruchinin &amp; Kruchinin, 2013).</strong> The composita
+                            \(F^{\Delta}(n,k)\) is the coefficient of \(x^n\) in \([F(x)]^k\):
+                            \[
+                            [F(x)]^k = \sum_{n \ge k} F^{\Delta}(n,k) \, x^n.
+                            \]
+                            Equivalently, \(F^{\Delta}(n,k) = [x^n] F(x)^k\).
+                        </div>
+
+                        <p>
+                            The composita generalizes the binomial coefficients. For example, the composita of
+                            \(F(x) = \frac{x}{1-x} = x + x^2 + x^3 + \cdots\) is precisely the Pascal triangle:
+                            \[
+                            F^{\Delta}(n,k) = \binom{n-1}{k-1}.
+                            \]
+                        </p>
+
+                        <div class="practice">
+                            <strong>Example (Pascal's triangle from composita).</strong>
+                            Since \(f(n) = 1\) for all \(n > 0\), the composita counts the number of compositions
+                            of \(n\) into \(k\) parts, which is \(\binom{n-1}{k-1}\):
+                            \[
+                            \begin{array}{cccccc}
+                            & & & 1 \\
+                            & & 1 & & 1 \\
+                            & 1 & & 2 & & 1 \\
+                            1 & & 3 & & 3 & & 1 \\
+                            1 & & 4 & & 6 & & 4 & & 1
+                            \end{array}
+                            \]
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 2: Recurrence -->
+                    <div id="recurrence">
+                        <h2>2. Recurrence Formula</h2>
+
+                        <div class="theorem">
+                            <strong>Theorem (Recurrence for the Composita).</strong> For a generating function
+                            \(F(x) = \sum_{n>0} f(n) x^n\), the composita satisfies
+                            \[
+                            F^{\Delta}(n,k) =
+                            \begin{cases}
+                            f(n), & \text{if } k = 1, \\[4pt]
+                            \displaystyle\sum_{i=1}^{n-k+1} f(i) \, F^{\Delta}(n-i, k-1), & \text{if } k \le n.
+                            \end{cases}
+                            \]
+                        </div>
+
+                        <details>
+                            <summary><strong>Proof sketch</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    For \(k=1\), the only composition is \(\pi_1 = (n)\), so \(F^{\Delta}(n,1) = f(n)\).
+                                    For \(k>1\), group all compositions by their first part \(\lambda_1 = i\). The sum
+                                    over the remaining \(k-1\) parts is \(F^{\Delta}(n-i, k-1)\). Summing over
+                                    \(i = 1, \ldots, n-k+1\) (since at least \(k-1\) parts of size 1 remain) gives
+                                    the recurrence.
+                                </p>
+                            </div>
+                        </details>
+
+                        <p>Special values:</p>
+                        <ul>
+                            <li>\(F^{\Delta}(n,n) = f(1)^n\) (all parts are 1)</li>
+                            <li>\(F^{\Delta}(n,1) = f(n)\) (single part of size \(n\))</li>
+                            <li>\(F^{\Delta}(n,k) = 0\) if \(k > n\) or \(k < 1\)</li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 3: Calculator -->
+                    <div id="calculator">
+                        <h2>3. Composita Calculator</h2>
+                        <p>
+                            Enter the coefficients \(f(n)\) of your generating function \(F(x) = \sum_{n>0} f(n) x^n\).
+                            The composita triangle \(F^{\Delta}(n,k)\) will be computed below.
+                        </p>
+
+                        <div class="control-panel" style="justify-content:flex-start;">
+                            <div class="control-group">
+                                <label for="comp-f1">\(f(1)\)</label>
+                                <input type="number" id="comp-f1" value="1" step="any" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="comp-f2">\(f(2)\)</label>
+                                <input type="number" id="comp-f2" value="2" step="any" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="comp-f3">\(f(3)\)</label>
+                                <input type="number" id="comp-f3" value="3" step="any" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="comp-f4">\(f(4)\)</label>
+                                <input type="number" id="comp-f4" value="0" step="any" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="comp-f5">\(f(5)\)</label>
+                                <input type="number" id="comp-f5" value="0" step="any" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="comp-maxn">Max \(n\)</label>
+                                <input type="number" id="comp-maxn" value="8" min="2" max="20" style="width:60px;">
+                            </div>
+                            <button onclick="computeCompositaTable()" id="comp-btn" style="align-self:flex-end;">
+                                <i class="fa-solid fa-table"></i> Compute
+                            </button>
+                        </div>
+
+                        <div style="text-align:center;margin:0.5rem 0;">
+                            <small style="color:var(--footer-text);">
+                                Presets:
+                                <a href="#" onclick="compPreset('geometric');return false;">\(x/(1-x)\)</a> &bull;
+                                <a href="#" onclick="compPreset('quadratic');return false;">\(x+x^2\)</a> &bull;
+                                <a href="#" onclick="compPreset('cubic');return false;">\(x+x^2+x^3\)</a> &bull;
+                                <a href="#" onclick="compPreset('exponential');return false;">\(e^x-1\)</a>
+                            </small>
+                        </div>
+
+                        <div class="results-panel" id="comp-results" style="display:none;">
+                            <div class="result-label">\(F(x) = \) <span id="comp-fdisplay"></span></div>
+                            <div style="overflow-x:auto;" class="mt-2">
+                                <table id="comp-table" style="font-size:0.85rem;text-align:center;"></table>
+                            </div>
+                            <p class="text-sm" style="color:var(--footer-text);">
+                                Entry \((n,k)\) is \(F^{\Delta}(n,k)\). Rows: \(n\); Columns: \(k\).
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Section 4: Composition -->
+                    <div id="composition">
+                        <h2>4. Composition of Generating Functions</h2>
+
+                        <div class="theorem">
+                            <strong>Theorem (Composition via Composita).</strong> Let \(F(x) = \sum_{n>0} f(n) x^n\)
+                            and \(R(x) = \sum_{n \ge 0} r(n) x^n\). Then the composition \(A(x) = R(F(x))\) has
+                            coefficients
+                            \[
+                            a(n) = \begin{cases}
+                            r(0), & n = 0, \\
+                            \displaystyle\sum_{k=1}^{n} F^{\Delta}(n,k) \, r(k), & n > 0.
+                            \end{cases}
+                            \]
+                        </div>
+
+                        <p>
+                            This theorem is the workhorse for solving iterative functional equations. For
+                            \(A(A(x)) = F(x)\), we need the composita of the composition formula:
+                            \[
+                            A^{\Delta}(n,k) = \sum_{m=k}^{n} F^{\Delta}(n,m) \, G^{\Delta}(m,k)
+                            \]
+                            when \(A(x) = G(F(x))\). Setting \(G = A\) and using \(A(A(x)) = F(x)\) gives
+                            a triangular system for the unknown coefficients \(a(n)\).
+                        </p>
+
+                        <div class="practice">
+                            <strong>Example: Catalan numbers.</strong> The Catalan generating function
+                            \(C(x) = \frac{1-\sqrt{1-4x}}{2x}\) satisfies \(C(x) = 1 + x C(x)^2\).
+                            Using the composita approach, one finds
+                            \(C_x^{\Delta}(n,k) = \frac{k}{n} \binom{2n-k-1}{n-1}\),
+                            yielding the Catalan numbers \(C_n = \frac{1}{n+1}\binom{2n}{n}\).
+                        </div>
+                    </div>
+
+                </article>
+            </main>
+
+            <div class="nextPage">
+                <a href="bibliography.html">Next: Bibliography &amp; Credits <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+
+    </div>
+
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <script src="js/engine.js"></script>
+    <script>
+        function computeCompositaTable() {
+            const f1 = parseFloat(document.getElementById('comp-f1').value) || 0;
+            const f2 = parseFloat(document.getElementById('comp-f2').value) || 0;
+            const f3 = parseFloat(document.getElementById('comp-f3').value) || 0;
+            const f4 = parseFloat(document.getElementById('comp-f4').value) || 0;
+            const f5 = parseFloat(document.getElementById('comp-f5').value) || 0;
+            const maxN = parseInt(document.getElementById('comp-maxn').value) || 8;
+
+            // Pad fCoeffs (1-indexed, with more padding for higher degrees)
+            const fCoeffs = [0];
+            const raw = [0, f1, f2, f3, f4, f5];
+            for (let i = 1; i <= maxN; i++) {
+                fCoeffs[i] = (i < raw.length) ? raw[i] : 0;
+            }
+
+            const table = Engine.compositaTable(fCoeffs, maxN);
+
+            // Display
+            document.getElementById('comp-results').style.display = 'block';
+            let fStr = '';
+            for (let i = 1; i <= Math.min(5, maxN); i++) {
+                if (fCoeffs[i] !== 0 || i === 1) {
+                    const sign = fCoeffs[i] >= 0 ? (i === 1 ? '' : '+') : '';
+                    fStr += `${sign}${fCoeffs[i]}x^{${i}}`;
+                }
+            }
+            if (maxN > 5) fStr += '+\\cdots';
+            document.getElementById('comp-fdisplay').textContent = fStr;
+
+            // Build table: rows are n, columns are k
+            const compTable = document.getElementById('comp-table');
+            compTable.innerHTML = '';
+            // Header row
+            let headerRow = '<tr><th>n\\k</th>';
+            for (let k = 1; k <= maxN; k++) {
+                headerRow += `<th>k=${k}</th>`;
+            }
+            headerRow += '</tr>';
+            compTable.innerHTML = headerRow;
+
+            for (let n = 1; n <= maxN; n++) {
+                let row = `<tr><th>n=${n}</th>`;
+                for (let k = 1; k <= maxN; k++) {
+                    const val = (k <= n && table[n] && table[n][k] !== undefined) ? table[n][k] : 0;
+                    const display = (Math.abs(val) < 1e-10) ? '0' :
+                        (Number.isInteger(val) ? val.toString() : val.toFixed(4));
+                    row += `<td>${display}</td>`;
+                }
+                row += '</tr>';
+                compTable.innerHTML += row;
+            }
+        }
+
+        function compPreset(name) {
+            const presets = {
+                'geometric':  { f1:1, f2:1, f3:1, f4:1, f5:1, maxN:8 },
+                'quadratic':  { f1:1, f2:1, f3:0, f4:0, f5:0, maxN:8 },
+                'cubic':      { f1:1, f2:1, f3:1, f4:0, f5:0, maxN:8 },
+                'exponential':{ f1:1, f2:0.5, f3:0.1667, f4:0.04167, f5:0.00833, maxN:8 }
+            };
+            const p = presets[name];
+            if (!p) return;
+            document.getElementById('comp-f1').value = p.f1;
+            document.getElementById('comp-f2').value = p.f2;
+            document.getElementById('comp-f3').value = p.f3;
+            document.getElementById('comp-f4').value = p.f4;
+            document.getElementById('comp-f5').value = p.f5;
+            document.getElementById('comp-maxn').value = p.maxN;
+            computeCompositaTable();
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', function() {
+            computeCompositaTable();
+        });
+
+        // Dark mode
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+/* ============================================================
+   SolveIterativeFunctions — Unified Stylesheet
+   Based on complex-analysis.com format
+   ============================================================ */
+
+/* ----- CSS Custom Properties (Light Theme) ----- */
+:root {
+    --bg-color: #fafafa;
+    --text-color: #333;
+    --box-bg: #fff;
+    --border-color: #ddd;
+    --link-color: #1a73e8;
+    --theorem-bg: #f0f7ff;
+    --theorem-border: #1a73e8;
+    --practice-bg: #f5f0ff;
+    --practice-border: #7c4dff;
+    --fixed-bar-bg: #2c3e50;
+    --fixed-bar-text: #fff;
+    --toc-bg: #f9f9f9;
+    --footer-text: #777;
+    --max-width: 800px;
+    --card-bg: #fff;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --code-bg: #f4f4f4;
+    --input-bg: #fff;
+    --input-border: #ccc;
+}
+
+/* ----- Dark Theme ----- */
+html.dark {
+    --bg-color: #1a1a2e;
+    --text-color: #e0e0e0;
+    --box-bg: #16213e;
+    --border-color: #444;
+    --link-color: #64b5f6;
+    --theorem-bg: #1a2740;
+    --theorem-border: #64b5f6;
+    --practice-bg: #261a40;
+    --practice-border: #b388ff;
+    --fixed-bar-bg: #0f0f23;
+    --fixed-bar-text: #e0e0e0;
+    --toc-bg: #1e2a3a;
+    --footer-text: #888;
+    --card-bg: #16213e;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    --code-bg: #2a2a3e;
+    --input-bg: #2a2a3e;
+    --input-border: #555;
+}
+
+/* ----- Base Reset ----- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.7;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0 0 3rem 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ----- Loader ----- */
+.myLoader {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: var(--bg-color); z-index:9999; display:flex;
+    flex-direction:column; align-items:center; justify-content:center;
+    transition: opacity 0.3s;
+}
+.myLoader .dots { display:flex; gap:0.5rem; margin-bottom:1rem; }
+.myLoader .dot {
+    width:12px; height:12px; border-radius:50%; background: var(--fixed-bar-bg);
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+.myLoader .dot:nth-child(1) { animation-delay: -0.32s; }
+.myLoader .dot:nth-child(2) { animation-delay: -0.16s; }
+.myLoader .dot:nth-child(3) { animation-delay: 0s; }
+@keyframes bounce {
+    0%,80%,100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+.myLoader .loadingMessage { color: var(--footer-text); font-size:0.95rem; }
+
+/* ----- Fixed Navigation Bar ----- */
+.fixed-bar {
+    position: fixed; top:0; left:0; width:100%;
+    background: var(--fixed-bar-bg); color: var(--fixed-bar-text);
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0.5rem 1rem; z-index:100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 0.95rem;
+}
+.fixed-bar a, .fixed-bar span {
+    color: var(--fixed-bar-text); text-decoration: none;
+    cursor:pointer; margin:0 0.5rem;
+}
+.fixed-bar .link-container { display:flex; align-items:center; gap:0.5rem; }
+.fixed-bar .center-link-group { display:flex; align-items:center; text-align:center; }
+.fixed-bar .center-link-group .hover-prev,
+.fixed-bar .center-link-group .hover-next { display:none; font-size:0.8rem; opacity:0.7; }
+.fixed-bar .center-link-group:hover .hover-prev,
+.fixed-bar .center-link-group:hover .hover-next { display:inline; }
+.fixed-bar .center-link-group:hover .title-main { display:none; }
+.fixed-bar .dark-mode-button {
+    font-size:1.1rem; cursor:pointer; padding:0.2rem 0.4rem;
+    border-radius:4px; transition: background 0.2s;
+}
+.fixed-bar .dark-mode-button:hover { background: rgba(255,255,255,0.15); }
+
+/* ----- Main Container ----- */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    background: var(--box-bg);
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    min-height: 80vh;
+}
+
+/* ----- TOC Chapter ----- */
+.toc-chapter {
+    background: var(--toc-bg);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0 1rem 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+.toc-chapter p { margin-top:0; font-weight:bold; }
+.toc-chapter ul { list-style: none; padding-left:0; }
+.toc-chapter ul li { margin:0.4rem 0; }
+.toc-chapter ul li a {
+    text-decoration: none; color: var(--link-color);
+    transition: color 0.2s;
+}
+.toc-chapter ul li a:hover { text-decoration: underline; }
+
+/* ----- Theorem & Practice Boxes ----- */
+.theorem {
+    background: var(--theorem-bg);
+    border-left: 4px solid var(--theorem-border);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+}
+.practice {
+    background: var(--practice-bg);
+    border-left: 4px solid var(--practice-border);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+}
+
+/* ----- Definition Box ----- */
+.definition {
+    background: #f0fff4;
+    border-left: 4px solid #38a169;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+}
+html.dark .definition {
+    background: #1a3020;
+    border-left-color: #68d391;
+}
+
+/* ----- Collapsible Details ----- */
+details {
+    margin: 1rem 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+details summary {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--toc-bg);
+    user-select: none;
+}
+details summary:hover { background: var(--border-color); }
+details .details-content { padding: 0.5rem 1rem 1rem; }
+
+/* ----- Navigation Links (next/prev page) ----- */
+.nextPage {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+.nextPage a {
+    text-decoration: none;
+    color: var(--link-color);
+}
+.prevPage {
+    text-align: left;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+/* ----- Hero Section (index.html) ----- */
+.hero {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+}
+.hero h1 { font-size: 2.5rem; color: var(--text-color); margin-bottom: 0.5rem; }
+.hero p { font-size: 1.1rem; color: var(--footer-text); max-width: 600px; margin: 0 auto; }
+
+/* ----- Card Grid (index.html) ----- */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--card-shadow);
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+.card h3 { margin: 0 0 0.5rem; font-size: 1.2rem; }
+.card h3 i { color: var(--link-color); margin-right: 0.5rem; }
+.card p { margin: 0; font-size: 0.9rem; color: var(--footer-text); line-height: 1.5; }
+.card .card-badge {
+    display: inline-block;
+    background: var(--theorem-bg);
+    color: var(--theorem-border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    margin-top: 0.8rem;
+    font-weight: 600;
+}
+
+/* ----- Typography ----- */
+h1 { font-size: 2rem; margin: 1.5rem 0 0.5rem; }
+h2 { font-size: 1.5rem; margin: 2rem 0 0.5rem; color: var(--text-color); }
+h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+p { margin: 0.8rem 0; }
+a { color: var(--link-color); }
+hr {
+    border: none; border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+blockquote {
+    border-left: 3px solid var(--border-color);
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    color: var(--footer-text);
+}
+
+/* ----- Tables ----- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+th, td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+th { font-weight: 600; background: var(--toc-bg); }
+
+/* ----- Forms & Inputs ----- */
+input[type="text"],
+input[type="number"],
+input[type="range"],
+select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: border-color 0.2s;
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}
+button, .btn {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--link-color);
+    color: #fff;
+    transition: background 0.2s, transform 0.1s;
+}
+button:hover, .btn:hover { opacity: 0.9; }
+button:active, .btn:active { transform: scale(0.98); }
+button.secondary {
+    background: var(--toc-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+/* ----- Canvas / Chart containers ----- */
+.canvas-container {
+    border: 1px solid var(--border-color);
+    margin: 1.5rem 0;
+    text-align: center;
+    background: var(--box-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+canvas { display: block; margin: 0 auto; background: var(--box-bg); }
+
+/* ----- Control Panel ----- */
+.control-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+}
+.control-panel label { font-weight: 600; font-size: 0.9rem; }
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: flex-start;
+}
+
+/* ----- Results Display ----- */
+.results-panel {
+    background: var(--toc-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+.results-panel .result-label { font-weight: 600; margin-bottom: 0.3rem; }
+.results-panel .result-value { font-family: 'Courier New', monospace; word-break: break-all; }
+
+/* ----- Comment Section ----- */
+.comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+.comments-section h3 { margin-bottom: 1rem; }
+
+/* ----- Footer ----- */
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: var(--footer-text);
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+footer a { color: var(--link-color); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+/* ----- Blog Post List ----- */
+.blog-list { list-style: none; padding: 0; }
+.blog-list li {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: center;
+}
+.blog-list li .post-date {
+    color: var(--footer-text);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* ----- Utility ----- */
+.text-center { text-align: center; }
+.text-sm { font-size: 0.85rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* ----- Responsive ----- */
+@media (max-width: 600px) {
+    .container { padding: 0.5rem 0.75rem; }
+    .hero h1 { font-size: 1.8rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    .fixed-bar { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
+    .fixed-bar .hover-prev,
+    .fixed-bar .hover-next { display: none !important; }
+    .fixed-bar .center-link-group:hover .title-main { display: inline; }
+    table { font-size: 0.85rem; }
+    th, td { padding: 0.3rem 0.5rem; }
+}
+
+@media print {
+    .fixed-bar, .myLoader, .comments-section { display: none; }
+    body { background: #fff; color: #000; }
+    .container { box-shadow: none; max-width: 100%; }
+}
