@@ -7,20 +7,19 @@
 
     <meta name="DC.Title" content="Blog Notes — Iterative Functional Equations">
     <meta name="DC.Creator" content="CarlXerophilem">
-    <meta name="DC.Date" content="2026-05-30">
+    <meta name="DC.Date" content="2026-06-01">
     <meta name="DC.Type" content="Interactive Resource">
     <meta name="DC.Format" content="HTML">
     <meta name="DC.Language" content="en-US">
     <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
     <meta property="og:title" content="Blog Notes — Iterative Functional Equations">
-    <meta property="og:description" content="Informal notes and explorations on iterative functional equations.">
+    <meta property="og:description" content="Formal and exploratory notes on fixed points, composita methods, and half-iterate computation.">
     <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/blog.html">
     <meta property="og:site_name" content="Solve Iterative Functions">
 
     <link rel="icon" type="image/x-icon" href="ff.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
-
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body data-type="book" id="top">
@@ -29,7 +28,7 @@
         <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="loadingMessage">Loading...</div>
     </div>
-    <script>window.addEventListener('load',function(){document.getElementById('loader').style.display='none';});</script>
+    <script>window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });</script>
 
     <div class="fixed-bar">
         <div class="link-container">
@@ -48,101 +47,79 @@
 
     <div class="container">
         <section data-type="chapter" id="blog">
-
             <h1>Blog Notes</h1>
             <hr>
 
             <p>
-                Informal notes, explorations, and updates on iterative functional equations, the Composita method,
-                and related topics in combinatorics and dynamical systems.
+                These notes complement the theory and calculator pages with longer-form mathematical exposition.
+                Each post starts from motivation, moves into formal statements and worked constructions, and ends by
+                connecting back to the interactive tools in the repository.
+            </p>
+            <p>
+                The updated <a href="solver.html">solver</a> is now the computational companion for the posts below:
+                it covers both the paper-backed composita workflow and a local analytic fixed-point workflow, with
+                rendered formulas, residual checks, and graph-based verification.
             </p>
 
             <ul class="blog-list">
                 <li>
-                    <span>
-                        <strong>Coming soon:</strong> The role of fixed points in functional iteration
-                    </span>
-                    <span class="post-date">TBD</span>
+                    <div class="blog-entry">
+                        <a href="post-fixed-points-functional-iteration.html"><strong>The role of fixed points in functional iteration</strong></a>
+                        <div class="blog-abstract">
+                            Why fixed points are the first real test for solvability, how multipliers constrain local half-iterates,
+                            and why maps such as \(x^2-2\) and \(x^2+1\) lead to radically different real behaviors.
+                        </div>
+                    </div>
+                    <span class="post-date">2026-06-01</span>
                 </li>
                 <li>
-                    <span>
-                        <strong>Coming soon:</strong> Solving \(A^{2^n}(x) = F(x)\) with the Composita recurrence
-                    </span>
-                    <span class="post-date">TBD</span>
+                    <div class="blog-entry">
+                        <a href="post-composita-half-iterates.html"><strong>Solving \(A^{2^n}(x) = F(x)\) with the Composita recurrence</strong></a>
+                        <div class="blog-abstract">
+                            A formal derivation of the triangular coefficient system, the logic behind repeated square-root extraction,
+                            and the reason the composita table gives a practical static-site implementation path.
+                        </div>
+                    </div>
+                    <span class="post-date">2026-06-01</span>
                 </li>
                 <li>
-                    <span>
-                        <strong>Coming soon:</strong> Comparing numerical methods for half-iterates
-                    </span>
-                    <span class="post-date">TBD</span>
+                    <div class="blog-entry">
+                        <a href="post-numerical-half-iterate-methods.html"><strong>Comparing numerical methods for half-iterates</strong></a>
+                        <div class="blog-abstract">
+                            A comparison of truncated series, local conjugacy, and direct recomposition checks, with explicit discussion
+                            of where the analytic generalization of \(f(f(x)) = F(x)\) is local, stable, or structurally obstructed.
+                        </div>
+                    </div>
+                    <span class="post-date">2026-06-01</span>
                 </li>
             </ul>
 
             <p style="text-align:center; color:var(--footer-text); margin-top:2rem;">
-                <em>More posts coming. Check back soon or follow the
-                <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">GitHub repository</a> for updates.</em>
+                <em>All three posts refer back to the curated references on the <a href="bibliography.html">bibliography page</a>,
+                and the figures remain lightweight so the site stays responsive on static hosting.</em>
             </p>
-
         </section>
 
         <div class="comments-section">
             <h3>Comments</h3>
-           <script src="https://giscus.app/client.js"
-        data-repo="CarlXerophilem/SolveIterativeFunctions"
-        data-repo-id="R_kgDONkNjGg"
-        data-category="General"
-        data-category-id="DIC_kwDONkNjGs4C-GSa"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="1"
-        data-input-position="top"
-        data-theme="preferred_color_scheme"
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-         </script>
-        <!--
-        USE COMMENT
-        -->
-
-            <noscript><p style="color:var(--footer-text);font-style:italic;">Comments require JavaScript and GitHub authentication.</p></noscript>
-        </div>
-
-                <div class="comments-section">
-            <h3>Comments</h3>
-
-   <script src="https://giscus.app/client.js"
-        data-repo="CarlXerophilem/SolveIterativeFunctions"
-        data-repo-id="R_kgDONkNjGg"
-        data-category="General"
-        data-category-id="DIC_kwDONkNjGs4C-GSa"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="1"
-        data-input-position="top"
-        data-theme="preferred_color_scheme"
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-            </script>         
-
-              
-            
-            <noscript>
-                <p style="color:var(--footer-text); font-style:italic;">Comments require JavaScript and GitHub authentication.</p>
-            </noscript>
+            <script src="https://giscus.app/client.js"
+                data-repo="CarlXerophilem/SolveIterativeFunctions"
+                data-repo-id="R_kgDONkNjGg"
+                data-category="General"
+                data-category-id="DIC_kwDONkNjGs4C-GSa"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="1"
+                data-input-position="top"
+                data-theme="preferred_color_scheme"
+                data-lang="en"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async></script>
+            <noscript><p style="color:var(--footer-text); font-style:italic;">Comments require JavaScript and GitHub authentication.</p></noscript>
         </div>
     </div>
-
-
-    </div>
-
-
-
 
     <footer>
         <hr>
@@ -174,6 +151,5 @@
             });
         })();
     </script>
-
 </body>
 </html>

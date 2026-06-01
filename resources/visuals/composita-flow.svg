@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360">
+  <rect width="720" height="360" fill="#fbfbfd"/>
+  <text x="40" y="42" font-family="Segoe UI, sans-serif" font-size="30" fill="#2c3e50">Triangular dependency in the composita table</text>
+  <text x="40" y="74" font-family="Segoe UI, sans-serif" font-size="18" fill="#586575">Each F^Δ(n,k) is built from lower-left data, so dynamic programming follows a stable staircase.</text>
+  <g font-family="Segoe UI, sans-serif" font-size="20" text-anchor="middle">
+    <g fill="#1a73e8" opacity="0.18" stroke="#1a73e8">
+      <rect x="120" y="110" width="70" height="44" rx="8"/>
+      <rect x="205" y="110" width="70" height="44" rx="8"/>
+      <rect x="290" y="110" width="70" height="44" rx="8"/>
+      <rect x="205" y="166" width="70" height="44" rx="8"/>
+      <rect x="290" y="166" width="70" height="44" rx="8"/>
+      <rect x="290" y="222" width="70" height="44" rx="8"/>
+      <rect x="375" y="110" width="70" height="44" rx="8"/>
+      <rect x="375" y="166" width="70" height="44" rx="8"/>
+      <rect x="375" y="222" width="70" height="44" rx="8"/>
+      <rect x="460" y="110" width="70" height="44" rx="8"/>
+      <rect x="460" y="166" width="70" height="44" rx="8"/>
+      <rect x="545" y="110" width="70" height="44" rx="8"/>
+    </g>
+    <g fill="#2c3e50">
+      <text x="155" y="138">(1,1)</text>
+      <text x="240" y="138">(2,1)</text>
+      <text x="325" y="138">(3,1)</text>
+      <text x="240" y="194">(2,2)</text>
+      <text x="325" y="194">(3,2)</text>
+      <text x="325" y="250">(3,3)</text>
+      <text x="410" y="138">(4,1)</text>
+      <text x="410" y="194">(4,2)</text>
+      <text x="410" y="250">(4,3)</text>
+      <text x="495" y="138">(5,1)</text>
+      <text x="495" y="194">(5,2)</text>
+      <text x="580" y="138">(6,1)</text>
+    </g>
+  </g>
+  <g stroke="#7c4dff" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M 412 248 C 430 220 455 207 492 188"/>
+    <path d="M 412 248 C 360 240 340 214 327 203"/>
+    <path d="M 412 248 C 383 177 357 155 326 145"/>
+  </g>
+  <text x="430" y="286" font-family="Segoe UI, sans-serif" font-size="20" fill="#7c4dff">Compute F^Δ(4,3) from lower-left data</text>
+</svg>

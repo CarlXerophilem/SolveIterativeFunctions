@@ -1,84 +1,401 @@
 /**
  * SolveIterativeFunctions — Computation Engine
- * Implements composita recurrence, composition, and functional equation solvers
- * based on V.V. Kruchinin & D.V. Kruchinin, "Composita and its Properties" (arXiv:1103.2582)
+ * Implements composita recurrence, truncated series iteration, and
+ * local analytic half-iterate approximations near real fixed points.
  */
 const Engine = (() => {
   'use strict';
 
-  // ----- Arbitrary-precision rational arithmetic -----
-  // Uses BigInt numerator/denominator to avoid floating-point error in composita.
-  // But for performance we also provide a Number-based fast path.
-
-  /**
-   * Greatest common divisor (Euclidean algorithm) for BigInt.
-   */
-  function gcdBigInt(a, b) {
-    a = a < 0n ? -a : a;
-    b = b < 0n ? -b : b;
-    while (b !== 0n) { const t = b; b = a % b; a = t; }
-    return a;
-  }
+  const EPS = 1e-12;
 
   class Rational {
     constructor(num, den) {
-      if (den === undefined) { den = 1n; }
-      if (typeof num === 'number') { num = BigInt(Math.round(num * 1e15)); den = 1000000000000000n; }
-      if (typeof den === 'number') { den = BigInt(den); }
-      if (den < 0n) { num = -num; den = -den; }
+      if (den === undefined) den = 1n;
+      if (typeof num === 'number') {
+        num = BigInt(Math.round(num * 1e15));
+        den = 1000000000000000n;
+      }
+      if (typeof den === 'number') den = BigInt(den);
+      if (den < 0n) {
+        num = -num;
+        den = -den;
+      }
       const g = gcdBigInt(num, den);
       this.num = num / g;
       this.den = den / g;
     }
-    add(other) {
-      return new Rational(this.num * other.den + other.num * this.den, this.den * other.den);
-    }
-    sub(other) {
-      return new Rational(this.num * other.den - other.num * this.den, this.den * other.den);
-    }
-    mul(other) {
-      return new Rational(this.num * other.num, this.den * other.den);
-    }
-    div(other) {
-      return new Rational(this.num * other.den, this.den * other.num);
-    }
-    toNumber() {
-      return Number(this.num) / Number(this.den);
-    }
-    toString() {
-      if (this.den === 1n) return this.num.toString();
-      return `${this.num}/${this.den}`;
-    }
+    add(other) { return new Rational(this.num * other.den + other.num * this.den, this.den * other.den); }
+    sub(other) { return new Rational(this.num * other.den - other.num * this.den, this.den * other.den); }
+    mul(other) { return new Rational(this.num * other.num, this.den * other.den); }
+    div(other) { return new Rational(this.num * other.den, this.den * other.num); }
+    toNumber() { return Number(this.num) / Number(this.den); }
+    toString() { return this.den === 1n ? this.num.toString() : `${this.num}/${this.den}`; }
   }
 
-  // ----- Utility: factorial (Number, for small n) -----
+  function gcdBigInt(a, b) {
+    a = a < 0n ? -a : a;
+    b = b < 0n ? -b : b;
+    while (b !== 0n) {
+      const t = b;
+      b = a % b;
+      a = t;
+    }
+    return a;
+  }
+
   const factorialCache = [1, 1];
   function factorial(n) {
     if (n < 0) return NaN;
     if (n < factorialCache.length) return factorialCache[n];
-    for (let i = factorialCache.length; i <= n; i++) {
+    for (let i = factorialCache.length; i <= n; i += 1) {
       factorialCache[i] = factorialCache[i - 1] * i;
     }
     return factorialCache[n];
   }
 
-  // ----- Utility: binomial coefficient (Number, for small n) -----
   function binomial(n, k) {
     if (k < 0 || k > n) return 0;
     if (k === 0 || k === n) return 1;
     if (k > n / 2) k = n - k;
     let result = 1;
-    for (let i = 1; i <= k; i++) {
+    for (let i = 1; i <= k; i += 1) {
       result = (result * (n - i + 1)) / i;
     }
     return result;
   }
 
-  // ----- Composita Recurrence (§2, Theorem) -----
-  // F^Δ(n,k): coefficient of x^n in F(x)^k
-  // fCoeffs[i] = coefficient of x^i in F(x), i >= 1 (f(0)=0 required)
-  //
-  // Uses floating-point for speed. For exact rational, use compositaRecurrenceBigInt.
+  function stirlingFirst(n, k) {
+    if (n === k) return 1;
+    if (k === 0 || n === 0 || k > n) return 0;
+    return stirlingFirst(n - 1, k - 1) - (n - 1) * stirlingFirst(n - 1, k);
+  }
+
+  function stirlingSecond(n, k) {
+    if (n === k) return 1;
+    if (k === 0 || n === 0 || k > n) return 0;
+    return k * stirlingSecond(n - 1, k) + stirlingSecond(n - 1, k - 1);
+  }
+
+  function trimCoeffs(coeffs, maxDegree) {
+    const end = typeof maxDegree === 'number' ? maxDegree : coeffs.length - 1;
+    const result = coeffs.slice(0, end + 1);
+    while (result.length > 1 && Math.abs(result[result.length - 1]) < EPS) {
+      result.pop();
+    }
+    return result;
+  }
+
+  function padCoeffs(coeffs, degree) {
+    const result = coeffs.slice();
+    while (result.length <= degree) result.push(0);
+    return result;
+  }
+
+  function normalizeInputCoeffs(coeffs, degree) {
+    const result = new Array(degree + 1).fill(0);
+    for (let i = 0; i <= degree; i += 1) {
+      result[i] = Number(coeffs[i] || 0);
+    }
+    return result;
+  }
+
+  function addSeries(a, b, maxDegree) {
+    const degree = Math.max(a.length, b.length, maxDegree !== undefined ? maxDegree + 1 : 0) - 1;
+    const out = new Array(degree + 1).fill(0);
+    for (let i = 0; i <= degree; i += 1) {
+      out[i] = Number(a[i] || 0) + Number(b[i] || 0);
+    }
+    return trimCoeffs(out, maxDegree !== undefined ? maxDegree : degree);
+  }
+
+  function scaleSeries(a, scalar, maxDegree) {
+    const degree = Math.min(a.length - 1, maxDegree !== undefined ? maxDegree : a.length - 1);
+    const out = new Array(degree + 1).fill(0);
+    for (let i = 0; i <= degree; i += 1) out[i] = Number(a[i] || 0) * scalar;
+    return trimCoeffs(out, degree);
+  }
+
+  function multiplySeries(a, b, maxDegree) {
+    const degree = maxDegree !== undefined ? maxDegree : (a.length - 1) + (b.length - 1);
+    const out = new Array(degree + 1).fill(0);
+    for (let i = 0; i < a.length; i += 1) {
+      if (Math.abs(a[i]) < EPS) continue;
+      for (let j = 0; j < b.length && i + j <= degree; j += 1) {
+        if (Math.abs(b[j]) < EPS) continue;
+        out[i + j] += a[i] * b[j];
+      }
+    }
+    return trimCoeffs(out, degree);
+  }
+
+  function derivativeSeries(coeffs, maxDegree) {
+    const degree = Math.min(coeffs.length - 1, maxDegree !== undefined ? maxDegree + 1 : coeffs.length - 1);
+    if (degree <= 0) return [0];
+    const out = new Array(Math.min(degree, maxDegree !== undefined ? maxDegree : degree) + 1).fill(0);
+    for (let i = 1; i <= degree; i += 1) out[i - 1] = i * coeffs[i];
+    return trimCoeffs(out, maxDegree !== undefined ? maxDegree : degree - 1);
+  }
+
+  function evalPolynomial(coeffs, x) {
+    let result = 0;
+    for (let i = coeffs.length - 1; i >= 0; i -= 1) {
+      result = result * x + Number(coeffs[i] || 0);
+    }
+    return result;
+  }
+
+  function composeSeries(outer, inner, maxDegree) {
+    const degree = maxDegree !== undefined ? maxDegree : (outer.length - 1) * Math.max(1, inner.length - 1);
+    let result = [Number(outer[0] || 0)];
+    let power = [1];
+    for (let k = 1; k < outer.length; k += 1) {
+      power = multiplySeries(power, inner, degree);
+      if (Math.abs(outer[k]) >= EPS) {
+        result = addSeries(result, scaleSeries(power, outer[k], degree), degree);
+      }
+    }
+    return trimCoeffs(padCoeffs(result, degree), degree);
+  }
+
+  function seriesPower(base, exponent, maxDegree) {
+    if (exponent === 0) return [1];
+    let result = [1];
+    for (let i = 0; i < exponent; i += 1) {
+      result = multiplySeries(result, base, maxDegree);
+    }
+    return result;
+  }
+
+  function invertSeriesAroundZero(series, maxDegree) {
+    if (series.length < 2 || Math.abs((series[1] || 0) - 1) > 1e-10 || Math.abs(series[0] || 0) > 1e-10) {
+      return { error: 'Inverse series requires h(0)=0 and h\'(0)=1.' };
+    }
+    const inv = new Array(maxDegree + 1).fill(0);
+    inv[1] = 1;
+    for (let n = 2; n <= maxDegree; n += 1) {
+      inv[n] = 0;
+      const composed = composeSeries(series, inv, n);
+      const coeffN = Number(composed[n] || 0);
+      inv[n] = -coeffN;
+    }
+    return { coefficients: trimCoeffs(inv, maxDegree) };
+  }
+
+  function shiftPolynomial(coeffs, shift, maxDegree) {
+    const degree = maxDegree !== undefined ? maxDegree : coeffs.length - 1;
+    let result = [0];
+    const base = [shift, 1];
+    for (let n = 0; n < coeffs.length && n <= degree; n += 1) {
+      if (Math.abs(coeffs[n]) < EPS) continue;
+      const term = scaleSeries(seriesPower(base, n, degree), coeffs[n], degree);
+      result = addSeries(result, term, degree);
+    }
+    return trimCoeffs(padCoeffs(result, degree), degree);
+  }
+
+  function buildShiftedModel(coeffs, fixedPoint, maxDegree) {
+    const shifted = shiftPolynomial(coeffs, fixedPoint, maxDegree);
+    const result = shifted.slice();
+    result[0] = Number(result[0] || 0) - fixedPoint;
+    return trimCoeffs(padCoeffs(result, maxDegree), maxDegree);
+  }
+
+  function unshiftLocalSeries(localSeries, fixedPoint, maxDegree) {
+    const shifted = shiftPolynomial(localSeries, -fixedPoint, maxDegree);
+    const result = shifted.slice();
+    result[0] = Number(result[0] || 0) + fixedPoint;
+    return trimCoeffs(padCoeffs(result, maxDegree), maxDegree);
+  }
+
+  function sampleFunction(fn, xMin, xMax, steps) {
+    const points = [];
+    const count = Math.max(2, steps || 25);
+    for (let i = 0; i <= count; i += 1) {
+      const t = i / count;
+      const x = xMin + (xMax - xMin) * t;
+      const y = fn(x);
+      if (Number.isFinite(y)) points.push({ x, y });
+    }
+    return points;
+  }
+
+  function verifyCandidate(candidate, target, xMin, xMax, samples) {
+    const pts = sampleFunction((x) => candidate(candidate(x)) - target(x), xMin, xMax, samples || 50);
+    let maxError = 0;
+    for (const pt of pts) maxError = Math.max(maxError, Math.abs(pt.y));
+    return { maxError, samples: pts };
+  }
+
+  function polynomialFromRoots(roots) {
+    let poly = [1];
+    for (const root of roots) {
+      poly = multiplySeries(poly, [-root, 1]);
+    }
+    return poly;
+  }
+
+  function approximateRealFixedPoints(coeffs, xMin, xMax) {
+    const derivative = derivativeSeries(coeffs);
+    const roots = [];
+    const target = addSeries(coeffs, [0, -1], coeffs.length - 1);
+    let previousX = xMin;
+    let previousY = evalPolynomial(target, previousX);
+    const steps = 400;
+    for (let i = 1; i <= steps; i += 1) {
+      const x = xMin + (xMax - xMin) * (i / steps);
+      const y = evalPolynomial(target, x);
+      if (Math.abs(y) < 1e-6) roots.push(x);
+      if (previousY === 0 || y === 0 || previousY * y < 0) {
+        let a = previousX;
+        let b = x;
+        for (let j = 0; j < 40; j += 1) {
+          const m = 0.5 * (a + b);
+          const ym = evalPolynomial(target, m);
+          if (Math.abs(ym) < 1e-10) {
+            a = m;
+            b = m;
+            break;
+          }
+          if (previousY * ym <= 0) {
+            b = m;
+            y;
+          } else {
+            a = m;
+            previousY = ym;
+          }
+        }
+        roots.push(0.5 * (a + b));
+      }
+      previousX = x;
+      previousY = y;
+    }
+    const deduped = [];
+    for (const root of roots) {
+      if (!Number.isFinite(root)) continue;
+      if (!deduped.some((candidate) => Math.abs(candidate - root) < 1e-4)) deduped.push(root);
+    }
+    return deduped.sort((a, b) => a - b).map((x) => ({ x, derivative: evalPolynomial(derivative, x) }));
+  }
+
+  function classifyFixedPoint(coeffs, fixedPoint) {
+    const derivative = derivativeSeries(coeffs);
+    const lambda = evalPolynomial(derivative, fixedPoint);
+    const residual = evalPolynomial(coeffs, fixedPoint) - fixedPoint;
+    const local = buildShiftedModel(coeffs, fixedPoint, Math.max(8, coeffs.length + 2));
+    let multiplicity = 1;
+    for (let i = 1; i < local.length; i += 1) {
+      if (Math.abs(local[i]) > 1e-10) {
+        multiplicity = i;
+        break;
+      }
+    }
+
+    if (Math.abs(residual) > 1e-6) {
+      return { supported: false, type: 'not_fixed', lambda, residual, multiplicity, label: 'Not a fixed point', note: 'Choose x0 so that F(x0)=x0.' };
+    }
+    if (Math.abs(lambda) < 1e-10) {
+      return {
+        supported: false,
+        type: 'superattracting',
+        lambda,
+        residual,
+        multiplicity,
+        label: 'Superattracting fixed point',
+        note: 'A real local half-iterate may require Böttcher-type coordinates or fractional powers; this lightweight calculator only classifies the case.'
+      };
+    }
+    if (lambda <= 0) {
+      return {
+        supported: false,
+        type: 'nonpositive_multiplier',
+        lambda,
+        residual,
+        multiplicity,
+        label: 'Non-positive multiplier',
+        note: 'The current real-valued analytic mode only supports positive multipliers, so branch choices remain explicit and stable.'
+      };
+    }
+    if (Math.abs(lambda - 1) < 1e-8) {
+      return {
+        supported: false,
+        type: 'parabolic',
+        lambda,
+        residual,
+        multiplicity,
+        label: 'Parabolic / neutral fixed point',
+        note: 'A parabolic Abel-function construction is discussed in the articles, but this calculator exposes the case as a warning rather than returning an unstable heuristic.'
+      };
+    }
+    return {
+      supported: true,
+      type: lambda < 1 ? 'attracting' : 'repelling',
+      lambda,
+      residual,
+      multiplicity,
+      label: lambda < 1 ? 'Attracting fixed point' : 'Repelling fixed point',
+      note: 'The calculator uses a truncated Schroeder-coordinate construction near the chosen fixed point.'
+    };
+  }
+
+  function solveSchroederHalfIterate(coeffs, fixedPoint, order) {
+    const classification = classifyFixedPoint(coeffs, fixedPoint);
+    const degree = Math.max(3, order || 8);
+    if (!classification.supported) {
+      return {
+        supported: false,
+        classification,
+        note: classification.note,
+      };
+    }
+
+    const localF = buildShiftedModel(coeffs, fixedPoint, degree);
+    const lambda = classification.lambda;
+    const phi = new Array(degree + 1).fill(0);
+    phi[1] = 1;
+
+    for (let n = 2; n <= degree; n += 1) {
+      const knownPhi = phi.slice();
+      knownPhi[n] = 0;
+      const composed = composeSeries(knownPhi, localF, n);
+      const knownCoeff = Number(composed[n] || 0);
+      const denom = lambda - Math.pow(lambda, n);
+      if (Math.abs(denom) < 1e-12) {
+        return {
+          supported: false,
+          classification,
+          note: 'The truncated Schroeder series encountered a resonance and was not continued.'
+        };
+      }
+      phi[n] = knownCoeff / denom;
+    }
+
+    const inversePhi = invertSeriesAroundZero(phi, degree);
+    if (inversePhi.error) {
+      return { supported: false, classification, note: inversePhi.error };
+    }
+
+    const scale = Math.sqrt(lambda);
+    const scaledPhi = scaleSeries(phi, scale, degree);
+    const localHalf = composeSeries(inversePhi.coefficients, scaledPhi, degree);
+    const actualHalf = unshiftLocalSeries(localHalf, fixedPoint, degree);
+    const candidate = (x) => fixedPoint + evalPolynomial(localHalf, x - fixedPoint);
+    const target = (x) => evalPolynomial(coeffs, x);
+
+    return {
+      supported: true,
+      classification,
+      localFunctionCoeffs: trimCoeffs(localHalf, degree),
+      actualFunctionCoeffs: trimCoeffs(actualHalf, degree),
+      localModelCoeffs: trimCoeffs(localF, degree),
+      koenigsCoeffs: trimCoeffs(phi, degree),
+      inverseKoenigsCoeffs: trimCoeffs(inversePhi.coefficients, degree),
+      note: classification.note,
+      evaluator: candidate,
+      target,
+      verification: verifyCandidate(candidate, target, fixedPoint - 0.35, fixedPoint + 0.35, 48),
+    };
+  }
+
   function compositaRecurrence(fCoeffs, n, k, memo) {
     if (k > n) return 0;
     const key = n * 10000 + k;
@@ -90,27 +407,19 @@ const Engine = (() => {
     } else {
       result = 0;
       const maxI = n - k + 1;
-      for (let i = 1; i <= maxI; i++) {
+      for (let i = 1; i <= maxI; i += 1) {
         const fi = (i < fCoeffs.length) ? fCoeffs[i] : 0;
-        if (fi !== 0) {
-          result += fi * compositaRecurrence(fCoeffs, n - i, k - 1, memo);
-        }
+        if (fi !== 0) result += fi * compositaRecurrence(fCoeffs, n - i, k - 1, memo);
       }
     }
     if (memo) memo.set(key, result);
     return result;
   }
 
-  /**
-   * Compute full composita table F^Δ(n,k) for 1<=k<=n<=maxN.
-   * Returns 2D array: table[n][k] = F^Δ(n,k) for n,k >= 1.
-   * Uses dynamic programming for O(N^3) time.
-   */
   function compositaTable(fCoeffs, maxN) {
-    // table[n] will be an array indexed by k, with table[n][0] unused
     const table = Array.from({ length: maxN + 1 }, () => []);
-    for (let n = 1; n <= maxN; n++) {
-      for (let k = 1; k <= n; k++) {
+    for (let n = 1; n <= maxN; n += 1) {
+      for (let k = 1; k <= n; k += 1) {
         if (k === 1) {
           table[n][k] = (n < fCoeffs.length) ? fCoeffs[n] : 0;
         } else if (k === n) {
@@ -118,11 +427,9 @@ const Engine = (() => {
         } else {
           let sum = 0;
           const maxI = n - k + 1;
-          for (let i = 1; i <= maxI; i++) {
+          for (let i = 1; i <= maxI; i += 1) {
             const fi = (i < fCoeffs.length) ? fCoeffs[i] : 0;
-            if (fi !== 0 && table[n - i][k - 1] !== undefined) {
-              sum += fi * table[n - i][k - 1];
-            }
+            if (fi !== 0 && table[n - i][k - 1] !== undefined) sum += fi * table[n - i][k - 1];
           }
           table[n][k] = sum;
         }
@@ -131,66 +438,42 @@ const Engine = (() => {
     return table;
   }
 
-  // ----- Composition: A(x) = R(F(x)) (§4, Theorem) -----
-  // a(n) = Σ_{k=1}^n F^Δ(n,k) * r(k)
-  //ANALYTIC OR FLOAT _INT128 APPROX
-
-  function compositionCoeffs(fCompositaTable, rCoeffs, maxN) {
+  function compositionCoeffs(fTable, rCoeffs, maxN) {
     const a = new Array(maxN + 1).fill(0);
     a[0] = rCoeffs[0] || 0;
-    for (let n = 1; n <= maxN; n++) {
+    for (let n = 1; n <= maxN; n += 1) {
       let sum = 0;
-      for (let k = 1; k <= n; k++) {
-        sum += fCompositaTable[n][k] * (rCoeffs[k] || 0);
-      }
+      for (let k = 1; k <= n; k += 1) sum += fTable[n][k] * (rCoeffs[k] || 0);
       a[n] = sum;
     }
     return a;
   }
 
-  // ----- Composita of composition: A(x) = G(F(x)) (§4, Theorem) -----
-  // A^Δ(n,k) = Σ_{m=k}^n F^Δ(n,m) * G^Δ(m,k)
   function compositaOfComposition(fTable, gTable, n, k) {
     let sum = 0;
-    for (let m = k; m <= n; m++) {
-      if (fTable[n] && fTable[n][m] && gTable[m] && gTable[m][k]) {
-        sum += fTable[n][m] * gTable[m][k];
-      }
+    for (let m = k; m <= n; m += 1) {
+      if (fTable[n] && fTable[n][m] && gTable[m] && gTable[m][k]) sum += fTable[n][m] * gTable[m][k];
     }
     return sum;
   }
 
-
-
-  // ----- Solver: A(A(x)) = F(x) -----
-  // Given F(x) coefficients fCoeffs[1..maxN], find A(x) coefficients aCoeffs[1..maxN].
-  //
-  // The key equation: Σ_{m=k}^n A^Δ(n,m) * A^Δ(m,k) = F^Δ(n,k)
-  // For k=1: Σ_{m=1}^n A^Δ(n,m) * a(m) = f(n)
-  //
-  // Since A^Δ(n,n) = a(1)^n and A^Δ(n,1) = a(n):
-  //   a(n)*(a(1) + a(1)^n) + Σ_{m=2}^{n-1} A^Δ(n,m)*a(m) = f(n)
-  //   a(n) = (f(n) - Σ_{m=2}^{n-1} A^Δ(n,m)*a(m)) / (a(1) + a(1)^n)
-  //
-  // This is triangular: A^Δ(n,m) for m<n depends only on a(1)...a(n-1).
-  function solveHalfIterate(fCoeffs, maxN) {
-    if (maxN < 1) return [];
-    const f1 = fCoeffs[1];
+  function solveHalfIterateSeries(coeffs, maxN) {
+    const normalized = normalizeInputCoeffs(coeffs, maxN);
+    if (Math.abs(normalized[0]) > EPS) {
+      return { error: 'The series solver requires F(0)=0.' };
+    }
+    const f1 = normalized[1];
     if (f1 === undefined || f1 <= 0) {
-      // f(1) must be positive for real a(1)
-      return { error: 'f(1) must be positive for a real solution.' };
+      return { error: 'The paper-backed real series solver requires f_1 > 0.' };
     }
 
     const a1 = Math.sqrt(f1);
     const a = new Array(maxN + 1).fill(0);
     a[1] = a1;
-
-    // We'll maintain A^Δ table up to current n
     const aTable = Array.from({ length: maxN + 1 }, () => []);
 
-    for (let n = 1; n <= maxN; n++) {
-      // Compute A^Δ(n,k) for k=1..n using current a[1..n]
-      for (let k = 1; k <= n; k++) {
+    for (let n = 1; n <= maxN; n += 1) {
+      for (let k = 1; k <= n; k += 1) {
         if (k === 1) {
           aTable[n][k] = a[n];
         } else if (k === n) {
@@ -198,174 +481,214 @@ const Engine = (() => {
         } else {
           let sum = 0;
           const maxI = n - k + 1;
-          for (let i = 1; i <= maxI; i++) {
+          for (let i = 1; i <= maxI; i += 1) {
             const ai = a[i] || 0;
-            if (ai !== 0 && aTable[n - i] && aTable[n - i][k - 1] !== undefined) {
-              sum += ai * aTable[n - i][k - 1];
-            }
+            if (ai !== 0 && aTable[n - i] && aTable[n - i][k - 1] !== undefined) sum += ai * aTable[n - i][k - 1];
           }
           aTable[n][k] = sum;
         }
       }
 
-      // For n >= 2, solve for a(n) using the composition equation
-      // MUST READ NOTES FROM PDF MANUAL
-//
-///////////////////////////////////////////////////
-
       if (n >= 2) {
-        const fn = (n < fCoeffs.length) ? fCoeffs[n] : 0;
+        const fn = normalized[n] || 0;
         let sumInner = 0;
-        for (let m = 2; m <= n - 1; m++) {
-          if (aTable[n][m] !== undefined && a[m] !== undefined) {
-            sumInner += aTable[n][m] * a[m];
-          }
+        for (let m = 2; m <= n - 1; m += 1) {
+          if (aTable[n][m] !== undefined && a[m] !== undefined) sumInner += aTable[n][m] * a[m];
         }
         const denom = a[1] + Math.pow(a[1], n);
         if (Math.abs(denom) < 1e-15) {
-          return { error: `Division by zero at n=${n}: a(1) + a(1)^n ≈ 0.` };
+          return { error: `Division by zero at degree ${n}.` };
         }
         a[n] = (fn - sumInner) / denom;
-        // Update A^Δ(n,1) to the newly computed value
         aTable[n][1] = a[n];
       }
     }
 
-    // Verify: compute F^Δ from A^Δ via composition and check against fCoeffs
+    const candidateCoeffs = trimCoeffs(a, maxN);
+    const recomposed = iterateSeriesCoeffs(candidateCoeffs, 2, maxN);
     const residuals = [];
-    for (let n = 1; n <= maxN; n++) {
-      let computed = 0;
-      for (let m = 1; m <= n; m++) {
-        if (aTable[n][m] !== undefined && a[m] !== undefined) {
-          computed += aTable[n][m] * a[m];
-        }
-      }
-      const actual = (n < fCoeffs.length) ? fCoeffs[n] : 0;
-      residuals.push(Math.abs(computed - actual));
-    }
+    for (let n = 1; n <= maxN; n += 1) residuals.push(Math.abs((recomposed[n] || 0) - (normalized[n] || 0)));
 
     return {
-      coefficients: a.slice(1), // a[1]..a[maxN]
+      coefficients: candidateCoeffs,
       compositaTable: aTable,
-      residuals: residuals,
-      maxResidual: Math.max(...residuals),
+      residuals,
+      maxResidual: Math.max(...residuals, 0),
+      recomposed,
+      depth: 1,
+      note: 'Computed by the triangular composita recurrence for A(A(x)) = F(x).'
     };
   }
 
-  /**
-   * Evaluate polynomial given coefficients a[1..N] where poly(x) = Σ a[i]*x^i.
-   */
-  function evalPolynomial(coeffs, x) {
-    // coeffs[0] corresponds to x^1, coeffs[1] to x^2, etc.
-    let result = 0;
-    let xPow = x;
-    for (let i = 0; i < coeffs.length; i++) {
-      result += coeffs[i] * xPow;
-      xPow *= x;
+  function iterateSeriesCoeffs(coeffs, times, maxN) {
+    let result = normalizeInputCoeffs(coeffs, maxN);
+    const base = normalizeInputCoeffs(coeffs, maxN);
+    if (times === 1) return result;
+    for (let step = 1; step < times; step += 1) {
+      result = composeSeries(base, result, maxN);
     }
-    return result;
+    return trimCoeffs(result, maxN);
   }
 
-  /**
-   * Compose A(A(x)) using the composita table and evaluate at x.
-   * F(x) = A(A(x)): F(x) = Σ_{n=1}^N (Σ_{m=1}^n A^Δ(n,m)*a(m)) * x^n
-   */
-  function evalComposition(aCoeffs, aCompositaTable, x) {
-    let result = 0;
-    let xPow = x;
-    const maxN = aCoeffs.length;
-    for (let n = 1; n <= maxN; n++) {
-      let coeff = 0;
-      for (let m = 1; m <= n; m++) {
-        if (aCompositaTable[n] && aCompositaTable[n][m] !== undefined) {
-          coeff += aCompositaTable[n][m] * aCoeffs[m - 1];
-        }
-      }
-      result += coeff * xPow;
-      xPow *= x;
+  function solveIteratePowerSeries(coeffs, maxN, depth) {
+    const normalized = normalizeInputCoeffs(coeffs, maxN);
+    const stages = [];
+    let current = normalized;
+    const rounds = Math.max(1, depth || 1);
+    for (let i = 0; i < rounds; i += 1) {
+      const solved = solveHalfIterateSeries(current, maxN);
+      if (solved.error) return solved;
+      stages.push(solved);
+      current = normalizeInputCoeffs(solved.coefficients, maxN);
     }
-    return result;
+    const iterates = 2 ** rounds;
+    const recomposed = iterateSeriesCoeffs(current, iterates, maxN);
+    const residuals = [];
+    for (let n = 1; n <= maxN; n += 1) residuals.push(Math.abs((recomposed[n] || 0) - (normalized[n] || 0)));
+    return {
+      coefficients: trimCoeffs(current, maxN),
+      stages,
+      depth: rounds,
+      iterateCount: iterates,
+      recomposed,
+      residuals,
+      maxResidual: Math.max(...residuals, 0),
+      note: rounds === 1
+        ? 'One paper-backed square-root step was applied.'
+        : `Applied ${rounds} successive paper-backed square-root steps to model A^{2^${rounds}}(x) = F(x).`
+    };
   }
 
-  /**
-   * Compute orbit: x_{k+1} = F(x_k) for steps iterations.
-   */
   function computeOrbit(F, x0, steps) {
     const orbit = [x0];
     let x = x0;
-    for (let i = 0; i < steps; i++) {
+    for (let i = 0; i < steps; i += 1) {
       x = F(x);
       orbit.push(x);
-      if (!isFinite(x)) break;
+      if (!Number.isFinite(x)) break;
     }
     return orbit;
   }
 
-  // ----- Known compositae (Table 1 from paper) -----
-  // Used for verification
+  function formatNumber(value, precision) {
+    if (!Number.isFinite(value)) return '∞';
+    const digits = precision || 6;
+    if (Math.abs(value) < 1e-12) return '0';
+    const rounded = Number(value.toFixed(digits));
+    return rounded.toString();
+  }
+
+  function formatPolynomialLatex(coeffs, options = {}) {
+    const variable = options.variable || 'x';
+    const maxDegree = options.maxDegree !== undefined ? options.maxDegree : coeffs.length - 1;
+    const precision = options.precision || 6;
+    const includeZero = !!options.includeZero;
+    const parts = [];
+    for (let i = 0; i <= maxDegree; i += 1) {
+      const coeff = Number(coeffs[i] || 0);
+      if (!includeZero && Math.abs(coeff) < 1e-12) continue;
+      const absCoeff = Math.abs(coeff);
+      let coeffText = formatNumber(absCoeff, precision);
+      let term = '';
+      if (i === 0) {
+        term = coeffText;
+      } else {
+        if (Math.abs(absCoeff - 1) < 1e-12) coeffText = '';
+        term = coeffText + variable;
+        if (i > 1) term += `^{${i}}`;
+      }
+      if (parts.length === 0) {
+        parts.push(coeff < 0 ? `-${term}` : term);
+      } else {
+        parts.push(coeff < 0 ? `- ${term}` : `+ ${term}`);
+      }
+    }
+    return parts.length ? parts.join(' ') : '0';
+  }
+
+  function formatShiftedPolynomialLatex(coeffs, shift, options = {}) {
+    const precision = options.precision || 6;
+    const baseVariable = options.variable || 'x';
+    const inner = `(${baseVariable} ${shift >= 0 ? '-' : '+'} ${formatNumber(Math.abs(shift), precision)})`;
+    const parts = [];
+    for (let i = 0; i < coeffs.length; i += 1) {
+      const coeff = Number(coeffs[i] || 0);
+      if (Math.abs(coeff) < 1e-12) continue;
+      const absCoeff = Math.abs(coeff);
+      let coeffText = formatNumber(absCoeff, precision);
+      let term = '';
+      if (i === 0) {
+        term = coeffText;
+      } else {
+        if (Math.abs(absCoeff - 1) < 1e-12) coeffText = '';
+        term = coeffText + inner;
+        if (i > 1) term += `^{${i}}`;
+      }
+      if (parts.length === 0) {
+        parts.push(coeff < 0 ? `-${term}` : term);
+      } else {
+        parts.push(coeff < 0 ? `- ${term}` : `+ ${term}`);
+      }
+    }
+    return parts.length ? parts.join(' ') : '0';
+  }
+
   const knownCompositae = {
-    // F(x) = bx/(1-ax): composita = C(n-1,k-1) * a^(n-k) * b^k
     geometricSeries(n, k, a, b) {
       return binomial(n - 1, k - 1) * Math.pow(a, n - k) * Math.pow(b, k);
     },
-    // F(x) = ax + bx^2: composita = C(k, n-k) * a^(2k-n) * b^(n-k)
     quadratic(n, k, a, b) {
       if (k > n || n - k > k) return 0;
       return binomial(k, n - k) * Math.pow(a, 2 * k - n) * Math.pow(b, n - k);
     },
-    // F(x) = x*e^x: composita = k^(n-k) / (n-k)!
     xExpX(n, k) {
       return Math.pow(k, n - k) / factorial(n - k);
     },
   };
 
-  // ----- Stirling numbers (used in composita tables) -----
-  function stirlingFirst(n, k) {
-    if (n === k) return 1;
-    if (k === 0 || n === 0) return 0;
-    if (k > n) return 0;
-    // s(n,k) = s(n-1,k-1) - (n-1)*s(n-1,k)
-    return stirlingFirst(n - 1, k - 1) - (n - 1) * stirlingFirst(n - 1, k);
-  }
-
-  function stirlingSecond(n, k) {
-    if (n === k) return 1;
-    if (k === 0 || n === 0) return 0;
-    if (k > n) return 0;
-    // S(n,k) = k*S(n-1,k) + S(n-1,k-1)
-    return k * stirlingSecond(n - 1, k) + stirlingSecond(n - 1, k - 1);
-  }
-
-  // ----- Public API -----
   return {
-    // Types
     Rational,
-
-    // Utilities
+    gcdBigInt,
     factorial,
     binomial,
-    gcdBigInt,
-
-    // Composita
+    stirlingFirst,
+    stirlingSecond,
+    EPS,
+    trimCoeffs,
+    padCoeffs,
+    normalizeInputCoeffs,
+    addSeries,
+    scaleSeries,
+    multiplySeries,
+    derivativeSeries,
+    evalPolynomial,
+    composeSeries,
+    seriesPower,
+    invertSeriesAroundZero,
+    shiftPolynomial,
+    buildShiftedModel,
+    unshiftLocalSeries,
+    sampleFunction,
+    verifyCandidate,
+    approximateRealFixedPoints,
+    classifyFixedPoint,
+    solveSchroederHalfIterate,
     compositaRecurrence,
     compositaTable,
     compositionCoeffs,
     compositaOfComposition,
-
-    // Solver
-    solveHalfIterate,
-    evalPolynomial,
-    evalComposition,
+    solveHalfIterateSeries,
+    solveIteratePowerSeries,
+    iterateSeriesCoeffs,
     computeOrbit,
-
-    // Known compositae (for verification)
+    formatPolynomialLatex,
+    formatShiftedPolynomialLatex,
+    formatNumber,
+    polynomialFromRoots,
     knownCompositae,
-    stirlingFirst,
-    stirlingSecond,
   };
 })();
 
-// Export for module use; also available as window.Engine
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Engine;
 }

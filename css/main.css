@@ -392,12 +392,143 @@ footer .footer-links {
 .blog-list li {
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem;
 }
 .blog-list li .post-date {
     color: var(--footer-text);
     font-size: 0.85rem;
     white-space: nowrap;
+}
+.blog-entry {
+    flex: 1;
+    min-width: 0;
+}
+.blog-entry a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+.blog-entry a:hover { color: var(--link-color); }
+.blog-abstract {
+    color: var(--footer-text);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.35rem;
+}
+
+/* ----- Solver / Article Utility Blocks ----- */
+.hidden { display: none !important; }
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--box-bg);
+}
+.formula-block {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--box-bg);
+    padding: 0.75rem 0.9rem;
+    margin: 0.5rem 0;
+}
+.notice-box {
+    border-left: 4px solid var(--link-color);
+    background: var(--box-bg);
+    padding: 0.8rem 1rem;
+    border-radius: 0 4px 4px 0;
+    color: var(--text-color);
+}
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem;
+}
+.control-panel-wrap {
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+}
+.preset-strip {
+    margin: 0.7rem 0 0.4rem;
+    color: var(--footer-text);
+    font-size: 0.92rem;
+}
+.preset-strip a {
+    margin-left: 0.45rem;
+    text-decoration: none;
+}
+.preset-strip a:hover { text-decoration: underline; }
+.mode-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+.mode-button {
+    background: var(--toc-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.mode-button.active {
+    background: var(--link-color);
+    color: #fff;
+    border-color: var(--link-color);
+}
+.method-callout {
+    border: 1px solid var(--border-color);
+    background: var(--toc-bg);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+}
+.graph-legend {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--footer-text);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.chip-button {
+    background: var(--box-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    margin: 0.25rem 0.35rem 0.25rem 0;
+    font-size: 0.86rem;
+}
+.media-card {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--toc-bg);
+    padding: 0.9rem 1rem;
+    margin: 1rem 0;
+}
+.media-card video,
+.media-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+}
+.diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.mini-diagram {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--box-bg);
+    padding: 0.75rem;
+}
+.mini-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* ----- Utility ----- */
@@ -421,6 +552,14 @@ footer .footer-links {
     .fixed-bar .center-link-group:hover .title-main { display: inline; }
     table { font-size: 0.85rem; }
     th, td { padding: 0.3rem 0.5rem; }
+    .blog-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .blog-list li .post-date { white-space: normal; }
+    .mode-switcher { flex-direction: column; }
+    .mode-button { width: 100%; }
+    .formula-block { padding: 0.65rem 0.75rem; }
 }
 
 @media print {

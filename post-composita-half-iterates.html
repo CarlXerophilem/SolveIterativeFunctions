@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Composita Recurrence and Half-Iterates</title>
+    <meta name="DC.Title" content="Composita Recurrence and Half-Iterates">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-01">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Composita Recurrence and Half-Iterates">
+    <meta property="og:description" content="From ordinary generating functions to the triangular coefficient system for A^{2^m}(x)=F(x).">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/post-composita-half-iterates.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-type="book" id="top">
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>window.addEventListener('load', function(){ document.getElementById('loader').style.display='none'; });</script>
+
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="post-fixed-points-functional-iteration.html" id="prev-link" title="Fixed Points"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="post-composita-half-iterates.html" id="center-link">
+                <span class="hover-prev">Fixed Points</span>
+                <span class="title-main">Composita Half-Iterates</span>
+                <span class="hover-next">Numerical Methods</span>
+            </a>
+        </div>
+        <a href="post-numerical-half-iterate-methods.html" id="next-link" title="Numerical Methods"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <div class="container">
+        <section data-type="chapter" id="composita-post">
+            <div class="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#motivation">1. Motivation from Generating Functions</a></li>
+                    <li><a href="#composita">2. The Composita Formalism</a></li>
+                    <li><a href="#triangular">3. The Triangular System for \(A(A(x))=F(x)\)</a></li>
+                    <li><a href="#generalization">4. From Half-Iterates to \(A^{\circ 2^m}(x)=F(x)\)</a></li>
+                    <li><a href="#applications">5. What the Solver Exposes</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+                    <h1>Solving \(A^{\circ 2^m}(x) = F(x)\) by the Composita Recurrence</h1>
+                    <hr>
+
+                    <div id="motivation">
+                        <h2>1. Motivation from Generating Functions</h2>
+                        <p>
+                            The composita method is valuable because it rewrites composition into a structured coefficient problem.
+                            Instead of guessing a closed form for a half-iterate, we regard
+                            \[
+                            F(x) = \sum_{n \ge 0} f_n x^n, \qquad A(x) = \sum_{n \ge 0} a_n x^n,
+                            \]
+                            and ask for algebraic relations between the coefficients of \(A\) and those of \(F\).
+                        </p>
+                        <p>
+                            The key references for this article are the two Kruchinin papers already central to the repository:
+                            the composita paper for the recurrence itself and the iterative-equation paper for the repeated
+                            \(2^m\)-iterate root construction. The new solver mode follows exactly this explanatory order: define
+                            the coefficient machinery first, then build the root one triangular step at a time.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div id="composita">
+                        <h2>2. The Composita Formalism</h2>
+                        <p>
+                            For a generating function \(F(x)=\sum_{n&gt;0} f(n)x^n\), its composita is defined by
+                            \[
+                            F^{\Delta}(n,k) = [x^n] F(x)^k.
+                            \]
+                            In other words, it records the contribution to the coefficient of \(x^n\) coming from the \(k\)-fold
+                            power of \(F\).
+                        </p>
+                        <div class="theorem">
+                            <strong>Composita recurrence.</strong> The coefficients satisfy
+                            \[
+                            F^{\Delta}(n,k) =
+                            \begin{cases}
+                            f(n), & k=1,\\[4pt]
+                            \displaystyle\sum_{i=1}^{n-k+1} f(i)F^{\Delta}(n-i,k-1), & 2 \le k \le n.
+                            \end{cases}
+                            \]
+                            This is the dynamic-programming rule already implemented in <code>js/engine.js</code>.
+                        </div>
+                        <div class="media-card">
+                            <strong>Dependency picture.</strong> Each entry \(F^{\Delta}(n,k)\) depends only on entries one step to the
+                            left and below, so the table can be filled by a triangular pass.
+                            <img src="resources/visuals/composita-flow.svg" alt="Dependency flow for the composita recurrence.">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="triangular">
+                        <h2>3. The Triangular System for \(A(A(x))=F(x)\)</h2>
+                        <p>
+                            Once \(A(x)\) is unknown, its own composita \(A^{\Delta}(n,k)\) enters the coefficient identity for the
+                            composition \(A(A(x))\). The crucial point is triangularity: after the linear coefficient \(a_1\) is chosen,
+                            the higher coefficients can be solved sequentially.
+                        </p>
+                        <p>
+                            In the simplest real branch used on the site, \(a_1 = \sqrt{f_1}\). Then the coefficient equations take the form
+                            \[
+                            a_n\bigl(a_1 + a_1^n\bigr) + \sum_{m=2}^{n-1} A^{\Delta}(n,m)a_m = f_n,
+                            \]
+                            so each \(a_n\) is determined by previously computed data provided the denominator is nonzero.
+                        </p>
+                        <div class="practice">
+                            <strong>Why this matters computationally.</strong> The solver does not solve a dense nonlinear system all at once.
+                            It solves a coefficient ladder from low degree to high degree, which keeps the static-site implementation
+                            fast, transparent, and inspectable.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="generalization">
+                        <h2>4. From Half-Iterates to \(A^{\circ 2^m}(x)=F(x)\)</h2>
+                        <p>
+                            The iterative-equation paper extends the same philosophy to repeated square-root extraction. If
+                            \(B(B(x)) = F(x)\), and then \(A(A(x)) = B(x)\), one obtains
+                            \[
+                            A^{\circ 4}(x) = F(x).
+                            \]
+                            Repeating the construction yields a model for \(A^{\circ 2^m}(x) = F(x)\).
+                        </p>
+                        <p>
+                            The upgraded calculator exposes this directly through the <em>paper depth</em> parameter \(m\). Internally it
+                            performs successive composita-based square-root steps and then recomposes the final candidate to verify that
+                            the truncated series returns to the original target to the chosen order.
+                        </p>
+                        <div class="definition">
+                            <strong>Integer-coefficient observation.</strong> The paper also proves an arithmetic stability result after a
+                            scaling transformation, showing that a suitably rescaled version of the iterative root preserves integrality
+                            when the original generating function has integer coefficients. This is one of the reasons generating-function
+                            normalization is more than a numerical convenience; it has algebraic content.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="applications">
+                        <h2>5. What the Solver Exposes</h2>
+                        <ul>
+                            <li><strong>Depth control.</strong> The browser UI now allows repeated square-root extraction, not just a single half-iterate.</li>
+                            <li><strong>MathJax formulas.</strong> The target series, candidate series, and recomposed series are rendered formally rather than as plain text.</li>
+                            <li><strong>Residual tables.</strong> Each displayed coefficient can be checked term-by-term, so the method remains explanatory.</li>
+                            <li><strong>Graphical confirmation.</strong> The grapher shows the candidate and its recomposition next to the target polynomial.</li>
+                        </ul>
+                        <p>
+                            Readers who want the local analytic complement should continue to the next article, where the emphasis shifts
+                            from triangular coefficient solving to fixed-point classification, local conjugacy, and the practical limits
+                            of local half-iterate constructions.
+                        </p>
+                    </div>
+                </article>
+            </main>
+
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <script src="https://giscus.app/client.js"
+                    data-repo="CarlXerophilem/SolveIterativeFunctions"
+                    data-repo-id="R_kgDONkNjGg"
+                    data-category="General"
+                    data-category-id="DIC_kwDONkNjGs4C-GSa"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="1"
+                    data-input-position="top"
+                    data-theme="preferred_color_scheme"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async></script>
+                <noscript><p style="color:var(--footer-text); font-style:italic;">Comments require JavaScript and GitHub authentication.</p></noscript>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="blog.html">Blog</a>
+            <a href="solver.html">Solver</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>

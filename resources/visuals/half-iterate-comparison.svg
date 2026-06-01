@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
+  <rect width="720" height="300" fill="#fcfcfd"/>
+  <text x="40" y="40" font-family="Segoe UI, sans-serif" font-size="28" fill="#2c3e50">Construct, interpret, verify</text>
+  <g font-family="Segoe UI, sans-serif" text-anchor="middle">
+    <rect x="55" y="90" width="180" height="120" rx="18" fill="#eef5ff" stroke="#1a73e8" stroke-width="3"/>
+    <rect x="270" y="90" width="180" height="120" rx="18" fill="#f6f0ff" stroke="#7c4dff" stroke-width="3"/>
+    <rect x="485" y="90" width="180" height="120" rx="18" fill="#eefbf1" stroke="#2ecc71" stroke-width="3"/>
+    <text x="145" y="126" font-size="22" fill="#1a73e8">Composita</text>
+    <text x="145" y="154" font-size="17" fill="#2c3e50">Triangular coefficient solving</text>
+    <text x="145" y="178" font-size="17" fill="#2c3e50">Fast local series models</text>
+    <text x="360" y="126" font-size="22" fill="#7c4dff">Conjugacy</text>
+    <text x="360" y="154" font-size="17" fill="#2c3e50">Fixed-point classification</text>
+    <text x="360" y="178" font-size="17" fill="#2c3e50">Local analytic meaning</text>
+    <text x="575" y="126" font-size="22" fill="#2ecc71">Verification</text>
+    <text x="575" y="154" font-size="17" fill="#2c3e50">Graphing and recomposition</text>
+    <text x="575" y="178" font-size="17" fill="#2c3e50">Residual acceptance tests</text>
+  </g>
+  <g stroke="#95a5a6" stroke-width="6" fill="none" stroke-linecap="round">
+    <path d="M 235 150 H 270"/>
+    <path d="M 450 150 H 485"/>
+    <path d="M 575 90 C 560 36 188 32 150 90"/>
+  </g>
+</svg>

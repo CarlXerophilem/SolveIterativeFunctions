@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comparing Numerical Half-Iterate Methods</title>
+    <meta name="DC.Title" content="Comparing Numerical Half-Iterate Methods">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-01">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Comparing Numerical Half-Iterate Methods">
+    <meta property="og:description" content="When composita, local conjugacy, and direct numerical checking agree and when they do not.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/post-numerical-half-iterate-methods.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body data-type="book" id="top">
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>window.addEventListener('load', function(){ document.getElementById('loader').style.display='none'; });</script>
+
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="post-composita-half-iterates.html" id="prev-link" title="Composita Half-Iterates"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="post-numerical-half-iterate-methods.html" id="center-link">
+                <span class="hover-prev">Composita Article</span>
+                <span class="title-main">Numerical Methods</span>
+                <span class="hover-next">Blog</span>
+            </a>
+        </div>
+        <a href="blog.html" id="next-link" title="Blog"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <div class="container">
+        <section data-type="chapter" id="numerical-post">
+            <div class="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#motivation">1. Motivation</a></li>
+                    <li><a href="#comparison">2. Three Complementary Approaches</a></li>
+                    <li><a href="#generalization">3. The Analytic Generalization Question</a></li>
+                    <li><a href="#failure">4. Failure Modes and Acceptance Criteria</a></li>
+                    <li><a href="#application">5. Practical Workflow in This Repository</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+                    <h1>Comparing Numerical and Local Analytic Methods for Half-Iterates</h1>
+                    <hr>
+
+                    <div id="motivation">
+                        <h2>1. Motivation</h2>
+                        <p>
+                            There is no single method that dominates every half-iterate problem. A truncated power series is often fast
+                            and algebraically transparent, but it is tied to a normalization point and a truncation order. A local analytic
+                            conjugacy may explain the geometry of iteration beautifully, but only near a suitable fixed point. Direct numerical
+                            recomposition is essential for checking what the formal manipulations actually achieved.
+                        </p>
+                        <div class="media-card">
+                            <strong>Comparison plot.</strong> The three approaches are best seen as a loop rather than as competitors:
+                            construct, interpret, and verify.
+                            <img src="resources/visuals/half-iterate-comparison.svg" alt="Comparison diagram for composita, conjugacy, and verification methods.">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="comparison">
+                        <h2>2. Three Complementary Approaches</h2>
+                        <ol>
+                            <li>
+                                <strong>Composita / truncated-series method.</strong>
+                                Expand \(F\) as a power series, solve the triangular coefficient system, and recompose to the chosen order.
+                                This is excellent when the target naturally lives as a formal series with \(F(0)=0\) or can be normalized into that form.
+                            </li>
+                            <li>
+                                <strong>Local analytic conjugacy.</strong>
+                                Around a fixed point \(x_0\), translate to \(y=x-x_0\). If the multiplier is positive and non-parabolic,
+                                solve a truncated Schr&ouml;der equation and define the local half-iterate from the square root of the multiplier.
+                            </li>
+                            <li>
+                                <strong>Direct recomposition and sampling.</strong>
+                                Always test the proposed candidate numerically by comparing \(f(f(x))\) with \(F(x)\) on a neighborhood or interval.
+                                This converts formal output into a practical acceptance criterion.
+                            </li>
+                        </ol>
+                        <p>
+                            In the upgraded solver, these approaches are deliberately separated in the user interface, but they are meant to
+                            inform one another. The composita mode proposes a candidate series; the analytic mode explains the local geometry;
+                            the grapher and residual tables verify what survives truncation.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div id="generalization">
+                        <h2>3. The Analytic Generalization Question</h2>
+                        <p>
+                            The natural research question is broader than the original power-series setting: <em>if \(F\) is analytic, when does a
+                            local or global analytic solution to \(f(f(x)) = F(x)\) exist?</em> The correct answer depends on the fixed-point class.
+                        </p>
+                        <div class="theorem">
+                            <strong>Local analytic guide.</strong>
+                            Let \(x^*\) be a real fixed point of an analytic map \(F\).
+                            <ul>
+                                <li>If \(0 &lt; F'(x^*) \neq 1\), then Schr&ouml;der linearization gives a natural local route to fractional iteration.</li>
+                                <li>If \(F'(x^*) = 1\), Abel-type coordinates become the relevant language and the problem is subtler.</li>
+                                <li>If \(F'(x^*) = 0\), superattracting B&ouml;ttcher-type behavior may force fractional exponents in local coordinates.</li>
+                                <li>If \(F'(x^*) &lt; 0\), real branch issues appear immediately for a real half-iterate.</li>
+                            </ul>
+                        </div>
+                        <p>
+                            This repository now attempts the generalization responsibly: the analytic solver mode supports the first case,
+                            classifies the others, and reports them clearly instead of pretending that every analytic input has a clean real,
+                            global half-iterate expressible in a few browser-side coefficients.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div id="failure">
+                        <h2>4. Failure Modes and Acceptance Criteria</h2>
+                        <p>
+                            A trustworthy half-iterate workflow needs explicit failure modes. The following are the main ones now surfaced by the site.
+                        </p>
+                        <ul>
+                            <li><strong>No real fixed point chosen.</strong> Then the local analytic mode has no anchor and must stop.</li>
+                            <li><strong>Parabolic or superattracting class.</strong> The local model requires different coordinates, so the browser mode reports the classification and defers the construction.</li>
+                            <li><strong>Truncation mismatch.</strong> A low-degree series may look plausible but fail after recomposition; the residual table detects this.</li>
+                            <li><strong>Radius-of-validity drift.</strong> A good local series can still fail away from the fixed point; the grapher and the stated local radius make this visible.</li>
+                        </ul>
+                        <div class="practice">
+                            <strong>Acceptance criterion used here.</strong> A candidate is accepted only as a <em>local numerical model</em> when the
+                            displayed residuals remain small on the claimed neighborhood and the structural classification matches the method used.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="application">
+                        <h2>5. Practical Workflow in This Repository</h2>
+                        <p>
+                            A good practical order of attack is now built directly into the site.
+                        </p>
+                        <ol>
+                            <li>Inspect the target map on the <a href="solver.html">solver page</a> and search for fixed points.</li>
+                            <li>Use <strong>paper mode</strong> when the goal is a formal generating-function root of \(A^{\circ 2^m}(x)=F(x)\).</li>
+                            <li>Use <strong>analytic mode</strong> when the goal is a local half-iterate around a chosen real fixed point.</li>
+                            <li>Check the grapher and residual output before trusting the displayed formula.</li>
+                            <li>Read the <a href="bibliography.html">bibliography</a> to connect the computational behavior back to the underlying theory.</li>
+                        </ol>
+                        <p>
+                            This workflow keeps the project light enough for static hosting while still being honest about the distinction between
+                            formal series, local analytic structure, and global dynamical complexity.
+                        </p>
+                    </div>
+                </article>
+            </main>
+
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <script src="https://giscus.app/client.js"
+                    data-repo="CarlXerophilem/SolveIterativeFunctions"
+                    data-repo-id="R_kgDONkNjGg"
+                    data-category="General"
+                    data-category-id="DIC_kwDONkNjGs4C-GSa"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="1"
+                    data-input-position="top"
+                    data-theme="preferred_color_scheme"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async></script>
+                <noscript><p style="color:var(--footer-text); font-style:italic;">Comments require JavaScript and GitHub authentication.</p></noscript>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="blog.html">Blog</a>
+            <a href="solver.html">Solver</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>
