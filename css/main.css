@@ -333,6 +333,47 @@ button.secondary {
 }
 canvas { display: block; margin: 0 auto; background: var(--box-bg); }
 
+/* ----- Animated figures (manim videos) ----- */
+.anim-figure {
+    margin: 1.75rem 0;
+    text-align: center;
+}
+.anim-figure video {
+    display: block;
+    width: 100%;
+    max-width: 660px;
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: #0e1726;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+.anim-figure figcaption {
+    margin: 0.65rem auto 0;
+    font-size: 0.9rem;
+    color: var(--footer-text);
+    max-width: 620px;
+    line-height: 1.5;
+}
+.anim-figure figcaption .fig-label {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* ----- Multiplier classification table ----- */
+.class-table { font-size: 0.95rem; }
+.class-table code { white-space: nowrap; }
+
+/* ----- Inline math-step callout ----- */
+.keypoint {
+    border-left: 4px solid var(--theorem-border);
+    background: var(--toc-bg);
+    padding: 0.75rem 1.1rem;
+    margin: 1.25rem 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.97rem;
+}
+
 /* ----- Control Panel ----- */
 .control-panel {
     display: flex;
@@ -392,12 +433,143 @@ footer .footer-links {
 .blog-list li {
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 1rem;
 }
 .blog-list li .post-date {
     color: var(--footer-text);
     font-size: 0.85rem;
     white-space: nowrap;
+}
+.blog-entry {
+    flex: 1;
+    min-width: 0;
+}
+.blog-entry a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+.blog-entry a:hover { color: var(--link-color); }
+.blog-abstract {
+    color: var(--footer-text);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-top: 0.35rem;
+}
+
+/* ----- Solver / Article Utility Blocks ----- */
+.hidden { display: none !important; }
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--box-bg);
+}
+.formula-block {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--box-bg);
+    padding: 0.75rem 0.9rem;
+    margin: 0.5rem 0;
+}
+.notice-box {
+    border-left: 4px solid var(--link-color);
+    background: var(--box-bg);
+    padding: 0.8rem 1rem;
+    border-radius: 0 4px 4px 0;
+    color: var(--text-color);
+}
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem;
+}
+.control-panel-wrap {
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+}
+.preset-strip {
+    margin: 0.7rem 0 0.4rem;
+    color: var(--footer-text);
+    font-size: 0.92rem;
+}
+.preset-strip a {
+    margin-left: 0.45rem;
+    text-decoration: none;
+}
+.preset-strip a:hover { text-decoration: underline; }
+.mode-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+.mode-button {
+    background: var(--toc-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.mode-button.active {
+    background: var(--link-color);
+    color: #fff;
+    border-color: var(--link-color);
+}
+.method-callout {
+    border: 1px solid var(--border-color);
+    background: var(--toc-bg);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+}
+.graph-legend {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--footer-text);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.chip-button {
+    background: var(--box-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    margin: 0.25rem 0.35rem 0.25rem 0;
+    font-size: 0.86rem;
+}
+.media-card {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--toc-bg);
+    padding: 0.9rem 1rem;
+    margin: 1rem 0;
+}
+.media-card video,
+.media-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+}
+.diagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.mini-diagram {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--box-bg);
+    padding: 0.75rem;
+}
+.mini-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* ----- Utility ----- */
@@ -410,6 +582,133 @@ footer .footer-links {
 .mb-2 { margin-bottom: 1rem; }
 .mb-3 { margin-bottom: 1.5rem; }
 
+/* ============================================================
+   Interactive Solver (KaTeX, live controls, cobweb grapher)
+   ============================================================ */
+
+/* KaTeX: keep display math from ballooning; inherit theme colour */
+.katex { font-size: 1.05em; color: var(--text-color); }
+.katex-display { margin: 0.4rem 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.formula-block .katex-display { margin: 0; }
+
+/* Live target preview */
+.live-formula {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--box-bg);
+    padding: 0.6rem 0.9rem;
+    margin: 0.75rem 0;
+    min-height: 2.4rem;
+    overflow-x: auto;
+}
+
+/* Coefficient grid with synced sliders */
+.coef-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+    gap: 0.6rem 0.8rem;
+    margin: 0.75rem 0;
+}
+.coef-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem 0.55rem;
+    background: var(--toc-bg);
+}
+.coef-cell label { font-weight: 600; font-size: 0.85rem; text-align: center; }
+.coef-cell input[type='number'] { width: 100%; text-align: center; }
+.coef-cell input[type='range'] { width: 100%; margin: 0; accent-color: var(--link-color); cursor: pointer; }
+
+/* Reactivity toggle row */
+.solver-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin: 0.75rem 0;
+}
+.live-toggle { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; cursor: pointer; }
+.live-toggle input { width: auto; }
+
+/* Status / classification pills */
+.pill {
+    display: inline-block;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+.pill-ok { background: #e6f7ec; color: #1b7f43; border-color: #9fdcb6; }
+.pill-warn { background: #fff4e0; color: #9a6400; border-color: #f0cd8a; }
+.pill-err { background: #fdecea; color: #b3261e; border-color: #f2b3ad; }
+.pill-info { background: var(--toc-bg); color: var(--text-color); border-color: var(--border-color); }
+html.dark .pill-ok { background: #133024; color: #7fe0a6; border-color: #2f6b48; }
+html.dark .pill-warn { background: #33260f; color: #ffce7a; border-color: #6b5224; }
+html.dark .pill-err { background: #36140f; color: #ff9a90; border-color: #6b2f28; }
+
+/* Composita triangle */
+.triangle-wrap { overflow-x: auto; margin: 0.5rem 0; }
+table.triangle { border-collapse: collapse; margin: 0 auto; font-size: 0.8rem; }
+table.triangle td {
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+}
+table.triangle td.tri-head { background: var(--toc-bg); font-weight: 600; font-family: inherit; }
+table.triangle td.tri-empty { border: none; background: transparent; }
+table.triangle td.tri-diag { background: var(--theorem-bg); }
+
+/* Interactive grapher */
+.grapher-shell { position: relative; }
+.grapher-shell canvas { width: 100%; height: auto; display: block; cursor: crosshair; touch-action: none; }
+.grapher-readout {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--box-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.78rem;
+    font-family: 'Courier New', monospace;
+    pointer-events: none;
+    opacity: 0.95;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+.grapher-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 0.6rem 0;
+}
+.grapher-toolbar button { padding: 0.4rem 0.85rem; font-size: 0.88rem; }
+.grapher-hint { text-align: center; font-size: 0.82rem; color: var(--footer-text); margin: 0.3rem 0 0; }
+
+/* Reference list */
+.ref-list { list-style: none; padding-left: 0; font-size: 0.92rem; }
+.ref-list li { padding: 0.35rem 0; border-bottom: 1px dashed var(--border-color); }
+.ref-list li:last-child { border-bottom: none; }
+.ref-list .ref-tag {
+    display: inline-block;
+    min-width: 1.6rem;
+    font-weight: 700;
+    color: var(--link-color);
+}
+
+@media (max-width: 600px) {
+    .coef-grid { grid-template-columns: repeat(3, 1fr); }
+    .grapher-readout { font-size: 0.7rem; }
+    table.triangle { font-size: 0.72rem; }
+}
+
 /* ----- Responsive ----- */
 @media (max-width: 600px) {
     .container { padding: 0.5rem 0.75rem; }
@@ -421,6 +720,14 @@ footer .footer-links {
     .fixed-bar .center-link-group:hover .title-main { display: inline; }
     table { font-size: 0.85rem; }
     th, td { padding: 0.3rem 0.5rem; }
+    .blog-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .blog-list li .post-date { white-space: normal; }
+    .mode-switcher { flex-direction: column; }
+    .mode-button { width: 100%; }
+    .formula-block { padding: 0.65rem 0.75rem; }
 }
 
 @media print {

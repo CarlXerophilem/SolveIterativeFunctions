@@ -7,21 +7,24 @@
 
     <meta name="DC.Title" content="Iterative Function Solver">
     <meta name="DC.Creator" content="CarlXerophilem">
-    <meta name="DC.Date" content="2026-05-30">
+    <meta name="DC.Date" content="2026-06-01">
     <meta name="DC.Type" content="Interactive Resource">
     <meta name="DC.Format" content="HTML">
     <meta name="DC.Language" content="en-US">
     <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
     <meta property="og:title" content="Iterative Function Solver">
-    <meta property="og:description" content="Solve A(A(x))=F(x) using the Composita method with an interactive function grapher.">
+    <meta property="og:description" content="Interactive composita and Schröder tools for solving f(f(x)) = F(x), with live KaTeX output and a cobweb grapher.">
     <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/solver.html">
     <meta property="og:site_name" content="Solve Iterative Functions">
 
     <link rel="icon" type="image/x-icon" href="ff.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <link rel="stylesheet" href="css/main.css">
 
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
 </head>
 <body data-type="book" id="top">
 
@@ -29,7 +32,7 @@
         <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="loadingMessage">Loading...</div>
     </div>
-    <script>window.addEventListener('load',function(){document.getElementById('loader').style.display='none';});</script>
+    <script>window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });</script>
 
     <div class="fixed-bar">
         <div class="link-container">
@@ -52,91 +55,158 @@
             <div class="toc-chapter">
                 <p><i class="fa-solid fa-list"></i> Contents</p>
                 <ul>
-                    <li><a href="#input-panel">1. Input: Define \(F(x)\)</a></li>
-                    <li><a href="#solution-panel">2. Solution: Computed \(A(x)\)</a></li>
-                    <li><a href="#grapher-panel">3. Interactive Grapher</a></li>
-                    <li><a href="#orbit-panel">4. Orbit Explorer</a></li>
+                    <li><a href="#mode-panel">1. Choose a Solver Mode</a></li>
+                    <li><a href="#input-panel">2. Define \(F(x)\)</a></li>
+                    <li><a href="#solution-panel">3. Computed Candidate \(f(x)\)</a></li>
+                    <li><a href="#composita-panel">4. Composita Triangles</a></li>
+                    <li><a href="#grapher-panel">5. Interactive Cobweb Grapher</a></li>
+                    <li><a href="#orbit-panel">6. Orbit Explorer</a></li>
+                    <li><a href="#refs-panel">7. Method &amp; References</a></li>
                 </ul>
             </div>
 
             <main>
                 <article>
-
                     <h1>Iterative Function Solver</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.4rem;">
+                        Two reference-backed routes to the functional square root \(f(f(x)) = F(x)\) — live, with a
+                        draggable cobweb grapher.
+                    </p>
                     <hr>
 
                     <p>
-                        This page solves the functional equation \(A(A(x)) = F(x)\) for a given polynomial
-                        \(F(x) = f_1 x + f_2 x^2 + f_3 x^3 + \cdots\) using the
-                        <strong>Composita recurrence</strong> (Kruchinin &amp; Kruchinin, 2013). The solution
-                        \(A(x) = a_1 x + a_2 x^2 + \cdots\) is computed term-by-term and verified graphically.
+                        This calculator implements two complementary methods. <strong>Composita / Paper Mode</strong>
+                        builds the truncated power series of \(f\) from the triangular composita recurrence of
+                        Kruchinin &amp; Kruchinin, extending naturally to the family \(A^{\circ 2^m}(x) = F(x)\).
+                        <strong>Analytic Fixed-Point Mode</strong> classifies a chosen real fixed point and, when the
+                        multiplier is suitable, constructs a local half-iterate through Schr&ouml;der / Koenigs
+                        linearization (see the <a href="theory.html">Theory</a> page). Everything below updates
+                        <em>live</em> as you edit \(F\).
                     </p>
 
-                    <!-- Input Panel -->
-                    <div id="input-panel">
-                        <h2>1. Define the Target Function \(F(x)\)</h2>
-                        <p>Enter coefficients of \(F(x) = f_1 x + f_2 x^2 + f_3 x^3 + \cdots\) (constant term must be zero).</p>
-
-                        <div class="control-panel" style="justify-content:flex-start;">
-                            <div class="control-group">
-                                <label for="f1-input">\(f_1\) (linear)</label>
-                                <input type="number" id="f1-input" value="1" step="any" style="width:90px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="f2-input">\(f_2\) (quadratic)</label>
-                                <input type="number" id="f2-input" value="0" step="any" style="width:90px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="f3-input">\(f_3\) (cubic)</label>
-                                <input type="number" id="f3-input" value="1" step="any" style="width:90px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="f4-input">\(f_4\)</label>
-                                <input type="number" id="f4-input" value="0" step="any" style="width:90px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="f5-input">\(f_5\)</label>
-                                <input type="number" id="f5-input" value="0" step="any" style="width:90px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="maxn-input">Max degree</label>
-                                <input type="number" id="maxn-input" value="10" min="2" max="30" style="width:70px;">
-                            </div>
-                        </div>
-
-                        <div style="text-align:center; margin:1rem 0;">
-                            <button onclick="solveEquation()" id="solve-btn" style="font-size:1rem; padding:0.6rem 2rem;">
-                                <i class="fa-solid fa-play"></i> Solve \(A(A(x)) = F(x)\)
+                    <div id="mode-panel">
+                        <h2>1. Choose a Solver Mode</h2>
+                        <div class="mode-switcher" role="tablist" aria-label="Solver mode">
+                            <button id="mode-series" class="mode-button active" data-mode="series" onclick="setMode('series')">
+                                <i class="fa-solid fa-table"></i> Composita / Paper Mode
                             </button>
-                            <span id="solve-status" style="margin-left:1rem; color:var(--footer-text);"></span>
+                            <button id="mode-analytic" class="mode-button" data-mode="analytic" onclick="setMode('analytic')">
+                                <i class="fa-solid fa-compass-drafting"></i> Analytic Fixed-Point Mode
+                            </button>
+                        </div>
+                        <div class="method-callout" id="mode-description"></div>
+                    </div>
+
+                    <hr>
+
+                    <div id="input-panel">
+                        <h2>2. Define the Target Function \(F(x)\)</h2>
+                        <p>
+                            Set the coefficients of \(F(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_6 x^6\) with the boxes or
+                            sliders. Paper mode requires \(c_0 = 0\) and \(c_1 &gt; 0\); analytic mode accepts any
+                            constant, but the chosen \(x_0\) must satisfy \(F(x_0) = x_0\).
+                        </p>
+
+                        <div class="coef-grid" id="coef-grid"></div>
+
+                        <div class="result-label">Live target</div>
+                        <div class="live-formula" id="live-formula"></div>
+
+                        <div class="control-panel control-panel-wrap" id="series-controls" style="justify-content:flex-start;">
+                            <div class="control-group">
+                                <label for="depth-input">Paper depth \(m\) &nbsp;<span class="text-sm" style="color:var(--footer-text);">(solves \(A^{\circ 2^m}=F\))</span></label>
+                                <input type="number" id="depth-input" value="1" min="1" max="3" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="maxn-input">Series order</label>
+                                <input type="number" id="maxn-input" value="8" min="2" max="12" style="width:70px;">
+                            </div>
                         </div>
 
-                        <div style="text-align:center; margin:0.5rem 0;">
-                            <small style="color:var(--footer-text);">
-                                Presets:
-                                <a href="#" onclick="setPreset('x+x2');return false;">\(x+x^2\)</a> &bull;
-                                <a href="#" onclick="setPreset('x+2x2+x3');return false;">\(x+2x^2+x^3\)</a> &bull;
-                                <a href="#" onclick="setPreset('x+x3');return false;">\(x+x^3\)</a> &bull;
-                                <a href="#" onclick="setPreset('2x+x2');return false;">\(2x+x^2\)</a>
-                            </small>
+                        <div class="control-panel control-panel-wrap hidden" id="analytic-controls" style="justify-content:flex-start;">
+                            <div class="control-group">
+                                <label for="fixedpoint-input">Chosen fixed point \(x_0\)</label>
+                                <input type="number" id="fixedpoint-input" value="0" step="any" style="width:90px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="analytic-order-input">Local order</label>
+                                <input type="number" id="analytic-order-input" value="8" min="3" max="12" style="width:70px;">
+                            </div>
+                            <div class="control-group">
+                                <label for="analytic-radius-input">Local radius</label>
+                                <input type="number" id="analytic-radius-input" value="0.35" min="0.05" max="2" step="0.05" style="width:80px;">
+                            </div>
+                            <button onclick="suggestFixedPoints()" class="secondary" style="align-self:flex-end;">
+                                <i class="fa-solid fa-magnifying-glass"></i> Suggest fixed points
+                            </button>
+                        </div>
+
+                        <div class="solver-toolbar">
+                            <button onclick="solveEquation()" id="solve-btn">
+                                <i class="fa-solid fa-play"></i> Compute
+                            </button>
+                            <label class="live-toggle">
+                                <input type="checkbox" id="live-toggle" checked> Live update
+                            </label>
+                            <span id="solve-status"></span>
+                        </div>
+
+                        <div class="preset-strip" id="series-presets">
+                            Presets:
+                            <a href="#" onclick="setPreset('x+x2'); return false;">\(x + x^2\)</a>
+                            <a href="#" onclick="setPreset('x+16x2'); return false;">\(x + 16x^2\)</a>
+                            <a href="#" onclick="setPreset('x1p2x2'); return false;">\(x(1+2x)^2\)</a>
+                            <a href="#" onclick="setPreset('x+x3'); return false;">\(x + x^3\)</a>
+                            <a href="#" onclick="setPreset('quad4'); return false;">\(A^{\circ 4}=x+16x^2\)</a>
+                        </div>
+                        <div class="preset-strip hidden" id="analytic-presets">
+                            Presets:
+                            <a href="#" onclick="setPreset('analytic-attracting'); return false;">Attracting \(0.5x + 0.1x^2\)</a>
+                            <a href="#" onclick="setPreset('analytic-repelling'); return false;">Repelling \(2x + x^2\)</a>
+                            <a href="#" onclick="setPreset('analytic-chebyshev'); return false;">\(x^2 - 2\) at \(2\)</a>
+                            <a href="#" onclick="setPreset('analytic-parabolic'); return false;">Parabolic \(x + x^2\)</a>
+                            <a href="#" onclick="setPreset('analytic-nonpos'); return false;">\(x^2 - 2\) at \(-1\)</a>
+                        </div>
+
+                        <div class="results-panel hidden" id="fixedpoint-suggestions-panel">
+                            <div class="result-label">Detected real fixed points on \([-4,4]\)</div>
+                            <div id="fixedpoint-suggestions" class="text-sm"></div>
                         </div>
                     </div>
 
                     <hr>
 
-                    <!-- Solution Panel -->
                     <div id="solution-panel">
-                        <h2>2. Computed Solution \(A(x)\)</h2>
-                        <div class="results-panel" id="solution-results" style="display:none;">
-                            <div class="result-label">\(F(x)\) = <span id="display-F"></span></div>
-                            <div class="result-label">\(A(x)\) = <span id="display-A"></span></div>
-                            <div class="result-label mt-2">Max residual \(|A(A(x)) - F(x)|\) (coefficient-wise):
-                                <span id="display-residual" style="font-weight:700;color:#e74c3c;"></span>
+                        <h2>3. Computed Candidate \(f(x)\)</h2>
+                        <div class="results-panel hidden" id="solution-results">
+                            <div class="result-label">Mode: <span id="display-mode"></span> &nbsp; <span id="status-pill"></span></div>
+                            <div class="result-label mt-2">Target \(F(x)\)</div>
+                            <div class="formula-block" id="display-F"></div>
+                            <div class="result-label mt-2" id="candidate-label">Candidate</div>
+                            <div class="formula-block" id="display-candidate"></div>
+                            <div class="result-label mt-2" id="iterate-label">Verification</div>
+                            <div class="formula-block" id="display-iterate"></div>
+                            <div class="result-label mt-2">Method note</div>
+                            <div class="notice-box" id="display-note"></div>
+                            <div class="result-grid mt-2">
+                                <div>
+                                    <div class="result-label">Max residual / error</div>
+                                    <div class="result-value" id="display-residual"></div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Classification</div>
+                                    <div class="result-value" id="display-classification">Series method</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Chosen fixed point</div>
+                                    <div class="result-value" id="display-fixedpoint">n/a</div>
+                                </div>
                             </div>
-                            <div class="result-label">Coefficient table:</div>
-                            <div style="overflow-x:auto;">
+
+                            <div class="result-label mt-2" id="coeff-table-label">Coefficient data</div>
+                            <div class="table-wrap">
                                 <table id="coeff-table" style="font-size:0.85rem;">
-                                    <thead><tr><th>\(n\)</th><th>\(f_n\)</th><th>\(a_n\)</th><th>Residual</th></tr></thead>
+                                    <thead></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
@@ -145,58 +215,71 @@
 
                     <hr>
 
-                    <!-- Grapher Panel -->
-                    <div id="grapher-panel">
-                        <h2>3. Interactive Grapher</h2>
-                        <p>Compare \(A(x)\), \(A(A(x))\), and \(F(x)\). Drag to pan, use the controls below to adjust the view.</p>
-
-                        <div class="canvas-container">
-                            <canvas id="grapherCanvas" width="700" height="420"></canvas>
-                        </div>
-
-                        <div class="control-panel">
-                            <div class="control-group">
-                                <label for="xmin-input">\(x_{\min}\)</label>
-                                <input type="number" id="xmin-input" value="-2" step="any" style="width:80px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="xmax-input">\(x_{\max}\)</label>
-                                <input type="number" id="xmax-input" value="2" step="any" style="width:80px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="ymin-input">\(y_{\min}\)</label>
-                                <input type="number" id="ymin-input" value="-2" step="any" style="width:80px;">
-                            </div>
-                            <div class="control-group">
-                                <label for="ymax-input">\(y_{\max}\)</label>
-                                <input type="number" id="ymax-input" value="5" step="any" style="width:80px;">
-                            </div>
-                            <button onclick="updateGrapher()" class="secondary" style="align-self:flex-end;">
-                                <i class="fa-solid fa-arrows-alt"></i> Update View
-                            </button>
-                            <button onclick="resetGrapherView()" class="secondary" style="align-self:flex-end;">
-                                <i class="fa-solid fa-rotate"></i> Reset
-                            </button>
-                        </div>
-
-                        <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
-                            <span style="color:#3498db;">&mdash; \(A(x)\)</span> &nbsp;
-                            <span style="color:#2ecc71;">&mdash; \(A(A(x))\)</span> &nbsp;
-                            <span style="color:#e74c3c;">&mdash; \(F(x)\)</span> &nbsp;
-                            <span style="color:#95a5a6;">&mdash; \(y=x\)</span>
+                    <div id="composita-panel">
+                        <h2>4. Composita Triangles</h2>
+                        <p id="composita-intro">
+                            The composita \(F^{\Delta}(n,k) = [x^n]\,F(x)^k\) (Kruchinin &amp; Kruchinin, 2013) is the
+                            coefficient of \(x^n\) in the \(k\)-th power of \(F\). Theorem&nbsp;3 of the 2014 paper turns
+                            \(A(A(x)) = F(x)\) into the triangular recurrence below, from which \(a(n) = A^{\Delta}(n,1)\).
                         </p>
+                        <div class="formula-block" id="composita-formula"></div>
+                        <div class="results-panel hidden" id="composita-results">
+                            <div class="result-label">Composita of the target, \(F^{\Delta}(n,k)\)</div>
+                            <div class="triangle-wrap" id="triangle-F"></div>
+                            <div class="result-label mt-2">Composita of the candidate, \(A^{\Delta}(n,k)\)</div>
+                            <div class="triangle-wrap" id="triangle-A"></div>
+                            <p class="text-sm" style="color:var(--footer-text);" id="composita-foot"></p>
+                        </div>
+                        <div class="notice-box hidden" id="composita-na">
+                            Composita triangles apply to the series method. Switch to <strong>Composita / Paper Mode</strong> to see them.
+                        </div>
                     </div>
 
                     <hr>
 
-                    <!-- Orbit Explorer -->
-                    <div id="orbit-panel">
-                        <h2>4. Orbit Explorer</h2>
+                    <div id="grapher-panel">
+                        <h2>5. Interactive Cobweb Grapher</h2>
                         <p>
-                            Explore the dynamics of \(F(x)\). Enter a starting value \(x_0\) to see the iterates
-                            \(x_{n+1} = F(x_n)\).
+                            Compare \(F\), the candidate \(f\), and the recomposition \(f(f(x))\). <strong>Hover</strong> to
+                            read values, <strong>click</strong> to drop the cobweb start point, <strong>drag</strong> to pan,
+                            and <strong>scroll</strong> to zoom. The orange staircase is the orbit \(x_{n+1}=F(x_n)\).
                         </p>
-                        <div class="control-panel" style="justify-content:flex-start;">
+
+                        <div class="canvas-container">
+                            <div class="grapher-shell">
+                                <canvas id="grapherCanvas"></canvas>
+                                <div class="grapher-readout hidden" id="grapher-readout"></div>
+                            </div>
+                        </div>
+
+                        <div class="grapher-toolbar">
+                            <button class="secondary" onclick="graphPlay()"><i class="fa-solid fa-play"></i> Play orbit</button>
+                            <button class="secondary" onclick="graphZoom(0.8)"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom in</button>
+                            <button class="secondary" onclick="graphZoom(1.25)"><i class="fa-solid fa-magnifying-glass-minus"></i> Zoom out</button>
+                            <button class="secondary" onclick="graphFit()"><i class="fa-solid fa-expand"></i> Fit</button>
+                            <button class="secondary" onclick="resetGrapherView()"><i class="fa-solid fa-rotate"></i> Reset</button>
+                        </div>
+
+                        <p class="graph-legend">
+                            <span style="color:#3498db;">&mdash; candidate \(f(x)\)</span>
+                            <span style="color:#2ecc71;">&mdash; recomposed \(f(f(x))\)</span>
+                            <span style="color:#e74c3c;">&mdash; target \(F(x)\)</span>
+                            <span style="color:#9b59b6;">&#9679; fixed point</span>
+                            <span style="color:#e67e22;">&mdash; orbit cobweb</span>
+                            <span style="color:#95a5a6;">&mdash; \(y=x\)</span>
+                        </p>
+                        <p class="grapher-hint">Tip: the cobweb starts at \(x_0\) from the Orbit Explorer below — click the plot to move it.</p>
+                    </div>
+
+                    <hr>
+
+                    <div id="orbit-panel">
+                        <h2>6. Orbit Explorer</h2>
+                        <p>
+                            Iterate the target dynamics \(x_{n+1} = F(x_n)\). The start \(x_0\) is shared with the cobweb
+                            above, so the table and the staircase always agree.
+                        </p>
+                        <div class="control-panel control-panel-wrap" style="justify-content:flex-start;">
                             <div class="control-group">
                                 <label for="x0-input">\(x_0\)</label>
                                 <input type="number" id="x0-input" value="0.5" step="any" style="width:100px;">
@@ -209,13 +292,41 @@
                                 <i class="fa-solid fa-chart-line"></i> Compute Orbit
                             </button>
                         </div>
-                        <div class="results-panel" id="orbit-results" style="display:none;">
-                            <div style="overflow-x:auto;">
+                        <div class="results-panel hidden" id="orbit-results">
+                            <div class="table-wrap">
                                 <table id="orbit-table" style="font-size:0.85rem;">
                                     <thead><tr><th>\(n\)</th><th>\(x_n\)</th></tr></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="refs-panel">
+                        <h2>7. Method &amp; References</h2>
+                        <p>The two solver modes implement the following constructions:</p>
+                        <ul class="ref-list">
+                            <li><span class="ref-tag">[1]</span> <strong>V. V. Kruchinin, D. V. Kruchinin (2013)</strong>,
+                                <em>Composita and its Properties</em>, arXiv:1103.2582 — defines
+                                \(F^{\Delta}(n,k)=[x^n]F(x)^k\) and the composition law
+                                \(F^{\Delta}(n,k)=\sum_{m=k}^{n} A^{\Delta}(n,m)\,G^{\Delta}(m,k)\) used in Paper Mode.</li>
+                            <li><span class="ref-tag">[2]</span> <strong>D. V. Kruchinin, V. V. Kruchinin (2013)</strong>,
+                                <em>Method for solving an iterative functional equation \(A^{2^n}(x)=F(x)\)</em>,
+                                arXiv:1302.1986 — Theorem&nbsp;3's recurrence for \(A^{\Delta}(n,k)\) and the
+                                repeated-square-root scheme behind the paper depth \(m\).</li>
+                            <li><span class="ref-tag">[3]</span> <strong>G. Koenigs (1884)</strong> — local analytic
+                                linearization \(\sigma(F(x))=\lambda\,\sigma(x)\) near a non-parabolic fixed point, giving
+                                the Analytic Mode half-iterate \(f=\sigma^{-1}(\sqrt{\lambda}\,\sigma)\).</li>
+                            <li><span class="ref-tag">[4]</span> <strong>Kuczma, Choczewski, Ger (1990)</strong>,
+                                <em>Iterative Functional Equations</em> — the structural background; see the
+                                <a href="bibliography.html">Bibliography</a> for the full list.</li>
+                        </ul>
+                        <div class="keypoint">
+                            <strong>Integer footnote (Cor. 7 of&nbsp;[2]).</strong> If \(F\) has integer coefficients with
+                            \(f(1)=1\), then \(A(A(x))=\tfrac14 F(4x)\) has integer coefficients — which is why presets
+                            like \(x+16x^2\) yield clean integer series \(a(n)\).
                         </div>
                     </div>
 
@@ -225,9 +336,7 @@
             <div class="nextPage">
                 <a href="composita.html">Next: Composita Calculator <i class="fa-solid fa-angles-right"></i></a>
             </div>
-
         </section>
-
     </div>
 
     <footer>
@@ -248,308 +357,695 @@
 
     <script src="js/engine.js"></script>
     <script>
-        // ----- Solver state -----
-        let solverResult = null;
-        let fCoeffsInput = null;
+        'use strict';
 
-        // ----- Presets -----
+        // ---------- State ----------
+        const COEF_IDS = ['c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6'];
+        const solverState = {
+            mode: 'series',
+            targetCoeffs: [0, 1, 0, 1, 0, 0, 0],
+            seriesResult: null,
+            analyticResult: null,
+        };
+        const graph = {
+            view: { xMin: -2, xMax: 2, yMin: -2, yMax: 5 },
+            x0: 0.5,
+            steps: 10,
+            visibleSteps: 10,
+            anim: null,
+            hover: null,
+            drag: null,
+        };
+        let liveTimer = null;
+
+        // ---------- KaTeX helpers ----------
+        function renderTex(el, latex, display) {
+            if (!window.katex) { el.textContent = latex; return; }
+            try {
+                window.katex.render(latex, el, { displayMode: !!display, throwOnError: false, errorColor: '#e74c3c' });
+            } catch (e) {
+                el.textContent = latex;
+            }
+        }
+
+        // ---------- Build coefficient grid (number + slider) ----------
+        function buildCoefGrid() {
+            const grid = document.getElementById('coef-grid');
+            const defaults = solverState.targetCoeffs;
+            grid.innerHTML = COEF_IDS.map(function (id, i) {
+                const v = defaults[i] || 0;
+                return (
+                    '<div class="coef-cell">' +
+                    '<label for="' + id + '-input">c<sub>' + i + '</sub></label>' +
+                    '<input type="number" id="' + id + '-input" value="' + v + '" step="any">' +
+                    '<input type="range" id="' + id + '-range" min="-5" max="5" step="0.1" value="' + v + '">' +
+                    '</div>'
+                );
+            }).join('');
+            COEF_IDS.forEach(function (id) {
+                const num = document.getElementById(id + '-input');
+                const range = document.getElementById(id + '-range');
+                num.addEventListener('input', function () {
+                    if (Number.isFinite(parseFloat(num.value))) range.value = num.value;
+                    onInputChanged();
+                });
+                range.addEventListener('input', function () {
+                    num.value = range.value;
+                    onInputChanged();
+                });
+            });
+        }
+
+        function syncRangesFromNumbers() {
+            COEF_IDS.forEach(function (id) {
+                const num = document.getElementById(id + '-input');
+                const range = document.getElementById(id + '-range');
+                if (range && Number.isFinite(parseFloat(num.value))) range.value = num.value;
+            });
+        }
+
+        // ---------- Mode + presets ----------
+        function setMode(mode) {
+            solverState.mode = mode;
+            document.getElementById('mode-series').classList.toggle('active', mode === 'series');
+            document.getElementById('mode-analytic').classList.toggle('active', mode === 'analytic');
+            document.getElementById('series-controls').classList.toggle('hidden', mode !== 'series');
+            document.getElementById('analytic-controls').classList.toggle('hidden', mode !== 'analytic');
+            document.getElementById('series-presets').classList.toggle('hidden', mode !== 'series');
+            document.getElementById('analytic-presets').classList.toggle('hidden', mode !== 'analytic');
+            document.getElementById('fixedpoint-suggestions-panel').classList.add('hidden');
+            document.getElementById('composita-results').classList.toggle('hidden', mode !== 'series');
+            document.getElementById('composita-na').classList.toggle('hidden', mode === 'series');
+            document.getElementById('composita-intro').classList.toggle('hidden', mode !== 'series');
+            document.getElementById('composita-formula').classList.toggle('hidden', mode !== 'series');
+
+            const desc = document.getElementById('mode-description');
+            if (mode === 'series') {
+                desc.innerHTML =
+                    '<strong>Composita / Paper Mode.</strong> Solves ' +
+                    '<span id="md-1"></span> by the triangular composita recurrence of Kruchinin &amp; Kruchinin, ' +
+                    'computing the series \(A(x)\) with <span id="md-2"></span>.';
+                window.katexRender && window.katexRender(desc);
+                renderTex(document.getElementById('md-1'), 'A^{\\circ 2^m}(x) = F(x)', false);
+                renderTex(document.getElementById('md-2'), 'a(n) = A^{\\Delta}(n,1)', false);
+                renderTex(document.getElementById('composita-formula'),
+                    'A^{\\Delta}(n,k)=\\begin{cases} f(1)^{n/2}, & n=k,\\\\[4pt] ' +
+                    '\\dfrac{1}{f(1)^{n/2}+f(1)^{k/2}}\\!\\left(F^{\\Delta}(n,k)-\\!\\!\\sum_{m=k+1}^{n-1}\\!A^{\\Delta}(n,m)\\,A^{\\Delta}(m,k)\\right), & n>k.\\end{cases}',
+                    true);
+            } else {
+                desc.innerHTML =
+                    '<strong>Analytic Fixed-Point Mode.</strong> Near a chosen real fixed point with multiplier ' +
+                    '<span id="md-1"></span>, when <span id="md-2"></span>, it builds the Schr&ouml;der coordinate and returns ' +
+                    '<span id="md-3"></span>.';
+                window.katexRender && window.katexRender(desc);
+                renderTex(document.getElementById('md-1'), '\\lambda = F\'(x_0)', false);
+                renderTex(document.getElementById('md-2'), '\\lambda > 0,\\ \\lambda \\neq 1', false);
+                renderTex(document.getElementById('md-3'), 'f = \\sigma^{-1}\\!\\big(\\sqrt{\\lambda}\\,\\sigma\\big)', false);
+            }
+        }
+
+        function setCoefficients(values) {
+            COEF_IDS.forEach(function (id, index) {
+                document.getElementById(id + '-input').value = values[index] || 0;
+            });
+            syncRangesFromNumbers();
+        }
+
         function setPreset(name) {
-            // Note: The composita method requires polynomials with f(0)=0 and f(1)>0.
             const presets = {
-                'x+x2':    { f1: 1,  f2: 1, f3: 0, f4: 0, f5: 0, label: 'x+x^2' },
-                'x+2x2+x3': { f1: 1, f2: 2, f3: 1, f4: 0, f5: 0, label: 'x+2x^2+x^3' },
-                'x+x3':    { f1: 1,  f2: 0, f3: 1, f4: 0, f5: 0, label: 'x+x^3' },
-                '2x+x2':   { f1: 2,  f2: 1, f3: 0, f4: 0, f5: 0, label: '2x+x^2' }
+                'x+x2': { coeffs: [0, 1, 1, 0, 0, 0, 0], mode: 'series', depth: 1, maxN: 8 },
+                'x+16x2': { coeffs: [0, 1, 16, 0, 0, 0, 0], mode: 'series', depth: 1, maxN: 8 },
+                'x1p2x2': { coeffs: [0, 1, 4, 4, 0, 0, 0], mode: 'series', depth: 1, maxN: 8 },
+                'x+x3': { coeffs: [0, 1, 0, 1, 0, 0, 0], mode: 'series', depth: 1, maxN: 8 },
+                'quad4': { coeffs: [0, 1, 16, 0, 0, 0, 0], mode: 'series', depth: 2, maxN: 8 },
+                'analytic-attracting': { coeffs: [0, 0.5, 0.1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.5 },
+                'analytic-repelling': { coeffs: [0, 2, 1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.4 },
+                'analytic-chebyshev': { coeffs: [-2, 0, 1, 0, 0, 0, 0], mode: 'analytic', x0: 2, order: 8, radius: 0.35 },
+                'analytic-parabolic': { coeffs: [0, 1, 1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.35 },
+                'analytic-nonpos': { coeffs: [-2, 0, 1, 0, 0, 0, 0], mode: 'analytic', x0: -1, order: 8, radius: 0.35 },
             };
-            const p = presets[name];
-            if (!p) return;
-            document.getElementById('f1-input').value = p.f1;
-            document.getElementById('f2-input').value = p.f2;
-            document.getElementById('f3-input').value = p.f3;
-            document.getElementById('f4-input').value = p.f4;
-            document.getElementById('f5-input').value = p.f5;
+            const preset = presets[name];
+            if (!preset) return;
+            setMode(preset.mode);
+            setCoefficients(preset.coeffs);
+            if (preset.depth !== undefined) document.getElementById('depth-input').value = preset.depth;
+            if (preset.maxN !== undefined) document.getElementById('maxn-input').value = preset.maxN;
+            if (preset.x0 !== undefined) document.getElementById('fixedpoint-input').value = preset.x0;
+            if (preset.order !== undefined) document.getElementById('analytic-order-input').value = preset.order;
+            if (preset.radius !== undefined) document.getElementById('analytic-radius-input').value = preset.radius;
+            updateLiveFormula();
             solveEquation();
         }
 
-        // ----- Solve -----
-        function solveEquation() {
-            const statusEl = document.getElementById('solve-status');
-            statusEl.textContent = 'Computing...';
-            document.getElementById('solve-btn').disabled = true;
-
-            setTimeout(function() {
-                try {
-                    const f1 = parseFloat(document.getElementById('f1-input').value) || 0;
-                    const f2 = parseFloat(document.getElementById('f2-input').value) || 0;
-                    const f3 = parseFloat(document.getElementById('f3-input').value) || 0;
-                    const f4 = parseFloat(document.getElementById('f4-input').value) || 0;
-                    const f5 = parseFloat(document.getElementById('f5-input').value) || 0;
-                    const maxN = parseInt(document.getElementById('maxn-input').value) || 10;
-
-                    // Build coefficient array (1-indexed)
-                    const fCoeffsRaw = [0, f1, f2, f3, f4, f5];
-                    // Pad to maxN+1
-                    const fCoeffs = [0];
-                    for (let i = 1; i <= maxN; i++) {
-                        fCoeffs[i] = (i < fCoeffsRaw.length) ? fCoeffsRaw[i] : 0;
-                    }
-
-                    fCoeffsInput = fCoeffs;
-
-                    const result = Engine.solveHalfIterate(fCoeffs, maxN);
-                    if (result.error) {
-                        statusEl.textContent = 'Error: ' + result.error;
-                        document.getElementById('solve-btn').disabled = false;
-                        return;
-                    }
-
-                    solverResult = result;
-
-                    // Display
-                    document.getElementById('solution-results').style.display = 'block';
-
-                    // F(x) display
-                    let fStr = '';
-                    for (let i = 1; i <= maxN; i++) {
-                        if (fCoeffs[i] !== 0 || i === 1) {
-                            const sign = fCoeffs[i] >= 0 ? (i === 1 ? '' : '+') : '';
-                            fStr += `${sign}${fCoeffs[i].toFixed(4)}x^{${i}}`;
-                        }
-                    }
-                    document.getElementById('display-F').textContent = fStr;
-
-                    // A(x) display
-                    let aStr = '';
-                    const a = result.coefficients;
-                    for (let i = 0; i < a.length; i++) {
-                        if (a[i] !== 0 || i === 0) {
-                            const sign = a[i] >= 0 ? (i === 0 ? '' : '+') : '';
-                            aStr += `${sign}${a[i].toFixed(6)}x^{${i+1}}`;
-                        }
-                    }
-                    document.getElementById('display-A').textContent = aStr;
-
-                    // Residual
-                    document.getElementById('display-residual').textContent =
-                        result.maxResidual.toExponential(4);
-
-                    // Coefficient table
-                    const tbody = document.querySelector('#coeff-table tbody');
-                    tbody.innerHTML = '';
-                    for (let n = 1; n <= maxN; n++) {
-                        const row = tbody.insertRow();
-                        row.insertCell(0).textContent = n;
-                        row.insertCell(1).textContent = (fCoeffs[n] || 0).toFixed(6);
-                        row.insertCell(2).textContent = (a[n-1] || 0).toFixed(6);
-                        row.insertCell(3).textContent = (result.residuals[n-1] || 0).toExponential(4);
-                    }
-
-                    statusEl.textContent = 'Done.';
-                    updateGrapher();
-                } catch (e) {
-                    statusEl.textContent = 'Error: ' + e.message;
-                }
-                document.getElementById('solve-btn').disabled = false;
-            }, 30);
+        function readTargetCoeffs(maxDegree) {
+            const coeffs = [];
+            for (let i = 0; i <= 6; i += 1) {
+                coeffs[i] = parseFloat(document.getElementById('c' + i + '-input').value) || 0;
+            }
+            return Engine.normalizeInputCoeffs(coeffs, maxDegree !== undefined ? maxDegree : 6);
         }
 
-        // ----- Canvas Grapher -----
-        function updateGrapher() {
+        function updateLiveFormula() {
+            const coeffs = readTargetCoeffs(6);
+            renderTex(document.getElementById('live-formula'),
+                'F(x) = ' + Engine.formatPolynomialLatex(coeffs, { maxDegree: 6, precision: 6 }), true);
+        }
+
+        function onInputChanged() {
+            updateLiveFormula();
+            if (document.getElementById('live-toggle').checked) {
+                clearTimeout(liveTimer);
+                liveTimer = setTimeout(solveEquation, 130);
+            }
+        }
+
+        // ---------- Fixed point suggestions ----------
+        function suggestFixedPoints() {
+            const coeffs = readTargetCoeffs(6);
+            const points = Engine.approximateRealFixedPoints(coeffs, -4, 4);
+            const panel = document.getElementById('fixedpoint-suggestions-panel');
+            const container = document.getElementById('fixedpoint-suggestions');
+            panel.classList.remove('hidden');
+            if (!points.length) {
+                container.textContent = 'No real fixed point was detected on the search interval.';
+                return;
+            }
+            container.innerHTML = points.map(function (item) {
+                const xText = Engine.formatNumber(item.x, 6);
+                const slopeText = Engine.formatNumber(item.derivative, 6);
+                return '<button class="chip-button" onclick="useSuggestedFixedPoint(' + item.x + ')">x0 = ' + xText + ', F\'(x0) = ' + slopeText + '</button>';
+            }).join(' ');
+        }
+
+        function useSuggestedFixedPoint(value) {
+            document.getElementById('fixedpoint-input').value = value.toFixed(6);
+            if (document.getElementById('live-toggle').checked) solveEquation();
+        }
+
+        // ---------- Solve ----------
+        function solveEquation() {
+            const statusEl = document.getElementById('solve-status');
+            try {
+                const maxDegree = parseInt(document.getElementById('maxn-input').value, 10) || 8;
+                const coeffs = readTargetCoeffs(Math.max(6, maxDegree));
+                solverState.targetCoeffs = coeffs;
+                if (solverState.mode === 'series') {
+                    const depth = parseInt(document.getElementById('depth-input').value, 10) || 1;
+                    const result = Engine.solveIteratePowerSeries(coeffs, maxDegree, depth);
+                    if (result.error) throw new Error(result.error);
+                    solverState.seriesResult = result;
+                    solverState.analyticResult = null;
+                    renderSeriesResults(coeffs, result, maxDegree);
+                    renderCompositaTriangles(coeffs, result, maxDegree);
+                } else {
+                    const x0 = parseFloat(document.getElementById('fixedpoint-input').value);
+                    const order = parseInt(document.getElementById('analytic-order-input').value, 10) || 8;
+                    const radius = parseFloat(document.getElementById('analytic-radius-input').value) || 0.35;
+                    const result = Engine.solveSchroederHalfIterate(coeffs, x0, order);
+                    result.radius = radius;
+                    result.fixedPoint = x0;
+                    solverState.analyticResult = result;
+                    solverState.seriesResult = null;
+                    renderAnalyticResults(coeffs, result, order);
+                }
+                document.getElementById('solution-results').classList.remove('hidden');
+                graphFit(true);
+                drawGraph();
+                statusEl.innerHTML = '<span class="pill pill-ok">updated</span>';
+            } catch (error) {
+                statusEl.innerHTML = '<span class="pill pill-err">' + error.message + '</span>';
+            }
+        }
+
+        function setStatusPill(kind, text) {
+            const cls = kind === 'ok' ? 'pill-ok' : kind === 'warn' ? 'pill-warn' : 'pill-info';
+            document.getElementById('status-pill').innerHTML = '<span class="pill ' + cls + '">' + text + '</span>';
+        }
+
+        function renderSeriesResults(coeffs, result, maxDegree) {
+            document.getElementById('display-mode').textContent = 'Composita / Paper Mode';
+            const intCoeffs = result.coefficients.slice(1, maxDegree + 1).every(function (c) {
+                return Math.abs(c - Math.round(c)) < 1e-9;
+            });
+            setStatusPill(intCoeffs ? 'ok' : 'info', intCoeffs ? 'integer series' : 'series root');
+            renderTex(document.getElementById('display-F'), 'F(x) = ' + Engine.formatPolynomialLatex(coeffs, { maxDegree: maxDegree, precision: 6 }), true);
+            document.getElementById('candidate-label').textContent = 'Candidate — A(x)';
+            renderTex(document.getElementById('display-candidate'), 'A(x) = ' + Engine.formatPolynomialLatex(result.coefficients, { maxDegree: maxDegree, precision: 6 }), true);
+            document.getElementById('iterate-label').textContent = 'Verification';
+            renderTex(document.getElementById('display-iterate'), 'A^{\\circ ' + result.iterateCount + '}(x) \\approx ' + Engine.formatPolynomialLatex(result.recomposed, { maxDegree: maxDegree, precision: 6 }), true);
+            document.getElementById('display-note').textContent = result.note;
+            document.getElementById('display-residual').textContent = result.maxResidual.toExponential(4);
+            document.getElementById('display-classification').textContent = 'Paper-backed series root';
+            document.getElementById('display-fixedpoint').textContent = 'n/a';
+
+            document.getElementById('coeff-table-label').textContent = 'Coefficient comparison';
+            const thead = document.querySelector('#coeff-table thead');
+            const tbody = document.querySelector('#coeff-table tbody');
+            thead.innerHTML = '<tr><th>n</th><th>target f(n)</th><th>candidate a(n)</th><th>recomposed</th><th>residual</th></tr>';
+            tbody.innerHTML = '';
+            for (let n = 1; n <= maxDegree; n += 1) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = n;
+                row.insertCell(1).textContent = Engine.formatNumber(coeffs[n] || 0, 6);
+                row.insertCell(2).textContent = Engine.formatNumber(result.coefficients[n] || 0, 6);
+                row.insertCell(3).textContent = Engine.formatNumber(result.recomposed[n] || 0, 6);
+                row.insertCell(4).textContent = (result.residuals[n - 1] || 0).toExponential(3);
+            }
+        }
+
+        function renderAnalyticResults(coeffs, result, order) {
+            document.getElementById('display-mode').textContent = 'Analytic Fixed-Point Mode';
+            renderTex(document.getElementById('display-F'), 'F(x) = ' + Engine.formatPolynomialLatex(coeffs, { maxDegree: coeffs.length - 1, precision: 6 }), true);
+            document.getElementById('candidate-label').textContent = 'Candidate — local half-iterate';
+            document.getElementById('display-classification').textContent = result.classification ? result.classification.label : 'n/a';
+            document.getElementById('display-fixedpoint').textContent = Number.isFinite(result.fixedPoint) ? Engine.formatNumber(result.fixedPoint, 6) : 'n/a';
+
+            if (!result.supported) {
+                setStatusPill('warn', 'unsupported here');
+                renderTex(document.getElementById('display-candidate'), '\\text{No stable real local half-iterate in this mode.}', true);
+                if (result.classification) {
+                    renderTex(document.getElementById('display-iterate'), '\\lambda = F\'(x_0) = ' + Engine.formatNumber(result.classification.lambda, 6), true);
+                } else {
+                    renderTex(document.getElementById('display-iterate'), '\\text{Classification unavailable}', true);
+                }
+                document.getElementById('display-note').textContent = result.note || 'Unsupported analytic case.';
+                document.getElementById('display-residual').textContent = 'n/a';
+            } else {
+                setStatusPill('ok', 'half-iterate found');
+                renderTex(document.getElementById('display-candidate'), 'f(x) = ' + Engine.formatShiftedPolynomialLatex(result.localFunctionCoeffs, result.fixedPoint, { precision: 6 }), true);
+                renderTex(document.getElementById('display-iterate'), 'f(f(x)) \\approx F(x) \\quad \\text{near } x_0 = ' + Engine.formatNumber(result.fixedPoint, 6), true);
+                document.getElementById('display-note').textContent = result.note;
+                document.getElementById('display-residual').textContent = result.verification.maxError.toExponential(4);
+            }
+
+            document.getElementById('coeff-table-label').textContent = 'Local Schröder data';
+            const thead = document.querySelector('#coeff-table thead');
+            const tbody = document.querySelector('#coeff-table tbody');
+            thead.innerHTML = '<tr><th>degree</th><th>shifted F(x₀+y)−x₀</th><th>local half-iterate</th><th>Koenigs σ</th></tr>';
+            tbody.innerHTML = '';
+            const localTarget = result.localModelCoeffs || [];
+            const localHalf = result.localFunctionCoeffs || [];
+            const koenigs = result.koenigsCoeffs || [];
+            for (let n = 1; n <= order; n += 1) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = n;
+                row.insertCell(1).textContent = Engine.formatNumber(localTarget[n] || 0, 6);
+                row.insertCell(2).textContent = Engine.formatNumber(localHalf[n] || 0, 6);
+                row.insertCell(3).textContent = Engine.formatNumber(koenigs[n] || 0, 6);
+            }
+        }
+
+        // ---------- Composita triangles ----------
+        function renderTriangle(containerId, table, maxN, f1) {
+            const rows = [];
+            for (let n = 1; n <= maxN; n += 1) {
+                const cells = ['<td class="tri-head">' + n + '</td>'];
+                for (let k = 1; k <= n; k += 1) {
+                    const v = table[n] && table[n][k] !== undefined ? table[n][k] : 0;
+                    const cls = k === n ? 'tri-diag' : '';
+                    cells.push('<td class="' + cls + '">' + Engine.formatNumber(v, 4) + '</td>');
+                }
+                rows.push('<tr>' + cells.join('') + '</tr>');
+            }
+            const header = ['<td class="tri-empty"></td>'];
+            for (let k = 1; k <= maxN; k += 1) header.push('<td class="tri-head">k=' + k + '</td>');
+            document.getElementById(containerId).innerHTML =
+                '<table class="triangle"><tbody><tr>' + header.join('') + '</tr>' + rows.join('') + '</tbody></table>';
+        }
+
+        function renderCompositaTriangles(coeffs, result, maxDegree) {
+            const triN = Math.min(maxDegree, 8);
+            const Ftable = Engine.compositaTable(Engine.normalizeInputCoeffs(coeffs, triN), triN);
+            const Atable = Engine.compositaTable(Engine.normalizeInputCoeffs(result.coefficients, triN), triN);
+            renderTriangle('triangle-F', Ftable, triN);
+            renderTriangle('triangle-A', Atable, triN);
+            document.getElementById('composita-foot').textContent =
+                'Diagonal entries are f(1)ⁿ and a(1)ⁿ respectively; the first column gives the coefficients a(n) = A^Δ(n,1). Shown to degree ' + triN + '.';
+        }
+
+        // ---------- Candidate evaluators ----------
+        function getCandidateFunction() {
+            if (solverState.mode === 'series' && solverState.seriesResult) {
+                return function (x) { return Engine.evalPolynomial(solverState.seriesResult.coefficients, x); };
+            }
+            if (solverState.mode === 'analytic' && solverState.analyticResult && solverState.analyticResult.supported) {
+                return solverState.analyticResult.evaluator;
+            }
+            return null;
+        }
+        function getRecomposedFunction() {
+            if (solverState.mode === 'series' && solverState.seriesResult) {
+                return function (x) { return Engine.evalPolynomial(solverState.seriesResult.recomposed, x); };
+            }
+            if (solverState.mode === 'analytic' && solverState.analyticResult && solverState.analyticResult.supported) {
+                const f = solverState.analyticResult.evaluator;
+                return function (x) { return f(f(x)); };
+            }
+            return null;
+        }
+
+        // ---------- Interactive grapher ----------
+        function graphCtx() {
             const canvas = document.getElementById('grapherCanvas');
+            const cssW = Math.max(280, canvas.clientWidth || 700);
+            const cssH = Math.round(Math.min(480, Math.max(320, cssW * 0.62)));
+            const dpr = window.devicePixelRatio || 1;
+            if (canvas.width !== Math.round(cssW * dpr) || canvas.height !== Math.round(cssH * dpr)) {
+                canvas.width = Math.round(cssW * dpr);
+                canvas.height = Math.round(cssH * dpr);
+                canvas.style.height = cssH + 'px';
+            }
             const ctx = canvas.getContext('2d');
-            const W = canvas.width, H = canvas.height;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            return { ctx: ctx, W: cssW, H: cssH };
+        }
 
-            const xMin = parseFloat(document.getElementById('xmin-input').value);
-            const xMax = parseFloat(document.getElementById('xmax-input').value);
-            const yMin = parseFloat(document.getElementById('ymin-input').value);
-            const yMax = parseFloat(document.getElementById('ymax-input').value);
+        function cssVar(name, fallback) {
+            const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+            return v || fallback;
+        }
 
-            // Coordinate transforms
-            const toX = function(x) { return (x - xMin) / (xMax - xMin) * W; };
-            const toY = function(y) { return H - (y - yMin) / (yMax - yMin) * H; };
+        function drawGraph() {
+            const c = graphCtx();
+            const ctx = c.ctx;
+            const W = c.W;
+            const H = c.H;
+            const v = graph.view;
+            const toX = function (x) { return (x - v.xMin) / (v.xMax - v.xMin) * W; };
+            const toY = function (y) { return H - (y - v.yMin) / (v.yMax - v.yMin) * H; };
+            const target = function (x) { return Engine.evalPolynomial(solverState.targetCoeffs, x); };
+            const candidate = getCandidateFunction();
+            const recomposed = getRecomposedFunction();
 
             ctx.clearRect(0, 0, W, H);
-            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--box-bg').trim() || '#fff';
+            ctx.fillStyle = cssVar('--box-bg', '#fff');
             ctx.fillRect(0, 0, W, H);
 
-            // Grid
-            ctx.strokeStyle = '#e8e8e8';
+            // grid
+            ctx.strokeStyle = cssVar('--border-color', '#ddd');
+            ctx.globalAlpha = 0.5;
             ctx.lineWidth = 0.5;
-            const xStep = (xMax - xMin) / 10;
-            const yStep = (yMax - yMin) / 10;
-            for (let i = 0; i <= 10; i++) {
-                const x = xMin + i * xStep;
-                ctx.beginPath();
-                ctx.moveTo(toX(x), 0);
-                ctx.lineTo(toX(x), H);
-                ctx.stroke();
-                const y = yMin + i * yStep;
-                ctx.beginPath();
-                ctx.moveTo(0, toY(y));
-                ctx.lineTo(W, toY(y));
-                ctx.stroke();
+            for (let i = 0; i <= 10; i += 1) {
+                const gx = v.xMin + (v.xMax - v.xMin) * i / 10;
+                ctx.beginPath(); ctx.moveTo(toX(gx), 0); ctx.lineTo(toX(gx), H); ctx.stroke();
+                const gy = v.yMin + (v.yMax - v.yMin) * i / 10;
+                ctx.beginPath(); ctx.moveTo(0, toY(gy)); ctx.lineTo(W, toY(gy)); ctx.stroke();
             }
+            ctx.globalAlpha = 1;
 
-            // Axes
-            ctx.strokeStyle = '#666';
+            // axes
+            ctx.strokeStyle = cssVar('--footer-text', '#777');
             ctx.lineWidth = 1;
-            // x-axis
-            if (yMin <= 0 && yMax >= 0) {
-                ctx.beginPath();
-                ctx.moveTo(0, toY(0));
-                ctx.lineTo(W, toY(0));
-                ctx.stroke();
-            }
-            // y-axis
-            if (xMin <= 0 && xMax >= 0) {
-                ctx.beginPath();
-                ctx.moveTo(toX(0), 0);
-                ctx.lineTo(toX(0), H);
-                ctx.stroke();
-            }
+            if (v.yMin <= 0 && v.yMax >= 0) { ctx.beginPath(); ctx.moveTo(0, toY(0)); ctx.lineTo(W, toY(0)); ctx.stroke(); }
+            if (v.xMin <= 0 && v.xMax >= 0) { ctx.beginPath(); ctx.moveTo(toX(0), 0); ctx.lineTo(toX(0), H); ctx.stroke(); }
 
-            // Axis labels
-            ctx.fillStyle = '#888';
-            ctx.font = '11px sans-serif';
-            ctx.textAlign = 'center';
-            for (let i = 0; i <= 10; i++) {
-                const x = xMin + i * xStep;
-                ctx.fillText(x.toFixed(1), toX(x), toY(0) + (yMin <= 0 && yMax >= 0 ? 15 : H - 5));
-            }
-            ctx.textAlign = 'right';
-            for (let i = 0; i <= 10; i++) {
-                const y = yMin + i * yStep;
-                ctx.fillText(y.toFixed(1), toX(0) - (xMin <= 0 && xMax >= 0 ? 5 : -W + 40), toY(y) + 4);
-            }
-
-            // Draw line y = x
+            // y = x
             ctx.strokeStyle = '#95a5a6';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 6]);
-            ctx.beginPath();
-            ctx.moveTo(toX(Math.max(xMin, yMin)), toY(Math.max(xMin, yMin)));
-            ctx.lineTo(toX(Math.min(xMax, yMax)), toY(Math.min(xMax, yMax)));
-            ctx.stroke();
+            ctx.setLineDash([5, 5]);
+            const lo = Math.max(v.xMin, v.yMin); const hi = Math.min(v.xMax, v.yMax);
+            ctx.beginPath(); ctx.moveTo(toX(lo), toY(lo)); ctx.lineTo(toX(hi), toY(hi)); ctx.stroke();
             ctx.setLineDash([]);
 
-            // Draw F(x)
-            if (fCoeffsInput) {
-                ctx.strokeStyle = '#e74c3c';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                let first = true;
-                for (let px = 0; px <= W; px++) {
-                    const x = xMin + (px / W) * (xMax - xMin);
-                    const y = Engine.evalPolynomial(fCoeffsInput.slice(1), x);
-                    if (!isFinite(y)) { first = true; continue; }
-                    const py = toY(y);
-                    if (py < -1000 || py > H + 1000) { first = true; continue; }
-                    if (first) { ctx.moveTo(px, py); first = false; }
-                    else { ctx.lineTo(px, py); }
-                }
-                ctx.stroke();
-            }
+            // curves
+            drawCurve(ctx, target, v, W, H, toX, toY, '#e74c3c', 2, []);
+            if (candidate) drawCurve(ctx, candidate, v, W, H, toX, toY, '#3498db', 2, []);
+            if (recomposed) drawCurve(ctx, recomposed, v, W, H, toX, toY, '#2ecc71', 2, [7, 4]);
 
-            // Draw A(x) and A(A(x))
-            if (solverResult && solverResult.coefficients) {
-                const a = solverResult.coefficients;
-                const aTable = solverResult.compositaTable;
-
-                // A(x)
-                ctx.strokeStyle = '#3498db';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                let first = true;
-                for (let px = 0; px <= W; px++) {
-                    const x = xMin + (px / W) * (xMax - xMin);
-                    const y = Engine.evalPolynomial(a, x);
-                    if (!isFinite(y)) { first = true; continue; }
-                    const py = toY(y);
-                    if (py < -1000 || py > H + 1000) { first = true; continue; }
-                    if (first) { ctx.moveTo(px, py); first = false; }
-                    else { ctx.lineTo(px, py); }
+            // fixed points of F
+            const fps = Engine.approximateRealFixedPoints(solverState.targetCoeffs, v.xMin - 0.5, v.xMax + 0.5);
+            ctx.fillStyle = '#9b59b6';
+            fps.forEach(function (p) {
+                if (p.x >= v.xMin && p.x <= v.xMax) {
+                    ctx.beginPath(); ctx.arc(toX(p.x), toY(p.x), 4.5, 0, 2 * Math.PI); ctx.fill();
                 }
-                ctx.stroke();
+            });
 
-                // A(A(x))
-                ctx.strokeStyle = '#2ecc71';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([6, 3]);
-                ctx.beginPath();
-                first = true;
-                for (let px = 0; px <= W; px++) {
-                    const x = xMin + (px / W) * (xMax - xMin);
-                    const y = Engine.evalComposition(a, aTable, x);
-                    if (!isFinite(y)) { first = true; continue; }
-                    const py = toY(y);
-                    if (py < -1000 || py > H + 1000) { first = true; continue; }
-                    if (first) { ctx.moveTo(px, py); first = false; }
-                    else { ctx.lineTo(px, py); }
-                }
-                ctx.stroke();
+            // cobweb of F from x0
+            drawCobweb(ctx, target, v, toX, toY);
+
+            // hover crosshair
+            if (graph.hover) {
+                const hx = graph.hover.x;
+                ctx.strokeStyle = cssVar('--footer-text', '#777');
+                ctx.globalAlpha = 0.45;
+                ctx.setLineDash([2, 3]);
+                ctx.beginPath(); ctx.moveTo(toX(hx), 0); ctx.lineTo(toX(hx), H); ctx.stroke();
                 ctx.setLineDash([]);
+                ctx.globalAlpha = 1;
+                markDot(ctx, toX(hx), toY(target(hx)), '#e74c3c');
+                if (candidate) markDot(ctx, toX(hx), toY(candidate(hx)), '#3498db');
             }
+        }
+
+        function markDot(ctx, px, py, color) {
+            if (!Number.isFinite(py)) return;
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(px, py, 3.5, 0, 2 * Math.PI); ctx.fill();
+        }
+
+        function drawCurve(ctx, fn, v, W, H, toX, toY, color, width, dash) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.setLineDash(dash || []);
+            ctx.beginPath();
+            let first = true;
+            const span = v.yMax - v.yMin;
+            for (let px = 0; px <= W; px += 1) {
+                const x = v.xMin + (v.xMax - v.xMin) * (px / W);
+                const y = fn(x);
+                if (!Number.isFinite(y) || y < v.yMin - 3 * span || y > v.yMax + 3 * span) { first = true; continue; }
+                const py = toY(y);
+                if (first) { ctx.moveTo(px, py); first = false; } else { ctx.lineTo(px, py); }
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawCobweb(ctx, F, v, toX, toY) {
+            const n = Math.max(0, Math.min(graph.visibleSteps, graph.steps));
+            if (n <= 0) return;
+            ctx.strokeStyle = '#e67e22';
+            ctx.lineWidth = 1.4;
+            ctx.globalAlpha = 0.9;
+            let x = graph.x0;
+            ctx.beginPath();
+            ctx.moveTo(toX(x), toY(x));
+            for (let i = 0; i < n; i += 1) {
+                const y = F(x);
+                if (!Number.isFinite(y)) break;
+                ctx.lineTo(toX(x), toY(y));   // vertical to curve
+                ctx.lineTo(toX(y), toY(y));   // horizontal to diagonal
+                x = y;
+            }
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            // start marker
+            ctx.fillStyle = '#e67e22';
+            ctx.beginPath(); ctx.arc(toX(graph.x0), toY(graph.x0), 4, 0, 2 * Math.PI); ctx.fill();
+        }
+
+        // ---------- Grapher view controls ----------
+        function graphFit(soft) {
+            if (solverState.mode === 'analytic' && solverState.analyticResult && Number.isFinite(solverState.analyticResult.fixedPoint)) {
+                const x0 = solverState.analyticResult.fixedPoint;
+                const r = (solverState.analyticResult.radius || 0.35) + 0.15;
+                graph.view = { xMin: x0 - r, xMax: x0 + r, yMin: x0 - r, yMax: x0 + r + 0.4 };
+                if (!soft) drawGraph();
+                return;
+            }
+            // series / default: sample target to bound y
+            const xMin = -2.2; const xMax = 2.2;
+            let yLo = Infinity; let yHi = -Infinity;
+            for (let i = 0; i <= 40; i += 1) {
+                const x = xMin + (xMax - xMin) * i / 40;
+                const y = Engine.evalPolynomial(solverState.targetCoeffs, x);
+                if (Number.isFinite(y)) { yLo = Math.min(yLo, y, x); yHi = Math.max(yHi, y, x); }
+            }
+            if (!Number.isFinite(yLo)) { yLo = -2; yHi = 5; }
+            const pad = 0.15 * (yHi - yLo || 1);
+            graph.view = { xMin: xMin, xMax: xMax, yMin: yLo - pad, yMax: yHi + pad };
+            if (!soft) drawGraph();
         }
 
         function resetGrapherView() {
-            document.getElementById('xmin-input').value = '-2';
-            document.getElementById('xmax-input').value = '2';
-            document.getElementById('ymin-input').value = '-2';
-            document.getElementById('ymax-input').value = '5';
-            updateGrapher();
+            graph.x0 = parseFloat(document.getElementById('x0-input').value) || 0.5;
+            graph.steps = parseInt(document.getElementById('steps-input').value, 10) || 10;
+            graph.visibleSteps = graph.steps;
+            graphFit();
         }
 
-        // ----- Orbit -----
-        function computeOrbit() {
-            if (!fCoeffsInput) {
-                alert('Please solve the equation first to define F(x).');
-                return;
-            }
-            const x0 = parseFloat(document.getElementById('x0-input').value);
-            const steps = parseInt(document.getElementById('steps-input').value);
-            if (isNaN(x0) || isNaN(steps)) return;
-
-            const F = function(x) { return Engine.evalPolynomial(fCoeffsInput.slice(1), x); };
-            const orbit = Engine.computeOrbit(F, x0, steps);
-
-            const results = document.getElementById('orbit-results');
-            results.style.display = 'block';
-            const tbody = document.querySelector('#orbit-table tbody');
-            tbody.innerHTML = '';
-            for (let i = 0; i < orbit.length; i++) {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = i;
-                row.insertCell(1).textContent = isFinite(orbit[i]) ? orbit[i].toExponential(6) : '∞';
-            }
+        function graphZoom(factor, cx, cy) {
+            const v = graph.view;
+            const ax = cx === undefined ? (v.xMin + v.xMax) / 2 : cx;
+            const ay = cy === undefined ? (v.yMin + v.yMax) / 2 : cy;
+            v.xMin = ax + (v.xMin - ax) * factor;
+            v.xMax = ax + (v.xMax - ax) * factor;
+            v.yMin = ay + (v.yMin - ay) * factor;
+            v.yMax = ay + (v.yMax - ay) * factor;
+            drawGraph();
         }
 
-        // ----- Init -----
-        document.addEventListener('DOMContentLoaded', function() {
-            // Default: solve x^2 + 1 case immediately
-            solveEquation();
+        function graphPlay() {
+            if (graph.anim) { cancelAnimationFrame(graph.anim); graph.anim = null; }
+            graph.steps = parseInt(document.getElementById('steps-input').value, 10) || 10;
+            graph.x0 = parseFloat(document.getElementById('x0-input').value) || graph.x0;
+            let shown = 0;
+            graph.visibleSteps = 0;
+            drawGraph();
+            const tick = function () {
+                shown += 1;
+                graph.visibleSteps = shown;
+                drawGraph();
+                if (shown < graph.steps) {
+                    graph.anim = requestAnimationFrame(function () { setTimeout(tick, 260); });
+                } else {
+                    graph.anim = null;
+                }
+            };
+            graph.anim = requestAnimationFrame(function () { setTimeout(tick, 260); });
+        }
 
-            // Keyboard shortcut for orbit
-            document.getElementById('x0-input').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') computeOrbit();
+        // ---------- Grapher pointer interaction ----------
+        function pixelToMath(evt) {
+            const canvas = document.getElementById('grapherCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const px = (evt.clientX - rect.left);
+            const py = (evt.clientY - rect.top);
+            const v = graph.view;
+            const x = v.xMin + (px / rect.width) * (v.xMax - v.xMin);
+            const y = v.yMax - (py / rect.height) * (v.yMax - v.yMin);
+            return { x: x, y: y };
+        }
+
+        function initGrapherEvents() {
+            const canvas = document.getElementById('grapherCanvas');
+            const readout = document.getElementById('grapher-readout');
+
+            canvas.addEventListener('pointermove', function (evt) {
+                const m = pixelToMath(evt);
+                graph.hover = m;
+                if (graph.drag) {
+                    if (Math.abs(evt.clientX - graph.drag.startClientX) > 3 ||
+                        Math.abs(evt.clientY - graph.drag.startClientY) > 3) {
+                        graph.drag.moved = true;
+                    }
+                    const rect = canvas.getBoundingClientRect();
+                    const sv = graph.drag.startView;
+                    const dxMath = (evt.clientX - graph.drag.startClientX) / rect.width * (sv.xMax - sv.xMin);
+                    const dyMath = (evt.clientY - graph.drag.startClientY) / rect.height * (sv.yMax - sv.yMin);
+                    graph.view = {
+                        xMin: sv.xMin - dxMath, xMax: sv.xMax - dxMath,
+                        yMin: sv.yMin + dyMath, yMax: sv.yMax + dyMath,
+                    };
+                }
+                const fx = Engine.evalPolynomial(solverState.targetCoeffs, m.x);
+                const cand = getCandidateFunction();
+                const fxv = cand ? cand(m.x) : null;
+                readout.classList.remove('hidden');
+                readout.innerHTML = 'x = ' + m.x.toFixed(3) +
+                    '<br>F(x) = ' + (Number.isFinite(fx) ? fx.toFixed(3) : '∞') +
+                    (fxv !== null ? '<br>f(x) = ' + (Number.isFinite(fxv) ? fxv.toFixed(3) : '∞') : '');
+                drawGraph();
             });
+            canvas.addEventListener('pointerleave', function () {
+                graph.hover = null;
+                readout.classList.add('hidden');
+                drawGraph();
+            });
+            canvas.addEventListener('pointerdown', function (evt) {
+                canvas.setPointerCapture(evt.pointerId);
+                graph.drag = {
+                    startClientX: evt.clientX,
+                    startClientY: evt.clientY,
+                    startView: Object.assign({}, graph.view),
+                    moved: false,
+                };
+            });
+            canvas.addEventListener('pointerup', function (evt) {
+                if (graph.drag && !graph.drag.moved) {
+                    // treat as click: set cobweb start
+                    const m = pixelToMath(evt);
+                    graph.x0 = m.x;
+                    document.getElementById('x0-input').value = m.x.toFixed(4);
+                    graph.steps = parseInt(document.getElementById('steps-input').value, 10) || 10;
+                    graph.visibleSteps = graph.steps;
+                    computeOrbit();
+                }
+                graph.drag = null;
+                drawGraph();
+            });
+            canvas.addEventListener('wheel', function (evt) {
+                evt.preventDefault();
+                const m = pixelToMath(evt);
+                graphZoom(evt.deltaY > 0 ? 1.12 : 0.89, m.x, m.y);
+            }, { passive: false });
+
+            let resizeT = null;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeT);
+                resizeT = setTimeout(drawGraph, 120);
+            });
+        }
+
+        // ---------- Orbit ----------
+        function computeOrbit() {
+            const x0 = parseFloat(document.getElementById('x0-input').value);
+            const steps = parseInt(document.getElementById('steps-input').value, 10) || 10;
+            graph.x0 = Number.isFinite(x0) ? x0 : graph.x0;
+            graph.steps = steps;
+            graph.visibleSteps = steps;
+            const target = function (x) { return Engine.evalPolynomial(solverState.targetCoeffs, x); };
+            const orbit = Engine.computeOrbit(target, graph.x0, steps);
+            const results = document.getElementById('orbit-results');
+            const tbody = document.querySelector('#orbit-table tbody');
+            results.classList.remove('hidden');
+            tbody.innerHTML = '';
+            orbit.forEach(function (value, index) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = index;
+                row.insertCell(1).textContent = Number.isFinite(value) ? value.toExponential(6) : '∞';
+            });
+            drawGraph();
+        }
+
+        // ---------- Init ----------
+        document.addEventListener('DOMContentLoaded', function () {
+            buildCoefGrid();
+            initGrapherEvents();
+            ['depth-input', 'maxn-input', 'fixedpoint-input', 'analytic-order-input', 'analytic-radius-input'].forEach(function (id) {
+                document.getElementById(id).addEventListener('input', onInputChanged);
+            });
+            document.getElementById('x0-input').addEventListener('input', function () {
+                graph.x0 = parseFloat(document.getElementById('x0-input').value) || graph.x0;
+                if (document.getElementById('live-toggle').checked) computeOrbit();
+            });
+            document.getElementById('x0-input').addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') computeOrbit();
+            });
+            document.getElementById('steps-input').addEventListener('input', function () {
+                graph.steps = parseInt(document.getElementById('steps-input').value, 10) || 10;
+                graph.visibleSteps = graph.steps;
+                drawGraph();
+            });
+            setMode('series');
+            updateLiveFormula();
+            setPreset('x+x2');
+            computeOrbit();
         });
 
-        // ----- Dark mode -----
-        (function() {
+        (function () {
             const toggle = document.getElementById('dark-mode-toggle');
             const icon = toggle.querySelector('i');
             const html = document.documentElement;
             const saved = localStorage.getItem('darkMode');
             if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
-            toggle.addEventListener('click', function() {
+            toggle.addEventListener('click', function () {
                 const isDark = html.classList.toggle('dark');
                 localStorage.setItem('darkMode', isDark);
                 icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
-                // Redraw grapher after theme change
-                setTimeout(updateGrapher, 100);
+                setTimeout(drawGraph, 120);
             });
         })();
     </script>
-
 </body>
 </html>
