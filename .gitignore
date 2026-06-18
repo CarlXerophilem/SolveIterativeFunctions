@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+
+# Python (manim authoring scripts in resources/)
+__pycache__/
+*.pyc
+
+# Manim render output (videos are exported into visuals/ by hand)
+media/

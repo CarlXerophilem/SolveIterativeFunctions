@@ -19,9 +19,12 @@
 
     <link rel="icon" type="image/x-icon" href="ff.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <link rel="stylesheet" href="css/main.css">
 
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
 </head>
 <body data-type="book" id="top">
 
@@ -201,7 +204,8 @@
                         </div>
 
                         <div class="results-panel" id="comp-results" style="display:none;">
-                            <div class="result-label">\(F(x) = \) <span id="comp-fdisplay"></span></div>
+                            <div class="result-label">Target \(F(x)\)</div>
+                            <div class="formula-block" id="comp-fdisplay"></div>
                             <div style="overflow-x:auto;" class="mt-2">
                                 <table id="comp-table" style="font-size:0.85rem;text-align:center;"></table>
                             </div>
@@ -296,15 +300,13 @@
 
             // Display
             document.getElementById('comp-results').style.display = 'block';
-            let fStr = '';
-            for (let i = 1; i <= Math.min(5, maxN); i++) {
-                if (fCoeffs[i] !== 0 || i === 1) {
-                    const sign = fCoeffs[i] >= 0 ? (i === 1 ? '' : '+') : '';
-                    fStr += `${sign}${fCoeffs[i]}x^{${i}}`;
-                }
+            const fLatex = 'F(x) = ' + Engine.formatPolynomialLatex(fCoeffs, { maxDegree: 5, precision: 6 });
+            const fdEl = document.getElementById('comp-fdisplay');
+            if (window.katex) {
+                window.katex.render(fLatex, fdEl, { displayMode: true, throwOnError: false });
+            } else {
+                fdEl.textContent = fLatex;
             }
-            if (maxN > 5) fStr += '+\\cdots';
-            document.getElementById('comp-fdisplay').textContent = fStr;
 
             // Build table: rows are n, columns are k
             const compTable = document.getElementById('comp-table');

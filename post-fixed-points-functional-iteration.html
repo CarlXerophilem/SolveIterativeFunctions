@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fixed Points and Functional Iteration</title>
+    <meta name="DC.Title" content="Fixed Points and Functional Iteration">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-01">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Fixed Points and Functional Iteration">
+    <meta property="og:description" content="Why fixed points organize the solvability and local geometry of half-iterates.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/post-fixed-points-functional-iteration.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
+</head>
+<body data-type="book" id="top">
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>window.addEventListener('load', function(){ document.getElementById('loader').style.display='none'; });</script>
+
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="blog.html" id="prev-link" title="Blog Notes"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="post-fixed-points-functional-iteration.html" id="center-link">
+                <span class="hover-prev">Blog</span>
+                <span class="title-main">Fixed Points</span>
+                <span class="hover-next">Composita Article</span>
+            </a>
+        </div>
+        <a href="post-composita-half-iterates.html" id="next-link" title="Composita Half-Iterates"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <div class="container">
+        <section data-type="chapter" id="fixed-points-post">
+            <div class="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#motivation">1. Motivation</a></li>
+                    <li><a href="#definitions">2. Fixed Points and Half-Iterates</a></li>
+                    <li><a href="#solvable">3. The Solvable and Unsolvable Contrast</a></li>
+                    <li><a href="#local">4. Local Conjugacy and Why It Matters</a></li>
+                    <li><a href="#applications">5. Applications to the Site Solver</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+                    <h1>Fixed Points as the Organizing Principle of Functional Iteration</h1>
+                    <hr>
+
+                    <div id="motivation">
+                        <h2>1. Motivation</h2>
+                        <p>
+                            The equation \(f(f(x)) = F(x)\) looks deceptively simple. One might expect it to behave like an
+                            algebraic square root: perhaps one merely "takes half an iterate" in the same way one takes a square
+                            root of a number. The difficulty is that composition is geometric rather than multiplicative. The map
+                            \(f\) must send points along the orbit structure of \(F\), preserve local regularity, and remain
+                            compatible with the fixed-point geometry of the target.
+                        </p>
+                        <p>
+                            This is why fixed points appear immediately in every serious discussion of half-iterates. If
+                            \(x^*\) satisfies \(F(x^*) = x^*\), then the orbit neither escapes nor oscillates at that point;
+                            it is the natural place where local linearization, local series methods, and conjugacy-based tools can
+                            be anchored. Without such anchors, real half-iterates are often obstructed or become purely local,
+                            branch-dependent objects.
+                        </p>
+                        <div class="media-card">
+                            <strong>Visual guide.</strong> The lightweight solver graphs \(F\), \(f\), and \(f(f(x))\) directly,
+                            while the accompanying source in <code>resources/manim_half_iterates.py</code> provides a reproducible
+                            animation scaffold for orbit and cobweb scenes.
+                            <img src="resources/visuals/fixed-point-cobweb.svg" alt="Fixed-point and orbit diagram for functional iteration.">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="definitions">
+                        <h2>2. Fixed Points and Half-Iterates</h2>
+                        <p>
+                            Let \(F : D \to D\) be a self-map. A <strong>functional square root</strong> or <strong>half-iterate</strong>
+                            is a map \(f : D \to D\) satisfying
+                            \[
+                            f^{\circ 2}(x) = f(f(x)) = F(x).
+                            \]
+                            A point \(x^*\in D\) is a <strong>fixed point</strong> of \(F\) if \(F(x^*) = x^*\).
+                        </p>
+                        <div class="definition">
+                            <strong>Observation.</strong> If \(f\) is a half-iterate of \(F\) and \(f(x^*) = x^*\), then automatically
+                            \(F(x^*) = f(f(x^*)) = x^*\). Thus the fixed-point set of \(f\) is contained in the fixed-point set of
+                            \(F\), while 2-cycles of \(f\) project to fixed points of \(F\).
+                        </div>
+                        <p>
+                            The local derivative adds another layer. If \(x^*\) is a smooth fixed point and \(f\) is differentiable,
+                            then
+                            \[
+                            F'(x^*) = \bigl(f'(x^*)\bigr)^2.
+                            \]
+                            Hence the multiplier of \(F\) at a fixed point constrains the possible real branches for a local
+                            half-iterate. This simple identity already explains why positive, negative, neutral, and zero multipliers
+                            behave so differently.
+                        </p>
+                        <div class="theorem">
+                            <strong>Necessary local condition.</strong> A real differentiable half-iterate at a real fixed point requires a
+                            real square root of the multiplier \(F'(x^*)\). If \(F'(x^*) &lt; 0\), then a real single-valued local
+                            branch is no longer available without leaving the real setting.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="solvable">
+                        <h2>3. The Solvable and Unsolvable Contrast</h2>
+                        <p>
+                            The site's theory page already contrasts \(F(x)=x^2-2\) with \(F(x)=x^2+1\). This contrast is not a
+                            curiosity; it is the first dynamical diagnostic one should run before attempting symbolic or numerical
+                            construction.
+                        </p>
+                        <div class="diagram-grid">
+                            <div class="mini-diagram">
+                                <strong>\(x^2-2\)</strong>
+                                <p class="text-sm">The graph intersects \(y=x\) at \(-1\) and \(2\), giving real anchors for local study.</p>
+                                <svg viewBox="0 0 220 120" aria-label="Fixed points of x squared minus 2">
+                                    <line x1="10" y1="110" x2="210" y2="10" stroke="#95a5a6" stroke-width="2" />
+                                    <path d="M 20 70 Q 75 10 110 55 T 200 95" fill="none" stroke="#1a73e8" stroke-width="3" />
+                                    <circle cx="78" cy="42" r="4" fill="#e74c3c" />
+                                    <circle cx="160" cy="92" r="4" fill="#e74c3c" />
+                                </svg>
+                            </div>
+                            <div class="mini-diagram">
+                                <strong>\(x^2+1\)</strong>
+                                <p class="text-sm">Over the reals the graph stays above \(y=x\), so there is no real fixed point to linearize around.</p>
+                                <svg viewBox="0 0 220 120" aria-label="No fixed points of x squared plus 1 over the reals">
+                                    <line x1="10" y1="110" x2="210" y2="10" stroke="#95a5a6" stroke-width="2" />
+                                    <path d="M 15 85 Q 90 -5 110 25 T 205 80" fill="none" stroke="#7c4dff" stroke-width="3" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p>
+                            In the first case, the real fixed points make local conjugacy plausible. In the second case, every real
+                            iterate is pushed upward, so one does not even obtain a natural real fixed-point chart. This does not prove
+                            that all half-iterates are impossible in other categories, but it explains why the real, explanatory, and
+                            browser-friendly approaches in this repository begin from fixed points instead of from global guesswork.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div id="local">
+                        <h2>4. Local Conjugacy and Why It Matters</h2>
+                        <p>
+                            Once a fixed point \(x^*\) is found, set \(y = x - x^*\) and write the shifted map as
+                            \[
+                            G(y) = F(x^* + y) - x^*.
+                            \]
+                            If \(0 &lt; \lambda = G'(0) \neq 1\), then the classical Schr&ouml;der framework seeks a change of coordinates
+                            \(\Phi\) satisfying
+                            \[
+                            \Phi(G(y)) = \lambda \, \Phi(y).
+                            \]
+                            In that coordinate system, iteration becomes multiplication, so the local half-iterate is formally
+                            \[
+                            h(y) = \Phi^{-1}\bigl(\sqrt{\lambda}\,\Phi(y)\bigr), \qquad f(x) = x^* + h(x-x^*).
+                            \]
+                        </p>
+                        <p>
+                            This is the logic now exposed in the new analytic solver mode. It does not claim global exactness; instead,
+                            it computes a local model, warns when the multiplier is parabolic or non-positive, and verifies the result by
+                            checking numerically that \(f(f(x))\) agrees with \(F(x)\) near the chosen fixed point.
+                        </p>
+                        <div class="practice">
+                            <strong>Why the warnings matter.</strong> Superattracting and parabolic fixed points are not "just another
+                            branch" of the same formula. They require different coordinates, such as B&ouml;ttcher- or Abel-type objects,
+                            and those cases are better explained honestly than hidden behind unstable numerics.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div id="applications">
+                        <h2>5. Applications to the Site Solver</h2>
+                        <p>
+                            The upgraded solver combines this fixed-point viewpoint with the composita recurrence already developed in
+                            the rest of the project.
+                        </p>
+                        <ul>
+                            <li><strong>Paper mode</strong> remains the right place for formal power-series roots of \(A^{\circ 2^m}(x)=F(x)\).</li>
+                            <li><strong>Analytic mode</strong> begins from a user-chosen fixed point and shows whether the local half-iterate problem is structurally well posed.</li>
+                            <li><strong>Orbit exploration</strong> lets the reader see immediately whether a map is attracted, repelled, or pushed away from fixed points.</li>
+                            <li><strong>Graphical verification</strong> keeps the project explanatory: formulas are displayed, then checked by recomposition.</li>
+                        </ul>
+                        <p>
+                            For the formal generating-function background, see the composita paper trail collected on the
+                            <a href="bibliography.html">bibliography page</a>; for the broader theory of iterative functional equations,
+                            consult the additional references now listed there as well.
+                        </p>
+                    </div>
+                </article>
+            </main>
+
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <script src="https://giscus.app/client.js"
+                    data-repo="CarlXerophilem/SolveIterativeFunctions"
+                    data-repo-id="R_kgDONkNjGg"
+                    data-category="General"
+                    data-category-id="DIC_kwDONkNjGs4C-GSa"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="1"
+                    data-input-position="top"
+                    data-theme="preferred_color_scheme"
+                    data-lang="en"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async></script>
+                <noscript><p style="color:var(--footer-text); font-style:italic;">Comments require JavaScript and GitHub authentication.</p></noscript>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="blog.html">Blog</a>
+            <a href="solver.html">Solver</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>

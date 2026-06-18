@@ -1,0 +1,37 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+An interactive educational website about solving iterative functional equations — primarily \(f(f(x)) = F(x)\) (functional square roots / half-iterates) via the composita method and local analytic Schroeder coordinates. Deployed as a static site on GitHub Pages (https://carlxerophilem.github.io/SolveIterativeFunctions/). Content is in English; the repo lives under a Chinese-named parent path (公众号文章 = WeChat article).
+
+## Build & run
+
+There is **no build step or bundler** — the site is served as-is and edits are live on reload. The only tooling is linting/formatting (added for editor feedback; not required to run the site):
+
+- `npm run lint` / `npm run lint:fix` — ESLint over `js/` (flat config in `eslint.config.js`)
+- `npm run format` / `npm run format:check` — Prettier over JS/CSS/HTML/JSON/MD
+
+Style is 2-space indent, single quotes, semicolons (see `.prettierrc.json`), matching `engine.js`.
+
+Preview locally with a static server (don't open via `file://` — Giscus comments and some CDN behavior need `http://`):
+- `python -m http.server 8000` then open http://localhost:8000/index.html
+- Or use the `/preview` skill.
+
+Deployment is automatic: pushing to the default branch publishes via GitHub Pages.
+
+## Architecture
+
+- `js/engine.js` — the entire computation engine, loaded as a plain `<script>` (not an ES module) by `solver.html` and `composita.html`. Key pieces:
+  - `Rational` class: **exact** arithmetic over BigInt. Series/composita coefficients must stay exact — do not introduce floating-point into the symbolic paths or coefficients drift.
+  - Composita recurrence (Kruchinin \(F^\Delta(n,k)\)), power-series ops (compose/invert/multiply/derivative), fixed-point finding & classification, and `solveSchroederHalfIterate` for local analytic half-iterates near non-parabolic fixed points.
+  - Two complementary solver modes are exposed in the UI: paper-based composita and local analytic Schroeder coordinates.
+- `*.html` — each page is standalone; shared look comes from `css/main.css` (CSS variables, light/dark theme). Math is rendered by **MathJax 3** loaded from CDN, so any new math must use TeX delimiters MathJax understands.
+- `resources/` — reference papers (Kruchinin 2013/2014), `bibliography.md`, and standalone Python helpers (`manim_half_iterates.py`, composita calculators). The Python is reference/authoring only — **not** part of the site build.
+
+## Conventions
+
+- Match the existing vanilla-JS style in `engine.js` (no frameworks, no new dependencies unless asked).
+- Keep new pages consistent with the existing HTML structure and `css/main.css` classes rather than adding inline styles.
+- LaTeX output for display is built by helpers like `formatPolynomialLatex` / `formatNumber` — reuse them instead of hand-formatting.

@@ -13,7 +13,7 @@
     <meta name="DC.Language" content="en-US">
     <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
     <meta property="og:title" content="Theory of Iterative Functional Equations">
-    <meta property="og:description" content="Fixed points, conjugacy, and why f(f(x))=x^2-2 is solvable but f(f(x))=x^2+1 is not.">
+    <meta property="og:description" content="Fixed points, multipliers, Schröder linearization, and why f(f(x))=x^2-2 is solvable but f(f(x))=x^2+1 is not.">
     <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/theory.html">
     <meta property="og:site_name" content="Solve Iterative Functions">
     <meta name="twitter:card" content="Theory of iterative functional equations.">
@@ -21,10 +21,13 @@
 
     <link rel="icon" type="image/x-icon" href="ff.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <link rel="stylesheet" href="css/main.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
 </head>
 <body data-type="book" id="top">
 
@@ -63,10 +66,12 @@
                 <p><i class="fa-solid fa-list"></i> Contents</p>
                 <ul>
                     <li><a href="#section1">1. Function Iteration &amp; Half-Iterates</a></li>
-                    <li><a href="#section2">2. Fixed Points &amp; Their Dynamical Role</a></li>
-                    <li><a href="#section3">3. A Solvable Case: \(f(f(x)) = x^2 - 2\)</a></li>
-                    <li><a href="#section4">4. The Unsolvable Challenge: \(f(f(x)) = x^2 + 1\)</a></li>
-                    <li><a href="#section5">5. Conjugacy &amp; the General Picture</a></li>
+                    <li><a href="#section2">2. Fixed Points, Multipliers &amp; Classification</a></li>
+                    <li><a href="#section3">3. Local Linearization: Schröder &amp; Koenigs</a></li>
+                    <li><a href="#section4">4. A Solvable Case: \(f(f(x)) = x^2 - 2\)</a></li>
+                    <li><a href="#section5">5. The Hard Case: \(f(f(x)) = x^2 + 1\)</a></li>
+                    <li><a href="#section6">6. Conjugacy &amp; the General Picture</a></li>
+                    <li><a href="#section7">7. Summary &amp; Where to Go Next</a></li>
                 </ul>
             </div>
 
@@ -74,219 +79,551 @@
                 <article>
 
                     <h1>Theory of Iterative Functional Equations</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        How to take the <em>square root of a function under composition</em> — when it works,
+                        when it doesn't, and the geometry behind both.
+                    </p>
                     <hr>
 
-                    <!-- Section 1: Function Iteration -->
+                    <!-- ================= Section 1 ================= -->
                     <div id="section1">
                         <h2>1. Function Iteration &amp; Half-Iterates</h2>
                         <p>
-                            <strong>Function iteration</strong> is the process of applying a function repeatedly to its own output.
-                            The \(n\)-th iterate of a function \(f\), denoted \(f^{\circ n}\), is defined recursively by
+                            <strong>Function iteration</strong> is the process of applying a function repeatedly to its
+                            own output. The \(n\)-th iterate of \(f\), written \(f^{\circ n}\), is defined recursively by
                             \[
-                            f^{\circ 0}(x) = x, \qquad f^{\circ n+1}(x) = f\bigl(f^{\circ n}(x)\bigr).
+                            f^{\circ 0}(x) = x, \qquad f^{\circ (n+1)}(x) = f\bigl(f^{\circ n}(x)\bigr).
                             \]
+                            The sequence \(x,\, f(x),\, f^{\circ 2}(x),\, f^{\circ 3}(x),\dots\) is the
+                            <strong>orbit</strong> of \(x\). Integer iteration obeys the semigroup law
+                            \[
+                            f^{\circ (m+n)} = f^{\circ m} \circ f^{\circ n},
+                            \]
+                            so the iterates behave like a discrete-time flow indexed by \(n \in \mathbb{N}\).
                         </p>
                         <p>
-                            An <strong>iterative functional equation</strong> asks: given a function \(F(x)\), find \(f(x)\) such that
-                            some iterate of \(f\) equals \(F\). The simplest non-trivial case is the <em>functional square root</em>
-                            or <em>half-iterate</em>:
+                            An <strong>iterative functional equation</strong> turns this around: given a target
+                            \(F\), find an \(f\) such that some iterate of \(f\) equals \(F\). The question that drives this
+                            site is the simplest non-trivial one — can we interpolate the index \(n\) to a
+                            <em>non-integer</em> value? Taking \(n = \tfrac12\) gives the <strong>functional square root</strong>,
+                            or <strong>half-iterate</strong>:
                             \[
                             f^{\circ 2}(x) = f(f(x)) = F(x).
                             \]
-                        </p>
-                        <p>
-                            This problem sits at the intersection of dynamical systems, functional equations, and enumerative
-                            combinatorics. While some equations admit elegant closed-form solutions, others resist any simple
-                            expression — and the difference often comes down to the presence or absence of real fixed points.
+                            We are literally asking for &ldquo;half a step&rdquo; of \(F\): a map you apply
+                            <em>twice</em> to reproduce one application of \(F\).
                         </p>
 
                         <div class="definition">
-                            <strong>Definition (Functional Square Root).</strong> A function \(f: D \to D\) is a <em>functional
-                            square root</em> of \(F: D \to D\) if \(f(f(x)) = F(x)\) for all \(x \in D\). We also say
-                            \(f\) is a <em>half-iterate</em> of \(F\).
+                            <strong>Definition (Functional square root).</strong> A function \(f: D \to D\) is a
+                            <em>functional square root</em> (or <em>half-iterate</em>) of \(F: D \to D\) if
+                            \(f(f(x)) = F(x)\) for every \(x \in D\).
+                        </div>
+
+                        <figure class="anim-figure">
+                            <video muted loop playsinline preload="metadata" controls>
+                                <source src="visuals/half_iterate_idea.mp4" type="video/mp4">
+                                Your browser does not support embedded video.
+                            </video>
+                            <figcaption>
+                                <span class="fig-label">The whole idea.</span>
+                                One full step of \(F\) (blue) is made of <em>two equal</em> half-iterate steps of
+                                \(f\) (purple): \(f(f(x)) = F(x)\).
+                            </figcaption>
+                        </figure>
+
+                        <p>
+                            Two warnings set the tone for everything below.
+                        </p>
+                        <ul>
+                            <li><strong>Existence is not automatic.</strong> A perfectly nice \(F\) may have
+                                <em>no</em> half-iterate of a given regularity (continuous, smooth, analytic) on a given
+                                domain. Much of this page is about <em>why</em>.</li>
+                            <li><strong>Uniqueness usually fails.</strong> When half-iterates exist they typically come in
+                                families — different branches, or compositions with symmetries of \(F\). &ldquo;The&rdquo;
+                                half-iterate is a convenient fiction; we look for <em>natural</em> ones (continuous,
+                                analytic, or canonical near a fixed point).</li>
+                        </ul>
+
+                        <div class="practice">
+                            <strong>Two warm-up examples.</strong>
+                            <ul style="margin-bottom:0;">
+                                <li><em>Translation.</em> \(F(x) = x + 1\) has the obvious half-iterate
+                                    \(f(x) = x + \tfrac12\), since \((x+\tfrac12)+\tfrac12 = x+1\).</li>
+                                <li><em>Scaling.</em> \(F(x) = a\,x\) with \(a &gt; 0\) has \(f(x) = \sqrt{a}\,x\), because
+                                    \(\sqrt{a}\,(\sqrt{a}\,x) = a x\). If \(a &lt; 0\) there is <em>no real</em> linear
+                                    half-iterate — the first hint that signs matter.</li>
+                            </ul>
                         </div>
                     </div>
 
                     <hr>
 
-                    <!-- Section 2: Fixed Points -->
+                    <!-- ================= Section 2 ================= -->
                     <div id="section2">
-                        <h2>2. Fixed Points &amp; Their Dynamical Role</h2>
+                        <h2>2. Fixed Points, Multipliers &amp; Classification</h2>
                         <p>
-                            A <strong>fixed point</strong> of a function \(F\) is a value \(x^*\) such that \(F(x^*) = x^*\).
-                            Fixed points are the anchors of iteration: they are points where the dynamics stand still.
+                            A <strong>fixed point</strong> of \(F\) is a value \(x^*\) with \(F(x^*) = x^*\). Fixed points
+                            are the skeleton of a dynamical system: they are where the orbit stands still, and the local
+                            behaviour around them organises everything nearby.
                         </p>
-                        <p>
-                            If \(f\) is a half-iterate of \(F\), then every fixed point of \(f\) is also a fixed point of \(F\).
-                            Moreover, any <em>cycle</em> of \(f\) of length 2 becomes a fixed point of \(F\):
+
+                        <div class="definition">
+                            <strong>Definition (Multiplier).</strong> If \(F\) is differentiable at a fixed point
+                            \(x^*\), its <em>multiplier</em> is the derivative
                             \[
-                            f(x) = y,\; f(y) = x \quad\Longrightarrow\quad F(x) = f(f(x)) = f(y) = x.
+                            \lambda = F'(x^*).
                             \]
+                            To first order, \(F(x^* + \varepsilon) \approx x^* + \lambda\,\varepsilon\): near \(x^*\) the
+                            map looks like multiplication by \(\lambda\).
+                        </div>
+
+                        <p>
+                            The size of \(\lambda\) sorts fixed points into a few universal types. The cobweb diagram
+                            below shows the attracting case for \(F(x)=\cos x\): orbits spiral inward to the fixed point
+                            because \(|\lambda| &lt; 1\).
+                        </p>
+
+                        <figure class="anim-figure">
+                            <video muted loop playsinline preload="metadata" controls>
+                                <source src="visuals/cobweb_attracting.mp4" type="video/mp4">
+                                Your browser does not support embedded video.
+                            </video>
+                            <figcaption>
+                                <span class="fig-label">Cobweb dynamics.</span>
+                                Bounce vertically to the curve, horizontally to \(y=x\), repeat. For
+                                \(F=\cos\), \(|F'(x^*)| &lt; 1\), so every orbit is pulled into the fixed point \(x^*\).
+                            </figcaption>
+                        </figure>
+
+                        <table class="class-table">
+                            <thead>
+                                <tr><th>Multiplier \(\lambda = F'(x^*)\)</th><th>Type</th><th>Local behaviour</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>\(\lambda = 0\)</td><td>superattracting</td><td>quadratically fast attraction</td></tr>
+                                <tr><td>\(0 &lt; |\lambda| &lt; 1\)</td><td>attracting</td><td>geometric attraction, ratio \(|\lambda|\)</td></tr>
+                                <tr><td>\(|\lambda| &gt; 1\)</td><td>repelling</td><td>geometric repulsion</td></tr>
+                                <tr><td>\(|\lambda| = 1\)</td><td>neutral / parabolic</td><td>delicate; algebraically slow or rotational</td></tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            Why does a page about half-iterates care so much about fixed points? Because a half-iterate
+                            <em>inherits</em> them, and — crucially — it inherits a constraint on its derivative.
                         </p>
 
                         <div class="theorem">
-                            <strong>Theorem (Necessary condition).</strong> If \(F\) has a half-iterate \(f\) on a domain
-                            \(D \subseteq \mathbb{R}\), then \(F\) must have either real fixed points or 2-cycles of \(f\)
-                            (which are fixed points of \(F\)). In particular, if \(F(x) > x\) for all \(x \in \mathbb{R}\),
-                            then \(F\) has no real half-iterate.
+                            <strong>Proposition (Inherited fixed points).</strong> Let \(f\) be a half-iterate of \(F\).
+                            <ol style="margin:0.4rem 0 0;">
+                                <li>Every fixed point of \(f\) is a fixed point of \(F\):
+                                    \(f(x^*)=x^* \Rightarrow F(x^*) = f(f(x^*)) = x^*\).</li>
+                                <li>Every \(2\)-cycle of \(f\) is a pair of fixed points of \(F\): if
+                                    \(f(a)=b\) and \(f(b)=a\), then \(F(a)=a\) and \(F(b)=b\).</li>
+                            </ol>
                         </div>
 
-                        <p>Compare the two canonical examples:</p>
+                        <div class="theorem">
+                            <strong>Lemma (Multiplier square root).</strong> Suppose \(f\) is differentiable and fixes
+                            \(x^*\). Differentiating \(f(f(x)) = F(x)\) at \(x^*\) with the chain rule,
+                            \[
+                            F'(x^*) = \bigl(f\circ f\bigr)'(x^*) = f'\!\bigl(f(x^*)\bigr)\,f'(x^*) = \bigl(f'(x^*)\bigr)^2 .
+                            \]
+                            Hence \(f'(x^*) = \pm\sqrt{F'(x^*)}\). In particular, a real differentiable half-iterate that
+                            fixes \(x^*\) can exist <strong>only if \(F'(x^*) \ge 0\)</strong>.
+                        </div>
+
+                        <div class="keypoint">
+                            This single lemma is the workhorse of the whole subject. The multiplier of \(f\) is a
+                            <em>square root</em> of the multiplier of \(F\). A negative multiplier \(F'(x^*) &lt; 0\) has no
+                            real square root, so no real (differentiable) half-iterate can be anchored at that point — even
+                            when \(F\) is otherwise perfectly tame.
+                        </div>
+
+                        <p>Compare the two functions this site keeps returning to:</p>
 
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;" class="mb-2">
                             <div class="canvas-container" style="padding:0.5rem;">
                                 <h4 style="text-align:center; margin:0.5rem;">\(F(x) = x^2 - 2\)</h4>
                                 <canvas id="solvableChart" style="max-height:280px;"></canvas>
                                 <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
-                                    Fixed points at \(x = -1\) and \(x = 2\).
+                                    Meets \(y=x\) at \(x=-1\) and \(x=2\): two real fixed points.
                                 </p>
                             </div>
                             <div class="canvas-container" style="padding:0.5rem;">
                                 <h4 style="text-align:center; margin:0.5rem;">\(F(x) = x^2 + 1\)</h4>
                                 <canvas id="unsolvableChart" style="max-height:280px;"></canvas>
                                 <p style="text-align:center; font-size:0.85rem; color:var(--footer-text);">
-                                    No real fixed points — the graph never meets \(y = x\).
+                                    Never meets \(y=x\): no real fixed point at all.
                                 </p>
                             </div>
                         </div>
+
+                        <p>
+                            For \(F(x)=x^2-2\) we have \(F'(x) = 2x\), so the multipliers are \(F'(2)=4\) (repelling,
+                            \(\lambda &gt; 0\) — a real half-iterate can be anchored here) and \(F'(-1)=-2\) (repelling,
+                            but \(\lambda &lt; 0\)). The right-hand function has no real fixed points to anchor anything.
+                            Sections 3–5 turn these observations into constructions and obstructions.
+                        </p>
                     </div>
 
                     <hr>
 
-                    <!-- Section 3: Solvable Case -->
+                    <!-- ================= Section 3 ================= -->
                     <div id="section3">
-                        <h2>3. A Solvable Case: \(f(f(x)) = x^2 - 2\)</h2>
+                        <h2>3. Local Linearization: Schröder &amp; Koenigs</h2>
                         <p>
-                            The equation
-                            \[
-                            f(f(x)) = x^2 - 2
-                            \]
-                            has a well-known closed-form solution:
-                            \[
-                            f(x) = x^2 - 2 \quad\text{is its own half-iterate? No — let's check.}
-                            \]
-                            Actually, \((x^2-2)^2 - 2 = x^4 - 4x^2 + 2 \neq x^2 - 2\).
-                        </p>
-                        <p>
-                            The true solution connects to <strong>Chebyshev polynomials</strong>. Recall that
-                            \(T_n(\cos\theta) = \cos(n\theta)\). In particular,
-                            \[
-                            T_2(x) = 2x^2 - 1, \qquad T_2(T_2(x)) = T_4(x).
-                            \]
-                            By a linear change of variables, the equation \(f(f(x)) = x^2 - 2\) is solved by
-                            \[
-                            f(x) = 2\cos\bigl(\sqrt{2}\,\arccos(x/2)\bigr) \quad\text{for } |x| \le 2,
-                            \]
-                            or more elegantly, using the conjugacy \(h(x) = x + 1/x\):
-                            \[
-                            F(x) = x^2 - 2 = h^{-1}(h(x)^2), \qquad
-                            f(x) = h^{-1}\bigl(h(x)^{\sqrt{2}}\bigr).
-                            \]
+                            Near a fixed point, the multiplier says \(F\) <em>looks like</em> multiplication by \(\lambda\).
+                            The remarkable fact is that — away from the neutral case — \(F\) is not merely <em>approximately</em>
+                            linear but genuinely <em>conjugate</em> to the linear map, in a coordinate of its own choosing.
+                            This is the content of <strong>Schröder's equation</strong> and <strong>Koenigs' theorem</strong>.
                         </p>
 
-                        <div class="practice">
-                            <strong>Example: Verifying the solution.</strong>
-                            Let \(h(x) = x + \frac{1}{x}\) for \(x > 0\). Then \(h^{-1}(y) = \frac{y + \sqrt{y^2-4}}{2}\).
-                            Define \(f(x) = h^{-1}\bigl([h(x)]^{\sqrt{2}}\bigr)\).
-                            Then
+                        <div class="definition">
+                            <strong>Definition (Schröder's equation).</strong> A <em>Schröder function</em> for \(F\) at a
+                            fixed point \(x^*\) with multiplier \(\lambda\) is a map \(\sigma\), normalised by
+                            \(\sigma(x^*) = 0\) and \(\sigma'(x^*) = 1\), satisfying
                             \[
-                            f(f(x)) = h^{-1}\bigl([h(f(x))]^{\sqrt{2}}\bigr)
-                            = h^{-1}\bigl([h(x)]^{(\sqrt{2})^2}\bigr)
-                            = h^{-1}\bigl([h(x)]^2\bigr) = x^2 - 2.
+                            \sigma\bigl(F(x)\bigr) = \lambda\,\sigma(x).
                             \]
-                            The critical insight: <strong>conjugacy to a power function</strong> makes iteration trivial.
-                        </p>
-                    </div>
-
-                    <hr>
-
-                    <!-- Section 4: Unsolvable Challenge -->
-                    <div id="section4">
-                        <h2>4. The Unsolvable Challenge: \(f(f(x)) = x^2 + 1\)</h2>
-                        <p>
-                            In contrast, the equation
-                            \[
-                            f(f(x)) = x^2 + 1
-                            \]
-                            has <strong>no known closed-form solution</strong> on the real line. The fundamental reason is
-                            dynamical:
-                        </p>
-                        <ul>
-                            <li>\(F(x) = x^2 + 1 > x\) for all real \(x\), so the iterates \(x, F(x), F(F(x)), \ldots\)
-                            form a strictly increasing sequence diverging to \(+\infty\).</li>
-                            <li>There are no real fixed points, and no real 2-cycles.</li>
-                            <li>The equation \(x^2 + 1 = x\) has discriminant \(1 - 4 = -3 < 0\).</li>
-                        </ul>
-
-                        <div class="theorem">
-                            <strong>Theorem (Obstruction).</strong> If \(F: \mathbb{R} \to \mathbb{R}\) satisfies
-                            \(F(x) > x\) for all \(x\), then \(F\) has no continuous half-iterate \(f: \mathbb{R} \to \mathbb{R}\).
+                            In the coordinate \(u = \sigma(x)\), the map \(F\) becomes simply \(u \mapsto \lambda u\).
                         </div>
 
+                        <div class="theorem">
+                            <strong>Theorem (Koenigs, 1884).</strong> If \(F\) is analytic near \(x^*\) and the multiplier
+                            satisfies \(\lambda \neq 0\) and \(|\lambda| \neq 1\) (the <em>hyperbolic</em> case), then a Schröder
+                            function \(\sigma\) exists, is analytic near \(x^*\), and is <strong>unique</strong> under the
+                            normalisation \(\sigma'(x^*)=1\). Equivalently,
+                            \[
+                            F = \sigma^{-1} \circ (\lambda\,\cdot) \circ \sigma ,
+                            \]
+                            so \(F\) is analytically conjugate to multiplication by its multiplier.
+                        </div>
+
+                        <p>
+                            Once \(F\) is linear in the right coordinate, taking a half-iterate is trivial: <em>halving an
+                            exponent is dividing the index by two.</em> Multiplication by \(\lambda\) iterated is
+                            multiplication by powers of \(\lambda\); its &ldquo;square root&rdquo; is multiplication by
+                            \(\sqrt{\lambda}\).
+                        </p>
+
+                        <figure class="anim-figure">
+                            <video muted loop playsinline preload="metadata" controls>
+                                <source src="visuals/schroder_linearization.mp4" type="video/mp4">
+                                Your browser does not support embedded video.
+                            </video>
+                            <figcaption>
+                                <span class="fig-label">Conjugacy makes iteration linear.</span>
+                                Going around the square — coordinate \(\sigma\), multiply by \(\lambda\), coordinate back —
+                                reproduces \(F\). Replacing \(\lambda\) by \(\sqrt{\lambda}\) gives the half-iterate.
+                            </figcaption>
+                        </figure>
+
+                        <div class="theorem">
+                            <strong>Construction (Schröder half-iterate).</strong> In the hyperbolic case, pick a square
+                            root \(\mu = \sqrt{\lambda}\) and define
+                            \[
+                            f = \sigma^{-1} \circ (\mu\,\cdot) \circ \sigma .
+                            \]
+                            Then
+                            \[
+                            f\circ f = \sigma^{-1}\circ(\mu^2\,\cdot)\circ\sigma
+                                     = \sigma^{-1}\circ(\lambda\,\cdot)\circ\sigma = F .
+                            \]
+                            So \(f\) is a half-iterate, analytic near \(x^*\), with multiplier \(f'(x^*) = \mu = \sqrt\lambda\)
+                            — exactly as the Lemma of §2 demands.
+                        </div>
+
+                        <div class="keypoint">
+                            <strong>Reality check.</strong> The square root \(\mu = \sqrt\lambda\) is real precisely when
+                            \(\lambda &gt; 0\). For \(\lambda &lt; 0\) the construction still works over \(\mathbb{C}\) but
+                            produces a complex \(f\). This is the local, quantitative version of &ldquo;signs matter.&rdquo;
+                        </div>
+
+                        <p>
+                            This is not just theory: it is the algorithm behind the <a href="solver.html">Solver</a>'s
+                            local-analytic mode (<code>solveSchroederHalfIterate</code>). It expands \(\sigma\) as a power
+                            series, solves Schröder's equation coefficient by coefficient using
+                            <a href="composita.html">composita</a> recurrences, multiplies by \(\sqrt\lambda\), and inverts
+                            the series — all in <strong>exact rational arithmetic</strong> so the coefficients never drift.
+                        </p>
+
                         <details>
-                            <summary><strong>Proof</strong></summary>
+                            <summary><strong>How the Schröder series is built (sketch)</strong></summary>
                             <div class="details-content">
                                 <p>
-                                    Suppose \(f(f(x)) = F(x) > x\) for all \(x\). Consider the orbit of any point \(x_0\) under
-                                    \(f\). If \(f(x_0) = x_0\), then \(F(x_0) = x_0\), contradicting \(F(x) > x\).
-                                    If \(f(x_0) > x_0\), then applying \(f\) (which must be increasing if continuous and
-                                    invertible) gives \(f(f(x_0)) > f(x_0)\), so \(F(x_0) > f(x_0) > x_0\).
-                                    Repeating, the sequence \(x_0, f(x_0), F(x_0), f(F(x_0)), \ldots\) is strictly
-                                    increasing. By continuity, \(f\) has no fixed points. But for a continuous function
-                                    on \(\mathbb{R}\) with no fixed points, we must have \(f(x) > x\) for all \(x\) or
-                                    \(f(x) < x\) for all \(x\). If \(f(x) > x\) for all \(x\), let \(x_0\) be arbitrary.
-                                    Then the sequence \(x_n = f^{\circ n}(x_0)\) is strictly increasing. If unbounded,
-                                    \(f(f(x_n)) = F(x_n)\) grows quadratically, forcing a contradiction with continuity.
-                                    If bounded, the limit \(L\) satisfies \(f(L) = L\), a fixed point, contradiction.
-                                    Hence no continuous solution exists on all of \(\mathbb{R}\).
+                                    Shift so that \(x^* = 0\) and write \(F(x) = \lambda x + a_2 x^2 + a_3 x^3 + \cdots\).
+                                    Seek \(\sigma(x) = x + s_2 x^2 + s_3 x^3 + \cdots\). Substituting into
+                                    \(\sigma(F(x)) = \lambda\,\sigma(x)\) and matching the coefficient of \(x^n\) gives
+                                    \[
+                                    (\lambda^n - \lambda)\,s_n = (\text{polynomial in } a_2,\dots,a_n,\ s_2,\dots,s_{n-1}).
+                                    \]
+                                    Because \(|\lambda| \neq 0,1\), the factor \(\lambda^n - \lambda\) never vanishes for
+                                    \(n \ge 2\), so each \(s_n\) is determined uniquely and recursively. The <em>resonances</em>
+                                    \(\lambda^n = \lambda\) that would block this are exactly the roots-of-unity multipliers of
+                                    the neutral case — which is why Koenigs needs \(|\lambda| \neq 1\).
                                 </p>
                             </div>
                         </details>
 
                         <p>
-                            However, numerical solutions exist on restricted domains. The <strong>Composita method</strong>
-                            (Kruchinin &amp; Kruchinin, 2013) provides a systematic way to compute the coefficients of a
-                            formal power series for \(f(x)\) satisfying \(f(f(x)) = F(x)\). See the
-                            <a href="solver.html">Solver</a> page for an interactive implementation.
+                            The neutral case \(|\lambda| = 1\) genuinely breaks the method: Schröder's equation has no
+                            analytic solution when \(\lambda = 1\). It is replaced by <strong>Abel's equation</strong>
+                            \(\alpha(F(x)) = \alpha(x) + 1\), whose half-iterate is \(f = \alpha^{-1}(\alpha + \tfrac12)\).
+                            We return to this in §6.
                         </p>
                     </div>
 
                     <hr>
 
-                    <!-- Section 5: Conjugacy -->
-                    <div id="section5">
-                        <h2>5. Conjugacy &amp; the General Picture</h2>
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. A Solvable Case: \(f(f(x)) = x^2 - 2\)</h2>
                         <p>
-                            Two functions \(F\) and \(G\) are <strong>conjugate</strong> if there exists an invertible
-                            function \(h\) such that
-                            \[
-                            F = h^{-1} \circ G \circ h.
-                            \]
-                            Conjugacy preserves dynamical structure: fixed points, cycles, and iteration counts. If
-                            \(G\) is easy to iterate (e.g., \(G(x) = x^\alpha\)), then we can solve
-                            \(f(f(x)) = F(x)\) by:
+                            The equation \(f(f(x)) = x^2 - 2\) is the textbook success story. The trick is to recognise a
+                            <em>global</em> conjugacy that linearises \(F\) not just near one fixed point but on a whole
+                            interval. Two equivalent changes of variable do the job.
                         </p>
-                        <ol>
-                            <li>Find \(h\) such that \(F = h^{-1} \circ G \circ h\).</li>
-                            <li>Let \(g(x) = x^{\sqrt{\alpha}}\) (a half-iterate of \(G\)).</li>
-                            <li>Then \(f = h^{-1} \circ g \circ h\) satisfies \(f^{\circ 2} = F\).</li>
-                        </ol>
 
                         <div class="practice">
-                            <strong>Key Insight.</strong> The solvability of \(f(f(x)) = F(x)\) hinges on whether \(F\)
-                            is conjugate to a simple function (like \(x^\alpha\) or a monomial) on a suitable domain.
-                            For \(F(x) = x^2 - 2\), the Chebyshev conjugacy \(h(x) = x + 1/x\) works. For
-                            \(F(x) = x^2 + 1\), no such conjugacy exists on \(\mathbb{R}\) because the dynamical
-                            behavior — no fixed points, monotonic divergence — cannot be matched by any power function
-                            on the real line.
+                            <strong>The Joukowski / Chebyshev conjugacy.</strong>
+                            Substitute \(x = z + \tfrac1z\). Then
+                            \[
+                            F(x) = x^2 - 2 = \Bigl(z + \tfrac1z\Bigr)^2 - 2 = z^2 + \tfrac{1}{z^2}.
+                            \]
+                            In other words, in the \(z\)-coordinate \(F\) is just the <strong>squaring map</strong>
+                            \(z \mapsto z^2\). Equivalently, writing \(x = 2\cos\theta\),
+                            \[
+                            F(2\cos\theta) = 4\cos^2\theta - 2 = 2\cos(2\theta),
+                            \]
+                            so \(F\) <em>doubles the angle</em> \(\theta\). This is exactly the Chebyshev relation
+                            \(T_2(\cos\theta)=\cos 2\theta\) with \(T_2(x) = 2x^2-1\).
                         </div>
 
                         <p>
-                            For a more general approach, the <strong>Composita</strong> of a generating function
-                            (see <a href="composita.html">Composita Calculator</a>) provides a combinatorial framework
-                            for manipulating iterates and compositions of formal power series, enabling systematic
-                            computation even when closed-form conjugacies are unavailable.
+                            Now the half-iterate is immediate. To halve the index of &ldquo;double the angle,&rdquo; we need
+                            \(g\) with \(g(g(\theta)) = 2\theta\); the scaling \(g(\theta) = \sqrt2\,\theta\) works since
+                            \((\sqrt2)^2 = 2\). Translating back through \(x = 2\cos\theta\):
+                            \[
+                            \boxed{\,f(x) = 2\cos\!\bigl(\sqrt2\,\arccos(x/2)\bigr)\,}\qquad (|x|\le 2).
+                            \]
+                            Equivalently, in the \(z\)-coordinate, \(f\) is the (real) power map \(z \mapsto z^{\sqrt2}\).
                         </p>
+
+                        <figure class="anim-figure">
+                            <video muted loop playsinline preload="metadata" controls>
+                                <source src="visuals/chebyshev_half_iterate.mp4" type="video/mp4">
+                                Your browser does not support embedded video.
+                            </video>
+                            <figcaption>
+                                <span class="fig-label">The half-iterate sits between \(y=x\) and \(F\).</span>
+                                Starting from \(x_0\), two steps of \(f\) (green cobweb) land exactly on
+                                \(F(x_0)=x_0^2-2\). The curves all meet at the fixed point \((2,2)\).
+                            </figcaption>
+                        </figure>
+
+                        <details>
+                            <summary><strong>Verification</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    With \(\phi(\theta) = 2\cos\theta\) (so \(\phi^{-1}(x) = \arccos(x/2)\)) and
+                                    \(f = \phi \circ (\sqrt2\,\cdot) \circ \phi^{-1}\),
+                                    \[
+                                    f(f(x)) = \phi\Bigl(\sqrt2 \cdot \sqrt2\,\phi^{-1}(x)\Bigr)
+                                            = \phi\bigl(2\,\phi^{-1}(x)\bigr)
+                                            = 2\cos\!\bigl(2\arccos(x/2)\bigr) = x^2 - 2.
+                                    \]
+                                    The whole computation is just &ldquo;\(\sqrt2 \cdot \sqrt2 = 2\)&rdquo; dressed up in a
+                                    coordinate where \(F\) is linear-in-the-angle.
+                                </p>
+                            </div>
+                        </details>
+
+                        <div class="keypoint">
+                            <strong>A subtlety worth noticing.</strong> The Lemma of §2 forbids a real half-iterate
+                            <em>anchored</em> at \(x^*=-1\), where \(F'(-1) = -2 &lt; 0\). There is no contradiction: the
+                            Chebyshev \(f\) above is continuous on \([-2,2]\) but it does <em>not</em> fix \(-1\); instead
+                            \(-1\) sits on a \(2\)-cycle structure of the angle-doubling. The <em>global</em> conjugacy
+                            sidesteps the <em>local</em> obstruction — a recurring theme: the right coordinate can rescue a
+                            problem that looks hopeless one fixed point at a time.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. The Hard Case: \(f(f(x)) = x^2 + 1\)</h2>
+                        <p>
+                            Change the constant from \(-2\) to \(+1\) and the friendly structure evaporates. The equation
+                            \[
+                            f(f(x)) = x^2 + 1
+                            \]
+                            has <strong>no known closed-form real solution</strong>, and the reason is visible in one line.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Proposition (No real fixed point).</strong> For all real \(x\),
+                            \[
+                            F(x) - x = x^2 - x + 1 = \Bigl(x - \tfrac12\Bigr)^2 + \tfrac34 \ge \tfrac34 &gt; 0,
+                            \]
+                            so \(F(x) &gt; x\) everywhere and \(x^2 + 1 = x\) has discriminant \(1 - 4 = -3 &lt; 0\). Thus
+                            \(F\) has no real fixed point and no real \(2\)-cycle.
+                        </div>
+
+                        <p>
+                            With no real fixed point, every tool from §3 and §4 is unavailable over \(\mathbb{R}\): there is
+                            nowhere to anchor a Schröder coordinate, and no real conjugacy to a power map. Orbits simply
+                            escape: \(x \mapsto x^2+1 \mapsto \cdots \to +\infty\).
+                        </p>
+
+                        <figure class="anim-figure">
+                            <video muted loop playsinline preload="metadata" controls>
+                                <source src="visuals/divergence_no_fixed_point.mp4" type="video/mp4">
+                                Your browser does not support embedded video.
+                            </video>
+                            <figcaption>
+                                <span class="fig-label">Escape to infinity.</span>
+                                The graph of \(x^2+1\) stays a clear gap above \(y=x\) (at least \(\tfrac34\)), so the cobweb
+                                ratchets upward without ever settling. No fixed point means no place to linearise.
+                            </figcaption>
+                        </figure>
+
+                        <div class="keypoint">
+                            <strong>Be careful what you conclude.</strong> &ldquo;\(F(x) &gt; x\) everywhere&rdquo; does
+                            <em>not</em> by itself forbid a half-iterate — recall \(F(x)=x+1\), which also has no fixed point
+                            yet has the half-iterate \(x+\tfrac12\). The obstruction for \(x^2+1\) is the
+                            <em>combination</em> of (i) no real fixed point to anchor a Schröder coordinate, and (ii)
+                            non-monotone, super-linear growth, which also defeats the monotone Abel-function approach that
+                            rescues \(x+1\). It is this conjunction — not the inequality alone — that makes the real problem
+                            hard.
+                        </div>
+
+                        <details>
+                            <summary><strong>So is there <em>any</em> half-iterate?</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    Yes — just not a real, closed-form one. Over \(\mathbb{C}\), \(x^2+1\) has fixed points at
+                                    \(x^* = \tfrac{1 \pm i\sqrt3}{2}\) with complex multipliers \(\lambda = 2x^*\),
+                                    \(|\lambda| = 2 \neq 1\). These are hyperbolic, so Koenigs' theorem applies and a
+                                    <em>local analytic half-iterate exists in the complex plane</em>. One can also build a
+                                    <em>formal power series</em> half-iterate around such a point. The
+                                    <a href="solver.html">Solver</a> does exactly this: its composita / series mode returns
+                                    the Taylor coefficients of an \(f\) with \(f(f(x)) = x^2+1\) to any requested order, even
+                                    though no elementary formula sums the series. &ldquo;No closed form&rdquo; is a statement
+                                    about <em>expressibility</em>, not about <em>existence</em>.
+                                </p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Conjugacy &amp; the General Picture</h2>
+                        <p>
+                            Every success above was a <strong>conjugacy</strong> in disguise: relabel coordinates so that
+                            \(F\) becomes a map we can iterate by inspection.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Definition (Conjugacy).</strong> Functions \(F\) and \(G\) are <em>conjugate</em> if
+                            there is an invertible \(h\) with
+                            \[
+                            F = h^{-1} \circ G \circ h .
+                            \]
+                            Then \(F^{\circ n} = h^{-1} \circ G^{\circ n} \circ h\) for every \(n\): conjugacy commutes with
+                            iteration.
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Theorem (Multipliers are conjugacy invariants).</strong> If \(F = h^{-1}\circ G\circ h\)
+                            and \(x^*\) is a fixed point of \(F\), then \(y^* = h(x^*)\) is a fixed point of \(G\) and
+                            \[
+                            F'(x^*) = G'(y^*).
+                            \]
+                            <em>Proof.</em> Differentiate \(h\circ F = G\circ h\) at \(x^*\):
+                            \(h'(x^*)F'(x^*) = G'(y^*)h'(x^*)\); since \(h'(x^*)\neq 0\), cancel it. \(\square\)
+                        </div>
+
+                        <p>
+                            This invariance is <em>why</em> \(x^2-2\) and \(x^2+1\) are genuinely different and not just
+                            superficially so: any conjugacy must preserve the multiplier data, and one function has real
+                            fixed points with a nonnegative multiplier while the other has no real fixed points at all. The
+                            general recipe is then:
+                        </p>
+                        <ol>
+                            <li>Locate a fixed point \(x^*\) and compute its multiplier \(\lambda = F'(x^*)\).</li>
+                            <li>Choose the linearising coordinate matched to \(\lambda\) (table below).</li>
+                            <li>Halve the index in that coordinate, then conjugate back.</li>
+                        </ol>
+
+                        <table class="class-table">
+                            <thead>
+                                <tr><th>Fixed-point type</th><th>Normal form</th><th>Linearising equation</th><th>Half-iterate</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>hyperbolic \((\lambda \neq 0,\ |\lambda|\neq 1)\)</td>
+                                    <td>\(u \mapsto \lambda u\)</td>
+                                    <td>Schröder: \(\sigma(F)=\lambda\sigma\)</td>
+                                    <td>\(\sigma^{-1}\!\bigl(\sqrt\lambda\,\sigma\bigr)\)</td>
+                                </tr>
+                                <tr>
+                                    <td>superattracting \((\lambda = 0)\)</td>
+                                    <td>\(u \mapsto u^{d}\)</td>
+                                    <td>Böttcher: \(\beta(F)=\beta^{\,d}\)</td>
+                                    <td>\(\beta^{-1}\!\bigl(\beta^{\sqrt d}\bigr)\)</td>
+                                </tr>
+                                <tr>
+                                    <td>parabolic \((\lambda = 1)\)</td>
+                                    <td>\(u \mapsto u + 1\)</td>
+                                    <td>Abel: \(\alpha(F)=\alpha+1\)</td>
+                                    <td>\(\alpha^{-1}\!\bigl(\alpha + \tfrac12\bigr)\)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            The Chebyshev solution of §4 is simultaneously a Schröder picture (at the hyperbolic fixed point
+                            \(x^*=2\), where \(\lambda = 4\) and \(\sqrt\lambda = 2\)) and a Böttcher picture (the global
+                            conjugacy to \(z \mapsto z^2\), with half-iterate \(z \mapsto z^{\sqrt2}\)). The irrational
+                            multiplier case \(|\lambda|=1\) with \(\lambda\) not a root of unity (Siegel / Cremer) brings in
+                            small-divisor problems and is where the deepest difficulties of the subject live.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 7 ================= -->
+                    <div id="section7">
+                        <h2>7. Summary &amp; Where to Go Next</h2>
+                        <p>The decision procedure for &ldquo;does \(f(f(x))=F(x)\) have a nice solution?&rdquo; distils to:</p>
+                        <div class="keypoint">
+                            <ol style="margin:0;">
+                                <li>Find the real fixed points of \(F\) and their multipliers \(\lambda = F'(x^*)\).</li>
+                                <li>If some \(x^*\) is hyperbolic with \(\lambda &gt; 0\): build the
+                                    <strong>Schröder half-iterate</strong> \(\sigma^{-1}(\sqrt\lambda\,\sigma)\) (§3).</li>
+                                <li>If a <strong>global conjugacy</strong> to a power map or angle-doubling exists, you may get
+                                    a closed form on a whole interval (§4).</li>
+                                <li>If there is no usable real fixed point (e.g. \(x^2+1\)): there is generally
+                                    <strong>no real closed form</strong> — fall back to a <strong>formal power series</strong>
+                                    via the composita method, valid as a local/complex object (§5).</li>
+                            </ol>
+                        </div>
+
+                        <p>Continue exploring:</p>
+                        <ul>
+                            <li><a href="solver.html">Solver</a> — compute half-iterates two ways: paper-based composita
+                                series and local-analytic Schröder coordinates.</li>
+                            <li><a href="composita.html">Composita Calculator</a> — the Kruchinin recurrence
+                                \(F^{\Delta}(n,k)\) that powers the series machinery.</li>
+                            <li><a href="blog.html">Notes</a> — worked articles on fixed points, composita half-iterates,
+                                and numerical methods.</li>
+                            <li><a href="bibliography.html">Bibliography</a> — Koenigs (1884), Kneser (1950),
+                                Kuczma (1968), Kruchinin &amp; Kruchinin (2013/2014), and more.</li>
+                        </ul>
                     </div>
 
                 </article>
@@ -358,6 +695,24 @@
                 options: chartOptions
             });
         });
+    </script>
+
+    <!-- Play animated figures only while on screen (performance + focus) -->
+    <script>
+        (function() {
+            const vids = document.querySelectorAll('.anim-figure video');
+            if (!('IntersectionObserver' in window)) {
+                vids.forEach(v => { v.setAttribute('autoplay', ''); });
+                return;
+            }
+            const io = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) { e.target.play().catch(function(){}); }
+                    else { e.target.pause(); }
+                });
+            }, { threshold: 0.25 });
+            vids.forEach(v => io.observe(v));
+        })();
     </script>
 
     <!-- Dark mode toggle -->
