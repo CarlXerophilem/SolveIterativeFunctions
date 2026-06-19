@@ -1,0 +1,6 @@
+{
+  "_comment": "Which TODOs/predicate count as 'main' for the automatic midway re-plan (plan §8).",
+  "predicate": "tier==T0",
+  "ids": [],
+  "main_track_max": 2
+}

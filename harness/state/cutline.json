@@ -1,0 +1,13 @@
+{
+  "mode": "engineering",
+  "generated_at": "2026-06-20",
+  "ordered": ["T-engine-fromlocal", "T-engine-export", "T-solver-input", "T-solver-presets", "T-verify"],
+  "unblocked_now": ["T-engine-fromlocal"],
+  "cut_index": 5,
+  "deferred": [],
+  "projection": {
+    "session_budget_minutes": 300,
+    "minutes_per_effort_point": 25,
+    "note": "Linear dependency chain -> thin frontier. All 5 items fit the budget; only T-engine-fromlocal is schedulable now. Order respects topology over raw score (T-verify scores 15 but lands last)."
+  }
+}

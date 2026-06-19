@@ -1,0 +1,8 @@
+{
+  "_comment": "auto-dev proxy governance TARGETS (plan §9). NOT a read of the account cap. budget-gate.sh greps these keys.",
+  "session_budget_minutes": 300,
+  "weekly_session_fraction": 0.20,
+  "warn_at_elapsed_fraction": 0.70,
+  "hard_stop_at_elapsed_fraction": 0.90,
+  "output_token_target": 500000
+}

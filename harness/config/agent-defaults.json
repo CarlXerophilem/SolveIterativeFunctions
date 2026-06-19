@@ -1,0 +1,8 @@
+{
+  "_comment": "Tier -> AGT(effort,model,isolation,time) binding (plan §4). time_target_minutes is a SOFT scope target, not an enforced kill (R10).",
+  "T0": { "effort": "high",        "model": "opus",               "isolation": "worktree", "time_target_minutes": 120, "run_mode": "foreground" },
+  "T1": { "effort": "medium-high", "model": "opus",               "isolation": "worktree", "time_target_minutes": 90,  "run_mode": "foreground" },
+  "T2": { "effort": "medium",      "model": "sonnet",             "isolation": "worktree", "time_target_minutes": 60,  "run_mode": "foreground" },
+  "T3": { "effort": "xhigh",       "model": "opus",               "isolation": "remote",   "time_target_minutes": 60,  "run_mode": "background" },
+  "verifier": { "effort": "high",  "model": "cross-model-bridge", "isolation": "none",     "time_target_minutes": 20,  "run_mode": "host" }
+}

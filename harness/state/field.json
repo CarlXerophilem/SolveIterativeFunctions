@@ -1,0 +1,102 @@
+{
+  "seed": "Does every real-analytic F with a fixed point of multiplier λ (|λ|≠0,1) admit a real-analytic half-iterate, and when is it unique?",
+  "mode": "generative",
+  "generated_at": "2026-06-20",
+  "_iron_rule": "No node carries a status of unsolved/impossible/failed. The `location` geometry IS the status (plan §7.2).",
+  "_edges_basis": "LLM-judged associations (no AUTO_DEV_EMBED_MODEL key) — coords are 2D associative placeholders, not embeddings (plan §7.3 fallback, R12).",
+  "nodes": [
+    {
+      "id": "L-koenigs", "kind": "landmark",
+      "statement": "Koenigs linearization: if 0<|λ|<1 (or |λ|>1, λ not a root of unity), F is analytically conjugate to z↦λz via the Schröder function φ.",
+      "location": { "cluster": "local-conjugacy", "nearest_landmarks": [], "frontier_distance": 0,
+                    "gap_geometry": "verified classical theorem (anchor)", "coords": [0.0, 0.0] },
+      "verification": { "checked_cases": "classical proof", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 5
+    },
+    {
+      "id": "L-halfiter-pos", "kind": "landmark",
+      "statement": "For hyperbolic λ>0, a real branch √λ>0 exists and f = φ⁻¹(√λ·φ) is a real-analytic half-iterate.",
+      "location": { "cluster": "local-conjugacy", "nearest_landmarks": [{ "id": "L-koenigs", "hops": 1, "relation": "specializes", "semantic_dist": 0.18 }],
+                    "frontier_distance": 0, "gap_geometry": "verified (constructive, via Schröder)", "coords": [0.12, 0.05] },
+      "verification": { "checked_cases": "λ=2 (x^2-2@2), 0<λ<1 attracting", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 4
+    },
+    {
+      "id": "A-schroeder", "kind": "approach",
+      "statement": "Compute φ as the Koenigs coordinate (engine.js solveSchroederHalfIterate); pull back √λ·φ. Covers the whole hyperbolic case.",
+      "location": { "cluster": "local-conjugacy", "nearest_landmarks": [{ "id": "L-koenigs", "hops": 1, "relation": "implements", "semantic_dist": 0.15 }],
+                    "frontier_distance": 0, "gap_geometry": "implemented + tested in repo (anchor)", "coords": [0.05, 0.20] },
+      "verification": { "checked_cases": "engine.js reproduces x^2-2@2", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 3
+    },
+    {
+      "id": "O-neg-lambda", "kind": "obstruction",
+      "statement": "For λ<0 the real square root √λ does not exist, so the Koenigs construction yields no REAL half-iterate; a real f tangent to √λ·z is obstructed.",
+      "location": { "cluster": "reality-obstruction", "nearest_landmarks": [{ "id": "L-koenigs", "hops": 1, "relation": "limits", "semantic_dist": 0.30 }],
+                    "frontier_distance": 1, "gap_geometry": "known obstruction: missing real branch of √λ (parity/orientation)", "coords": [-0.35, 0.10] },
+      "verification": { "checked_cases": "λ=-1 (period-2 linearization)", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 2
+    },
+    {
+      "id": "O-parabolic", "kind": "obstruction",
+      "statement": "The EXCLUDED boundary |λ|=1 (e.g. λ=1 parabolic): Koenigs fails; a Fatou/Abel coordinate is needed instead (engine.js solveParabolicHalfIterate).",
+      "location": { "cluster": "parabolic-boundary", "nearest_landmarks": [{ "id": "L-halfiter-pos", "hops": 2, "relation": "neighbors-excluded", "semantic_dist": 0.42 }],
+                    "frontier_distance": 1, "gap_geometry": "adjacent excluded region; handled by a different (Fatou) technique", "coords": [0.40, -0.25] },
+      "verification": { "checked_cases": "x^2-x+1@1 residual ~2.4e-14 (Fatou)", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 2
+    },
+    {
+      "id": "LE-uniqueness", "kind": "lemma",
+      "statement": "Among real-analytic germs tangent to √λ·z at the fixed point, the Koenigs coordinate is unique up to scaling ⇒ the half-iterate is unique once a branch of √λ is fixed (hyperbolic λ>0).",
+      "location": { "cluster": "local-conjugacy", "nearest_landmarks": [{ "id": "L-koenigs", "hops": 1, "relation": "corollary-of", "semantic_dist": 0.22 }],
+                    "frontier_distance": 1, "gap_geometry": "one short rigidity argument from a landmark (near-landmark)", "coords": [0.20, 0.18] },
+      "verification": { "checked_cases": "uniqueness of Koenigs φ (classical)", "cross_model_verdict": "pending", "baseline_anchored": false },
+      "leverage": 3
+    },
+    {
+      "id": "RF-sqrt-action", "kind": "reformulation",
+      "statement": "Existence ⇔ existence of an analytic square root of the linear multiplier action; uniqueness ⇔ branch choice of √λ + germ rigidity (LE-uniqueness).",
+      "location": { "cluster": "local-conjugacy", "nearest_landmarks": [{ "id": "L-koenigs", "hops": 1, "relation": "reframes", "semantic_dist": 0.20 }],
+                    "frontier_distance": 1, "gap_geometry": "equivalent restatement that exposes the λ-sign case-split", "coords": [0.08, 0.32] },
+      "verification": { "checked_cases": "n/a", "cross_model_verdict": "n/a", "baseline_anchored": false },
+      "leverage": 3
+    },
+    {
+      "id": "AN-matrix-sqrt", "kind": "analogy",
+      "statement": "Linear analogue: a real matrix M has a real square root iff each negative eigenvalue has even multiplicity — a cross-domain mirror of the λ>0 (vs λ<0) condition.",
+      "location": { "cluster": "linear-algebra-bridge", "nearest_landmarks": [{ "id": "L-halfiter-pos", "hops": 2, "relation": "analogous", "semantic_dist": 0.55 }],
+                    "frontier_distance": 2, "gap_geometry": "cross-domain bridge: transfers the parity intuition for √λ", "coords": [-0.10, 0.55] },
+      "verification": { "checked_cases": "matrix sqrt existence theorem", "cross_model_verdict": "n/a", "baseline_anchored": true },
+      "leverage": 2
+    },
+    {
+      "id": "FRONT-conj", "kind": "reformulation",
+      "statement": "THE SEED, positioned: 'every real-analytic F with |λ|≠0,1 admits a real-analytic half-iterate, with stated uniqueness.'",
+      "location": {
+        "cluster": "local-conjugacy",
+        "nearest_landmarks": [
+          { "id": "L-halfiter-pos", "hops": 1, "relation": "specializes-to(λ>0)", "semantic_dist": 0.12 },
+          { "id": "O-neg-lambda", "hops": 1, "relation": "obstructed-in(λ<0)", "semantic_dist": 0.30 }
+        ],
+        "frontier_distance": 1,
+        "gap_geometry": "NOT a yes/no — a case-geometry: (i) λ>0 essentially ANCHORED, 1 hop from Koenigs (L-halfiter-pos / A-schroeder); (ii) λ<0 meets a genuine real-branch OBSTRUCTION (O-neg-lambda), so the unrestricted claim is false-as-stated and the honest object is the boundary between the two; (iii) uniqueness is a near-landmark lemma (LE-uniqueness). Excluded |λ|=1 boundary handled separately (O-parabolic).",
+        "frontier_tier": "frontier",
+        "coords": [0.02, 0.12]
+      },
+      "verification": { "checked_cases": "λ>0 cases verified in engine.js; λ<0 obstruction exhibited at λ=-1", "cross_model_verdict": "pending", "baseline_anchored": false },
+      "leverage": 5
+    }
+  ],
+  "edges": [
+    { "from": "L-halfiter-pos", "to": "L-koenigs", "rel": "specializes", "weight": 0.82 },
+    { "from": "A-schroeder", "to": "L-koenigs", "rel": "implements", "weight": 0.85 },
+    { "from": "O-neg-lambda", "to": "L-koenigs", "rel": "limits", "weight": 0.70 },
+    { "from": "LE-uniqueness", "to": "L-koenigs", "rel": "specializes", "weight": 0.78 },
+    { "from": "RF-sqrt-action", "to": "L-koenigs", "rel": "analogous", "weight": 0.74 },
+    { "from": "AN-matrix-sqrt", "to": "O-neg-lambda", "rel": "bridges", "weight": 0.66 },
+    { "from": "FRONT-conj", "to": "L-halfiter-pos", "rel": "specializes", "weight": 0.88 },
+    { "from": "FRONT-conj", "to": "O-neg-lambda", "rel": "depends", "weight": 0.64 },
+    { "from": "FRONT-conj", "to": "LE-uniqueness", "rel": "depends", "weight": 0.60 },
+    { "from": "FRONT-conj", "to": "O-parabolic", "rel": "bridges", "weight": 0.41 }
+  ]
+}

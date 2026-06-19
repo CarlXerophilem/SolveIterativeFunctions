@@ -1,0 +1,5 @@
+{"id":"T-engine-fromlocal","title":"Refactor engine.js: *FromLocal variants + classifyFromLocal + findFixedPointsNumeric; remove classifyFixedPointLegacy","deps":[],"axes":{"V":3,"E":2,"F":3,"D":3,"C":3},"score":20,"tier":"T0","status":"open","unblocked":true}
+{"id":"T-engine-export","title":"Export new fns + Node tests (x^2-x+1@1, x^2-2@2, exp(x)-1@0, sin(x), exp(x)-1)","deps":["T-engine-fromlocal"],"axes":{"V":3,"E":3,"F":3,"D":1,"C":3},"score":17,"tier":"T0","status":"blocked","unblocked":false}
+{"id":"T-solver-input","title":"#expr-input + live KaTeX preview + parse errors; wire series & analytic to Expr","deps":["T-engine-export"],"axes":{"V":3,"E":1,"F":2,"D":1,"C":2},"score":13,"tier":"T1","status":"blocked","unblocked":false}
+{"id":"T-solver-presets","title":"Presets -> expression strings; grapher/orbit use targetFn","deps":["T-solver-input"],"axes":{"V":2,"E":2,"F":3,"D":1,"C":2},"score":13,"tier":"T1","status":"blocked","unblocked":false}
+{"id":"T-verify","title":"npm run lint + Playwright UI smoke","deps":["T-solver-presets"],"axes":{"V":2,"E":3,"F":3,"D":1,"C":3},"score":15,"tier":"T1","status":"blocked","unblocked":false}

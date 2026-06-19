@@ -1,0 +1,12 @@
+{
+  "_comment": "Launch-time mode classifier (plan §7). Reads GOAL.md; honors an explicit 'Mode hint:' line.",
+  "default_mode": "engineering",
+  "generative_when": {
+    "max_goal_words": 40,
+    "markers": ["conjecture", "prove", "disprove", "characterize", "open problem", "does there exist", "for all", "half-iterate", "uniqueness", "existence"]
+  },
+  "embeddings": {
+    "endpoint_env": "AUTO_DEV_EMBED_MODEL",
+    "fallback": "llm-judged"
+  }
+}
