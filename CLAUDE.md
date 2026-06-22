@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-An interactive educational website about solving iterative functional equations — primarily \(f(f(x)) = F(x)\) (functional square roots / half-iterates) via the composita method and local analytic Schroeder coordinates. Deployed as a static site on GitHub Pages (https://carlxerophilem.github.io/SolveIterativeFunctions/). Content is in English; the repo lives under a Chinese-named parent path (公众号文章 = WeChat article).
+An interactive educational website — a reference **"shelf" for the whole field of iterative functional equations**. It pairs interactive tools for \(f(f(x)) = F(x)\) (functional square roots / half-iterates, via the composita method and local analytic Schröder coordinates) with a set of standalone **reference pages** that broaden the scope to the entire subject: `shelf.html` (a field map), `history.html` (Babbage → modern), `equations.html` (an atlas of the canonical named equations), `connections.html` (links to complex dynamics, flows, tetration, combinatorics, probability, operators, physics), and a greatly expanded `bibliography.html`. Deployed as a static site on GitHub Pages (https://carlxerophilem.github.io/SolveIterativeFunctions/). Content is in English; the repo lives under a Chinese-named parent path (公众号文章 = WeChat article).
+
+The reading-order spine (fixed-bar prev/next) is: `index → shelf → history → theory → equations → connections → solver → composita → bibliography → blog`. The prose/reference pages are **web-sourced and fact-checked**; the sourced research corpus and verified-citation notes live under `harness/state/research/` (see e.g. `canonical-citations.md`). When editing these pages, keep dates/attributions/equation statements consistent with that corpus and hedge anything it flags as uncertain rather than asserting a possibly-wrong fact.
 
 ## Build & run
 

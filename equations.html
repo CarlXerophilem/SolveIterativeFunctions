@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atlas of Equations — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="Atlas of Equations — Iterative Functional Equations">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-22">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Atlas of Equations — Iterative Functional Equations">
+    <meta property="og:description" content="A field guide to the canonical named equations of iteration theory: Babbage, Schröder, Abel, Böttcher, Julia, conjugacy, translation, Aczél–Jabotinsky, commuting maps, and the cocycle/Lévy equation.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/equations.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <meta name="twitter:card" content="Atlas of the named functional equations of iteration.">
+    <meta name="twitter:title" content="Atlas of Equations — Iterative Functional Equations">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
+
+    <!-- Small, page-scoped components: the regime field-map and the timeline.
+         Uses ONLY theme variables so light/dark mode keep working. -->
+    <style>
+        .field-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.9rem;
+            margin: 1.2rem 0;
+        }
+        .field-node {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--box-bg);
+            padding: 0.85rem 0.95rem;
+        }
+        .field-node h4 {
+            margin: 0 0 0.35rem;
+            font-size: 0.98rem;
+        }
+        .field-node .regime {
+            font-size: 0.82rem;
+            color: var(--footer-text);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+        .field-node .lands {
+            font-size: 0.86rem;
+        }
+        .eq-timeline {
+            list-style: none;
+            margin: 1.2rem 0;
+            padding: 0 0 0 1.1rem;
+            border-left: 2px solid var(--border-color);
+        }
+        .eq-timeline > li {
+            position: relative;
+            margin: 0 0 1.0rem;
+            padding-left: 0.9rem;
+        }
+        .eq-timeline > li::before {
+            content: "";
+            position: absolute;
+            left: -1.62rem;
+            top: 0.35rem;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--link-color);
+        }
+        .eq-timeline .yr {
+            font-weight: 700;
+            color: var(--link-color);
+            margin-right: 0.45rem;
+        }
+        .eq-jump {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin: 0.6rem 0 0.2rem;
+        }
+        .eq-jump a {
+            font-size: 0.82rem;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 0.16rem 0.7rem;
+            background: var(--toc-bg);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body data-type="book" id="top">
+
+    <!-- Loader -->
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>
+        window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });
+    </script>
+
+    <!-- Fixed Navigation Bar -->
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="theory.html" id="prev-link" title="Theory"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="equations.html" id="center-link">
+                <span class="hover-prev">Theory</span>
+                <span class="title-main">Atlas of Equations</span>
+                <span class="hover-next">Connections</span>
+            </a>
+        </div>
+        <a href="connections.html" id="next-link" title="Connections"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <section data-type="chapter" id="equations">
+
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section1">1. How to Read This Atlas: the Multiplier Map</a></li>
+                    <li><a href="#section2">2. Babbage: \(F^{\circ n}=\mathrm{id}\)</a></li>
+                    <li><a href="#section3">3. Iterative Roots: \(F^{\circ n}=G\)</a></li>
+                    <li><a href="#section4">4. Abel: \(\alpha\circ F=\alpha+1\)</a></li>
+                    <li><a href="#section5">5. Schröder &amp; Koenigs: \(\sigma\circ F=s\,\sigma\)</a></li>
+                    <li><a href="#section6">6. Böttcher: \(B\circ F=B^{\,n}\)</a></li>
+                    <li><a href="#section7">7. Julia: \(G\circ F\cdot F'=G\)</a></li>
+                    <li><a href="#section8">8. Conjugacy: \(f\circ h=h\circ g\)</a></li>
+                    <li><a href="#section9">9. Translation: \(F(F(x,s),t)=F(x,s{+}t)\)</a></li>
+                    <li><a href="#section10">10. Aczél–Jabotinsky: \(H\circ\Phi=\Phi'\,H\)</a></li>
+                    <li><a href="#section11">11. Commuting Maps: \(f\circ g=g\circ f\)</a></li>
+                    <li><a href="#section12">12. Cocycle &amp; Lévy; the Cross-Map Table</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>Atlas of the Named Equations</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        A field guide to the functional equations that govern iteration — one clearly-headed entry per
+                        equation, organised by the geometry of fixed points. The companion to the
+                        <a href="theory.html">Theory</a> page, which <em>derives</em> the central three.
+                    </p>
+                    <hr>
+
+                    <!-- ================= Section 1 ================= -->
+                    <div id="section1">
+                        <h2>1. How to Read This Atlas: the Multiplier Map</h2>
+                        <p>
+                            Nearly every equation on this page is a way of saying the same thing twice: <em>relabel the
+                            coordinate so that a complicated map becomes a simple one we can iterate by inspection.</em>
+                            The <a href="theory.html#section6">Theory page</a> develops this idea — conjugacy — in detail.
+                            Here we catalogue the equations themselves, because the same handful of normal forms recurs
+                            across a century and a half of work under different names.
+                        </p>
+                        <p>
+                            The organising invariant is the <strong>multiplier</strong> of a fixed point. If a map \(F\)
+                            fixes a point \(x^*\) (so \(F(x^*)=x^*\)) and is differentiable there, its multiplier is the
+                            derivative
+                            \[
+                            \lambda = F'(x^*).
+                            \]
+                            Under an analytic (or smooth) change of coordinate the multiplier is <strong>unchanged</strong>:
+                            it is a conjugacy invariant (see Milnor, <em>Dynamics in One Complex Variable</em>). So the
+                            value of \(\lambda\) sorts the local linearization problem into a small number of regimes, and
+                            each regime is governed by its own canonical equation.
+                        </p>
+
+                        <div class="definition">
+                            <strong>The four regimes, and who governs each.</strong>
+                            <ul style="margin-bottom:0;">
+                                <li><strong>Hyperbolic</strong> — \(0&lt;|\lambda|&lt;1\) (attracting) or \(|\lambda|&gt;1\)
+                                    (repelling): <strong>Schröder / Koenigs</strong> linearization to \(u\mapsto \lambda u\).</li>
+                                <li><strong>Superattracting</strong> — \(\lambda=0\), with local degree \(n\ge2\):
+                                    <strong>Böttcher</strong> conjugacy to the power map \(w\mapsto w^{\,n}\).</li>
+                                <li><strong>Parabolic / rationally indifferent</strong> — \(\lambda\) a root of unity
+                                    (canonically \(\lambda=1\)): <strong>Abel's equation</strong> / Fatou coordinates /
+                                    the Leau–Fatou flower.</li>
+                                <li><strong>Irrationally indifferent</strong> — \(|\lambda|=1\) with \(\lambda\) not a root
+                                    of unity: the Siegel (linearizable) versus Cremer (non-linearizable) dichotomy, with
+                                    small-divisor difficulties that sit outside the classical Schröder/Abel/Böttcher trio.</li>
+                            </ul>
+                        </div>
+
+                        <p>
+                            Read this way, Schröder, Böttcher and Abel are not three unrelated tricks but a <em>partition</em>
+                            of one problem — the linearization of a germ — according to where \(\lambda\) lands. The remaining
+                            entries either generalise this (iterative roots, conjugacy), differentiate it (Julia,
+                            Aczél–Jabotinsky), or globalise it (translation, commuting maps). The field-map below shows the
+                            three classical regimes side by side; the irrational case is flagged as the hard frontier.
+                        </p>
+
+                        <div class="field-map">
+                            <div class="field-node">
+                                <h4>Schröder · Koenigs</h4>
+                                <span class="regime">\(0&lt;|\lambda|\neq1\) — hyperbolic</span>
+                                <span class="lands">normal form \(u\mapsto s\,u\); §<a href="#section5">5</a></span>
+                            </div>
+                            <div class="field-node">
+                                <h4>Böttcher</h4>
+                                <span class="regime">\(\lambda=0\), degree \(n\ge2\) — superattracting</span>
+                                <span class="lands">normal form \(w\mapsto w^{\,n}\); §<a href="#section6">6</a></span>
+                            </div>
+                            <div class="field-node">
+                                <h4>Abel · Fatou</h4>
+                                <span class="regime">\(\lambda=1\) — parabolic</span>
+                                <span class="lands">normal form \(u\mapsto u+1\); §<a href="#section4">4</a></span>
+                            </div>
+                            <div class="field-node">
+                                <h4>Siegel / Cremer</h4>
+                                <span class="regime">\(|\lambda|=1\), not a root of unity</span>
+                                <span class="lands">small divisors; the open frontier</span>
+                            </div>
+                        </div>
+
+                        <div class="notice-box">
+                            <strong>Notation.</strong> We write the \(n\)-th iterate as \(F^{\circ n}=F\circ\cdots\circ F\)
+                            (\(n\) factors) and continuous (fractional) iterates as \(F^{[t]}\). Throughout, \(s\) (or
+                            \(\lambda\)) is a multiplier, \(\mathrm{id}\) the identity map, and \(\alpha,\sigma,B,\Phi\) are
+                            the unknown <em>conjugating</em> functions to be solved for. Each entry states the equation in
+                            brackets, the regime or normal form it belongs to, the key existence–uniqueness facts, and the
+                            names attached to it.
+                        </div>
+
+                        <div class="eq-jump">
+                            <a href="#section2">Babbage</a>
+                            <a href="#section3">Iterative root</a>
+                            <a href="#section4">Abel</a>
+                            <a href="#section5">Schröder</a>
+                            <a href="#section6">Böttcher</a>
+                            <a href="#section7">Julia</a>
+                            <a href="#section8">Conjugacy</a>
+                            <a href="#section9">Translation</a>
+                            <a href="#section10">Aczél–Jabotinsky</a>
+                            <a href="#section11">Commuting</a>
+                            <a href="#section12">Cocycle / Lévy</a>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 2 ================= -->
+                    <div id="section2">
+                        <h2>2. Babbage's Equation: \(F^{\circ n}=\mathrm{id}\)</h2>
+                        <p>
+                            The starting point of the whole subject asks for the maps that <em>undo themselves</em> after a
+                            fixed number of steps.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Babbage's equation.</strong>
+                            \[
+                            F^{\circ n}(x)=x,\qquad F^{\circ n}=\underbrace{F\circ\cdots\circ F}_{n}.
+                            \]
+                            Its solutions are the <em>periodic (cyclic) functions of period dividing \(n\)</em>, i.e. the
+                            \(n\)-th <strong>iterative roots of the identity</strong>. For \(n=2\) they are the
+                            <strong>involutions</strong>, \(F\circ F=\mathrm{id}\).
+                        </div>
+
+                        <p>
+                            Named for <strong>Charles Babbage</strong> (1791–1871), who studied it in his
+                            <em>Examples of the Solutions of Functional Equations</em> (Cambridge, 1820) and in the earlier
+                            <em>Essay towards the Calculus of Functions</em> (in the <em>Philosophical Transactions</em>,
+                            commonly dated to 1815–1816). A standard particular family of involutions is
+                            \(F(x)=\dfrac{b-x}{1+cx}\) (for \(bc\neq-1\)). Babbage already noticed the conjugation symmetry
+                            that organises every entry of this atlas: if \(F\) solves the equation then so does
+                            \(\Psi^{-1}\circ F\circ\Psi\) for any invertible \(\Psi\), so the group of invertible functions
+                            acts on the solution set by conjugation.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Linearizability.</strong> A classical fact is that all solutions of \(F^{\circ n}=\mathrm{id}\)
+                            on \(\mathbb{R}\), \(\mathbb{R}^2\), the circle \(S^1\) and the sphere \(S^2\) are
+                            <em>linearizable</em> — topologically conjugate to a linear (rotation-like) map. A natural
+                            generalisation replaces the identity by an earlier iterate, \(F^{\circ n}=F^{\circ k}\) with
+                            \(n&gt;k\), which has been studied in its own right.
+                        </div>
+
+                        <div class="keypoint">
+                            Babbage's equation is the <em>degenerate</em> iterative-root problem (root of the identity), and
+                            it is exactly the source of non-uniqueness for fractional iterates: any two half-iterates of the
+                            same \(F\) differ by composition with a solution of a Babbage-type symmetry. The
+                            <a href="theory.html#section1">Theory page</a> meets this as &ldquo;uniqueness usually fails.&rdquo;
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>C. Babbage, <em>Examples of the Solutions of Functional Equations</em> (Cambridge, 1820).
+                                <span class="ref-tag">Babbage 1820</span></li>
+                            <li>C. Babbage, <em>Essay towards the Calculus of Functions</em>, Phil. Trans. (commonly dated 1815–1816).
+                                <span class="ref-tag">Calculus of Functions</span></li>
+                            <li>A generalisation of the Babbage functional equation (\(F^{\circ n}=\mathrm{id}\), \(F^{\circ n}=F^{\circ k}\)), arXiv:2001.04573.
+                                <span class="ref-tag">arXiv:2001.04573</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 3 ================= -->
+                    <div id="section3">
+                        <h2>3. The Iterative-Root Equation: \(F^{\circ n}=G\)</h2>
+                        <p>
+                            Replace the identity on the right of Babbage's equation by an arbitrary target \(G\), and you get
+                            the central object of this whole site: the <strong>iterative \(n\)-th root</strong>.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Iterative-root equation.</strong>
+                            \[
+                            \underbrace{F\circ\cdots\circ F}_{n}=G.
+                            \]
+                            A solution \(F\) is an <em>iterative (\(n\)-th) root</em> of the given \(G\). For \(n=2\) it is
+                            the <strong>functional square root</strong> or <strong>half-iterate</strong>, \(F(F(x))=G(x)\),
+                            the protagonist of the <a href="theory.html">Theory</a> page and the
+                            <a href="solver.html">Solver</a>.
+                        </div>
+
+                        <p>
+                            For strictly monotone continuous self-maps of an interval, <strong>M. Kuczma</strong> gave (in
+                            work commonly cited to 1961) a complete description of continuous iterative roots. The decisive
+                            structural observation — that the iterative-root problem is equivalent to a
+                            <a href="#section8">conjugacy</a> problem — is usually attributed to <strong>Bödewadt (1944)</strong>.
+                            More recent work studies <em>non-existence</em>: Bhat and Gopalakrishna (arXiv:2105.02171, 2022)
+                            show that continuous self-maps with <em>no</em> iterative square root are <em>dense</em> in the
+                            space of continuous self-maps of cubes and of \(\mathbb{R}^m\), while maps with a boundary fixed
+                            point can be approximated by iterative squares.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>The canonical hard case: the half-iterate of \(\exp\).</strong> The equation
+                            \[
+                            F(F(x))=e^{x}
+                            \]
+                            has no elementary closed-form solution. <strong>Hellmuth Kneser (1950)</strong> constructed a
+                            <em>real-analytic</em> half-iterate of \(e^x\) by complex-analytic methods, in
+                            &ldquo;Reelle analytische Lösungen der Gleichung \(\varphi(\varphi(x))=e^{x}\)…&rdquo;,
+                            <em>Journal für die reine und angewandte Mathematik</em> <strong>187</strong> (1950), 56–67. The
+                            problem reduces to solving <a href="#section4">Abel's equation</a> for \(\exp\) (which has no
+                            real fixed point, only the parabolic-at-infinity behaviour).
+                        </div>
+
+                        <div class="practice">
+                            <strong>Worked roots you can check by hand.</strong>
+                            <ul style="margin-bottom:0;">
+                                <li>\(F(x)=2x^{2}\) is a functional square root of \(G(x)=8x^{4}\), since
+                                    \(2(2x^{2})^{2}=8x^{4}\).</li>
+                                <li>A half-iterate of the Chebyshev polynomial \(T_n\) is
+                                    \(F(x)=\cos\!\bigl(\sqrt{n}\,\arccos x\bigr)\) — generally not itself a polynomial.</li>
+                                <li>\(F(x)=\dfrac{x}{\sqrt2+x(1-\sqrt2)}\) is a functional square root of
+                                    \(G(x)=\dfrac{x}{2-x}\).</li>
+                                <li>Numerically, \(\sin^{1/2}(1)\approx 0.90871\).</li>
+                            </ul>
+                        </div>
+
+                        <div class="keypoint">
+                            Because the iterative-root problem is a conjugacy problem, the regime tables of §1 apply directly:
+                            at a hyperbolic fixed point one uses <a href="#section5">Schröder</a>; at a superattracting one
+                            <a href="#section6">Böttcher</a>; at a parabolic one <a href="#section4">Abel</a>. The systematic
+                            real/negative/infinitesimal \(n\)-roots of a complex \(G\) all rest on solving Schröder's equation.
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>M. Kuczma, continuous iterative roots of monotone interval maps (commonly cited 1961); also Kuczma 1968.
+                                <span class="ref-tag">Kuczma 1961</span></li>
+                            <li>T. Bödewadt, reduction of iterative roots to conjugacy (1944).
+                                <span class="ref-tag">Bödewadt 1944</span></li>
+                            <li>H. Kneser, <em>J. reine angew. Math.</em> <strong>187</strong> (1950) 56–67, doi:10.1515/crll.1950.187.56.
+                                <span class="ref-tag">Kneser 1950</span></li>
+                            <li>Bhat &amp; Gopalakrishna, <em>Iterative square roots of functions</em>, arXiv:2105.02171 (2022).
+                                <span class="ref-tag">arXiv:2105.02171</span></li>
+                            <li>Wikipedia, <em>Functional square root</em> (half-iterate; reduction to Schröder/Abel).
+                                <span class="ref-tag">Functional square root</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. Abel's Equation: \(\alpha(F(x))=\alpha(x)+1\)</h2>
+                        <p>
+                            The parabolic regime \(\lambda=1\) is the one where multiplication by the multiplier degenerates
+                            (multiply by \(1\) does nothing), so the right normal form is not scaling but
+                            <strong>translation</strong>. Abel's equation finds the coordinate in which \(F\) becomes
+                            &ldquo;add one.&rdquo;
+                        </p>
+
+                        <div class="definition">
+                            <strong>Abel's equation.</strong> Named for <strong>N. H. Abel</strong>,
+                            \[
+                            \alpha\!\left(F(x)\right)=\alpha(x)+1.
+                            \]
+                            The unknown \(\alpha\) is an <em>Abel function</em>. If \(\alpha\) is invertible it defines a full
+                            family of continuous iterates,
+                            \[
+                            F^{[t]}(x)=\alpha^{-1}\!\bigl(t+\alpha(x)\bigr),
+                            \]
+                            embedding \(F\) in a flow. It is the additive normal form for the parabolic case \(\lambda=1\).
+                        </div>
+
+                        <p>
+                            Analytically, the solutions are the <strong>Fatou coordinates</strong>. By the
+                            <strong>Leau–Fatou flower theorem</strong>, on each attracting or repelling petal of a parabolic
+                            germ a sectorial Fatou coordinate \(\psi\) satisfies \(\psi\circ F=\psi+1\); for a degenerate
+                            parabolic point of multiplicity \(p\) the normalised statement reads \(\Phi\circ F=\Phi+1/p\).
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Non-uniqueness.</strong> Near a fixed point there are <em>infinitely many</em> continuous
+                            (indeed smooth) Abel functions — adding any \(1\)-periodic function of \(\alpha\) gives another
+                            solution. Analytic uniqueness holds only <em>sectorially</em> (petal by petal). This is the exact
+                            mechanism behind &ldquo;the half-iterate is a convenient fiction&rdquo; on the
+                            <a href="theory.html#section3">Theory page</a>: in the parabolic case the half-iterate
+                            \(f=\alpha^{-1}(\alpha+\tfrac12)\) is only as canonical as the chosen \(\alpha\).
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Abel is &ldquo;Schröder at \(s\to1\).&rdquo;</strong> The substitution
+                            \(\alpha(x)=\dfrac{\log\Psi(x)}{\log s}\) (equivalently \(\Psi=s^{\alpha}\)) turns
+                            <a href="#section5">Schröder's equation</a> \(\Psi\circ F=s\,\Psi\) into Abel's equation. In the
+                            logarithmic coordinate, multiplication by \(s\) becomes addition of \(\log s\), and after
+                            rescaling, addition of \(1\). So Schröder and Abel are two faces of one linearization, separated
+                            only by whether \(\lambda=1\).
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>Wikipedia, <em>Abel equation</em> — iterates via \(\alpha^{-1}\), Fatou coordinate, non-uniqueness.
+                                <span class="ref-tag">Abel equation</span></li>
+                            <li>Wikipedia, <em>Schröder's equation</em> — the Abel \(\leftrightarrow\) Schröder change of variable.
+                                <span class="ref-tag">Schröder ↔ Abel</span></li>
+                            <li>Fatou coordinate for parabolic germs, \(\psi\circ f=\psi+1\), arXiv:1710.01268.
+                                <span class="ref-tag">arXiv:1710.01268</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. Schröder's Equation &amp; Koenigs' Theorem: \(\sigma(F(x))=s\,\sigma(x)\)</h2>
+                        <p>
+                            The hyperbolic case is the cleanest of all: away from \(\lambda=0\) and \(|\lambda|=1\), a map is
+                            not merely <em>approximately</em> linear near its fixed point but genuinely <em>conjugate</em> to
+                            multiplication by its multiplier — and that conjugacy is essentially unique. This is the engine of
+                            the <a href="solver.html">Solver</a>'s local-analytic mode and is derived on the
+                            <a href="theory.html#section3">Theory page</a>.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Schröder's equation.</strong> With \(s=\lambda=F'(x^*)\),
+                            \[
+                            \sigma\!\left(F(x)\right)=s\,\sigma(x).
+                            \]
+                            In the coordinate \(y=\sigma(x)\) the dynamics become the dilation \(y\mapsto s\,y\), so iterating
+                            \(F\) is reduced to taking powers of \(s\), and fractional iterates are
+                            \(F^{[t]}=\sigma^{-1}\!\bigl(s^{t}\,\sigma(\cdot)\bigr)\).
+                        </div>
+
+                        <p>
+                            Introduced by <strong>Ernst Schröder</strong> in <em>Ueber iterirte Functionen</em>,
+                            <em>Mathematische Annalen</em> <strong>3</strong> (1870), 296–322 (doi:10.1007/BF01443992) — one of
+                            the founding papers of iteration theory.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Koenigs' theorem (Gabriel Koenigs, 1884).</strong> If \(F\) is holomorphic with
+                            \(F(0)=0\) and \(0&lt;|s|&lt;1\), there is a <em>unique</em> holomorphic \(\sigma\) with
+                            \(\sigma(0)=0,\ \sigma'(0)=1\) solving \(\sigma\circ F=s\,\sigma\) — the <strong>Koenigs
+                            function</strong> — given by the limit
+                            \[
+                            \sigma(z)=\lim_{k\to\infty}\frac{F^{\circ k}(z)}{s^{k}}.
+                            \]
+                            Passing to \(F^{-1}\) covers the repelling case \(|s|&gt;1\). The construction excludes exactly
+                            \(s=0\) (which is <a href="#section6">Böttcher</a>) and \(|s|=1\) (the
+                            <a href="#section4">parabolic</a> / irrational cases). The reference is commonly cited as
+                            <em>Recherches sur les intégrales de certaines équations fonctionnelles</em>, Ann. Sci. ÉNS
+                            (3rd series) <strong>1</strong> (1884), supplement.
+                        </div>
+
+                        <details>
+                            <summary><strong>Why \(|\lambda|\neq1\): the resonance obstruction</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    Writing \(F(x)=sx+a_2x^2+\cdots\) and \(\sigma(x)=x+s_2x^2+\cdots\), matching the
+                                    coefficient of \(x^n\) in \(\sigma\circ F=s\,\sigma\) gives
+                                    \[
+                                    (s^{\,n}-s)\,s_n=(\text{known lower-order terms}).
+                                    \]
+                                    The factor \(s^{\,n}-s\) is non-zero for all \(n\ge2\) precisely when \(|s|\neq0,1\), so
+                                    each coefficient is determined uniquely. The <em>resonances</em> \(s^{\,n}=s\) that block
+                                    the recursion are exactly the root-of-unity multipliers of the neutral case — which is why
+                                    Koenigs needs \(|\lambda|\neq1\). The same recurrence, run in exact rational arithmetic
+                                    via <a href="composita.html">composita</a>, is how the Solver builds \(\sigma\).
+                                </p>
+                            </div>
+                        </details>
+
+                        <div class="practice">
+                            <strong>Schröder's own 1870 examples (the logistic map).</strong>
+                            For the chaotic case \(F(x)=4x(1-x)\), the linearizer is
+                            \(\Psi(x)=\bigl(\arcsin\sqrt{x}\bigr)^2\), giving the closed-form iterate
+                            \(F^{\circ n}(x)=\sin^2\!\bigl(2^{\,n}\arcsin\sqrt{x}\bigr)\). For \(F(x)=2x(1-x)\),
+                            \(\Psi(x)=-\tfrac12\ln(1-2x)\) and
+                            \(F^{\circ n}(x)=-\tfrac12\bigl((1-2x)^{2^{\,n}}-1\bigr)\).
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>E. Schröder, <em>Ueber iterirte Functionen</em>, <em>Math. Ann.</em> <strong>3</strong> (1870) 296–322, doi:10.1007/BF01443992.
+                                <span class="ref-tag">Schröder 1870</span></li>
+                            <li>G. Koenigs, <em>Recherches sur les intégrales…</em>, Ann. Sci. ÉNS (3) <strong>1</strong> (1884), suppl.
+                                <span class="ref-tag">Koenigs 1884</span></li>
+                            <li>Wikipedia, <em>Koenigs function</em> — uniqueness and the limit formula.
+                                <span class="ref-tag">Koenigs function</span></li>
+                            <li>Milnor, <em>Dynamics in One Complex Variable</em>, arXiv:math/9201272.
+                                <span class="ref-tag">Milnor</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Böttcher's Equation: \(B(F(x))=B(x)^{\,n}\)</h2>
+                        <p>
+                            When the multiplier vanishes, \(\lambda=0\), the map is <strong>superattracting</strong>: it pulls
+                            points in faster than any geometric rate, because its lowest-order behaviour is not linear but a
+                            pure power. The right normal form is therefore not scaling or translation but the power map.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Böttcher's equation.</strong> For a germ
+                            \(F(z)=a_n z^{n}+a_{n+1}z^{n+1}+\cdots\) with \(a_n\neq0\) and local degree \(n\ge2\),
+                            \[
+                            B\!\left(F(z)\right)=\bigl(B(z)\bigr)^{n}.
+                            \]
+                            The <em>Böttcher coordinate</em> \(B\) conjugates \(F\) to the pure power map \(w\mapsto w^{\,n}\).
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Böttcher's theorem.</strong> For \(F(z)=a_n z^n+\cdots\) with \(n\ge2\) there is a local
+                            holomorphic change of coordinate \(w=B(z)\), with \(B(0)=0\) and (after normalisation)
+                            \(B'(0)\neq0\), conjugating \(F\) to \(w\mapsto w^{\,n}\). The coordinate is <strong>unique up to
+                            multiplication by an \((n-1)\)-st root of unity</strong>.
+                        </div>
+
+                        <p>
+                            Named for <strong>Lucjan Emil Böttcher</strong> (1872–1937), a pioneer of holomorphic dynamics,
+                            who sketched existence in <strong>1904</strong>; the first complete proof is commonly credited to
+                            <strong>J. F. Ritt (1920)</strong>. For polynomials the same construction near \(\infty\) yields a
+                            coordinate that encodes the escape-rate (the Green's function / Böttcher potential) and the
+                            external rays landing on the Julia set — the backbone of polynomial dynamics.
+                        </p>
+
+                        <div class="keypoint">
+                            The half-iterate in this regime is \(f=B^{-1}\!\bigl(B^{\sqrt{n}}\bigr)\): to halve the index of
+                            &ldquo;raise to the \(n\),&rdquo; take the \(\sqrt{n}\)-th power in the Böttcher coordinate. The
+                            Chebyshev example \(F=x^2-2\) on the <a href="theory.html#section4">Theory page</a> is exactly a
+                            Böttcher picture in disguise — globally conjugate to \(z\mapsto z^2\), with half-iterate
+                            \(z\mapsto z^{\sqrt2}\).
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>Wikipedia, <em>Böttcher's equation</em> — \(F(h(z))=F(z)^n\), Böttcher 1904 / Ritt 1920.
+                                <span class="ref-tag">Böttcher's equation</span></li>
+                            <li>S. Koch (Harvard notes), Böttcher coordinate, uniqueness up to an \((n-1)\)-st root of unity.
+                                <span class="ref-tag">bottcher.pdf</span></li>
+                            <li>M. Stawiska, <em>Lucjan Emil Böttcher (1872–1937)</em>, arXiv:1307.7778.
+                                <span class="ref-tag">arXiv:1307.7778</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 7 ================= -->
+                    <div id="section7">
+                        <h2>7. Julia's Equation: \(G(F(x))\,F'(x)=G(x)\)</h2>
+                        <p>
+                            Where the previous equations linearise \(F\) itself, this one solves for the
+                            <strong>infinitesimal generator</strong> of its flow — the &ldquo;velocity field&rdquo; whose
+                            exponential reproduces \(F\). Differentiating any of the conjugacy equations leads here.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Julia's equation (infinitesimal-generator / iterative-logarithm equation).</strong>
+                            \[
+                            G\!\left(F(x)\right)\,F'(x)=G(x),
+                            \qquad\text{equivalently}\quad \frac{G\circ F}{G}=\frac{1}{F'}.
+                            \]
+                            Its solution \(G=\mathrm{itlog}(F)\) is the <em>iterative logarithm</em> (the term is due to
+                            <strong>Écalle</strong>), the generator of the flow \(F^{[t]}\): \(\left.\tfrac{d}{dt}F^{[t]}\right|_{t=0}=G\).
+                            The general solution is \(\varphi=c\cdot\mathrm{itlog}(F)\) for a scalar \(c\).
+                        </div>
+
+                        <p>
+                            The form \(G\circ F\cdot F'=G\) and the name &ldquo;iterative logarithm&rdquo; are firmly sourced
+                            in the modern iteration-theory literature (Aschenbrenner–Bergweiler; Écalle). The equation is
+                            often attributed to <strong>Aczél and Jabotinsky</strong>, with the remark that <strong>G.
+                            Frege</strong> may have anticipated it; the precise primary locus in G. Julia's own work — as
+                            opposed to his 1922 permutability memoir — is treated here as a literature-standard naming rather
+                            than asserted from a single paper.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Embeddability (Erdős–Jabotinsky).</strong> An analytic germ \(F\) embeds in an analytic
+                            flow iff \(\mathrm{itlog}(F)\) has positive radius of convergence. In general the iterative
+                            logarithm <em>diverges</em>, but it is <strong>Borel summable</strong> (Écalle).
+                            <strong>Aschenbrenner–Bergweiler</strong> (Illinois J. Math.; arXiv:1307.6381) proved that for a
+                            non-linear entire \(F\), \(\mathrm{itlog}(F)\) is <em>differentially transcendental</em> over the
+                            entire functions.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>The parabolic link.</strong> Differentiating <a href="#section4">Abel's equation</a>
+                            \(\alpha\circ F=\alpha+1\) gives \(\alpha'(F)\,F'=\alpha'\), i.e. \(G=1/\alpha'\) solves Julia's
+                            equation. So the Abel function's derivative <em>is</em> (a reciprocal of) the parabolic generator
+                            — the same object viewed through a finite step versus an infinitesimal one.
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>Julia's equation, iterative logarithm, Aczél–Jabotinsky, Écalle, Frege (UCLA notes, itlog).
+                                <span class="ref-tag">itlog notes</span></li>
+                            <li>Aschenbrenner &amp; Bergweiler, <em>Julia's equation and differential transcendence</em>, Illinois J. Math. 59 (2015) 277–294; arXiv:1307.6381.
+                                <span class="ref-tag">arXiv:1307.6381</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 8 ================= -->
+                    <div id="section8">
+                        <h2>8. The Conjugacy Equation: \(f\circ h=h\circ g\)</h2>
+                        <p>
+                            This is the master equation under which every linearization above is a special case. It asks for a
+                            change of coordinate that turns one map into another.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Conjugacy equation.</strong>
+                            \[
+                            f\circ h=h\circ g
+                            \quad\Longleftrightarrow\quad
+                            f=h\circ g\circ h^{-1}.
+                            \]
+                            The map \(h\) <em>conjugates</em> \(g\) to \(f\): topological conjugacy if \(h\) is a
+                            homeomorphism, analytic conjugacy if \(h\) is biholomorphic.
+                        </div>
+
+                        <p>
+                            Conjugacy preserves the entire orbit structure — fixed points, cycles, and the multiplier
+                            \(\lambda\) (proved on the <a href="theory.html#section6">Theory page</a>). The three classical
+                            linearization equations are <em>exactly</em> the conjugacy equation against a fixed normal form:
+                        </p>
+
+                        <div class="card-grid">
+                            <div class="card">
+                                <span class="card-badge">hyperbolic</span>
+                                <strong><a href="#section5">Schröder</a></strong>
+                                <p class="text-sm">\(g=\) the dilation \(s\,\cdot\,\); conjugacy to \(u\mapsto s\,u\).</p>
+                            </div>
+                            <div class="card">
+                                <span class="card-badge">superattracting</span>
+                                <strong><a href="#section6">Böttcher</a></strong>
+                                <p class="text-sm">\(g=\) the power map \(w^{\,n}\); conjugacy to \(w\mapsto w^{\,n}\).</p>
+                            </div>
+                            <div class="card">
+                                <span class="card-badge">parabolic</span>
+                                <strong><a href="#section4">Abel</a></strong>
+                                <p class="text-sm">\(g=\) the translation \(+1\); conjugacy to \(u\mapsto u+1\).</p>
+                            </div>
+                        </div>
+
+                        <div class="keypoint">
+                            Iterative roots reduce to conjugacy (Bödewadt 1944; Kuczma 1961), which is why the
+                            <a href="#section3">iterative-root</a> entry and this one share the same solution strategy: find
+                            \(h\) putting \(g=G\) into a normal form whose roots are obvious, take the root there, conjugate
+                            back. The foundational reference for the whole circle of ideas is the monograph below.
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>M. Kuczma, B. Choczewski, R. Ger, <em>Iterative Functional Equations</em>, Encyclopedia of Mathematics and its Applications <strong>32</strong>, Cambridge Univ. Press, 1990.
+                                <span class="ref-tag">Kuczma–Choczewski–Ger 1990</span></li>
+                            <li>T. Bödewadt (1944); M. Kuczma (1961) — iterative roots \(\leftrightarrow\) conjugacy.
+                                <span class="ref-tag">roots ↔ conjugacy</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 9 ================= -->
+                    <div id="section9">
+                        <h2>9. The Translation Equation: \(F(F(x,s),t)=F(x,s+t)\)</h2>
+                        <p>
+                            To make iteration <em>continuous</em> — to give meaning to \(F^{[t]}\) for real \(t\) — one needs
+                            a two-argument map obeying a group law in the index. That law is the translation equation.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Translation equation.</strong>
+                            \[
+                            F\bigl(F(x,s),t\bigr)=F(x,s+t),\qquad F(x,0)=x.
+                            \]
+                            Writing \(F_t(x)=F(x,t)\) it reads \(F_t\circ F_s=F_{s+t}\), \(F_0=\mathrm{id}\): a
+                            <strong>one-parameter iteration group / flow</strong>. The map being embedded is \(F_1\).
+                        </div>
+
+                        <p>
+                            This is simply the semigroup law \(F^{\circ(m+n)}=F^{\circ m}\circ F^{\circ n}\) of integer
+                            iteration (see the <a href="theory.html#section1">Theory page</a>), extended to a continuous index
+                            \(t\). It was systematically studied by <strong>J. Aczél</strong> (and treated in his
+                            <em>Lectures on Functional Equations and Their Applications</em>). The
+                            <strong>embeddability problem</strong> asks whether a given \(u=F_1\) extends to a solution \(F\) —
+                            i.e. whether the discrete map sits inside a flow. On a log scale this same law collapses, for the
+                            Chebyshev maps, to the nesting \(T_m(T_n(x))=T_{mn}(x)\).
+                        </p>
+
+                        <div class="notice-box">
+                            The translation equation is the &ldquo;global&rdquo; counterpart of Abel's equation: an Abel
+                            function \(\alpha\) linearises a single \(F\) to \(+1\), and the resulting
+                            \(F^{[t]}=\alpha^{-1}(t+\alpha)\) is automatically a solution \(F(x,t)\) of the translation
+                            equation. Conversely, differentiating the translation equation in the index produces the
+                            <a href="#section10">Aczél–Jabotinsky</a> generator equation.
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>J. Aczél, <em>Lectures on Functional Equations and Their Applications</em> — translation equation, iteration groups.
+                                <span class="ref-tag">Aczél</span></li>
+                            <li>Wikipedia, <em>Iterated function</em> — translation functional equation, flows, Picard sequence.
+                                <span class="ref-tag">Iterated function</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 10 ================= -->
+                    <div id="section10">
+                        <h2>10. The Aczél–Jabotinsky Differential Equation: \(H\circ\Phi=\Phi'\,H\)</h2>
+                        <p>
+                            Differentiating the flow law in its <em>spatial</em> argument, rather than the index, gives the
+                            embedding condition as an ordinary differential relation linking the generator to every member of
+                            the group.
+                        </p>
+
+                        <div class="definition">
+                            <strong>(Third) Aczél–Jabotinsky equation.</strong>
+                            \[
+                            \bigl(H\circ\Phi\bigr)(x)=\Phi'(x)\,H(x),
+                            \qquad H(x)=\left.\frac{\partial F_t}{\partial t}(x)\right|_{t=0},
+                            \]
+                            where \(H\) is the <em>infinitesimal generator</em> and each \(\Phi=F_{t_0}\) of the flow is a
+                            solution. (It comes from \(F_{t_1+t_2}=F_{t_1}\circ F_{t_2}\) on setting \(t_1=0\), \(t_2=1\).)
+                        </div>
+
+                        <p>
+                            This is exactly <a href="#section7">Julia's equation</a> with \(H=G=\mathrm{itlog}\), read as the
+                            embedding test: an analytic \(F\) embeds in an analytic flow iff this ODE admits an admissible
+                            generator \(H\). The algebraic structure of its solution groups in \(k[[x]]\) (characteristic
+                            zero) is worked out by Jabłoński (arXiv:2304.06791, 2023); the historical thread runs back to
+                            J. Aczél, <em>Some differential equations related to iteration theory</em>
+                            (<em>Canad. J. Math.</em>).
+                        </p>
+
+                        <div class="notice-box">
+                            <strong>On the numbering.</strong> Only the <em>third</em> Aczél–Jabotinsky equation
+                            \(H\circ\Phi=\Phi'\,H\) is pinned down precisely in the sources used here; the exact statements of
+                            the &ldquo;first&rdquo; and &ldquo;second&rdquo; equations in the series are not separately
+                            verified, so we name only the third. The three classical conjugacy equations (Schröder, Abel,
+                            Böttcher) are its finite-step companions: this one is the differentiated, infinitesimal form of the
+                            same embedding question.
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>Jabłoński, third Aczél–Jabotinsky equation \(H\circ\Phi=\Phi'H\), formal-power-series solution groups, arXiv:2304.06791 (2023).
+                                <span class="ref-tag">arXiv:2304.06791</span></li>
+                            <li>J. Aczél, <em>Some differential equations related to iteration theory</em>, <em>Canad. J. Math.</em>
+                                <span class="ref-tag">Aczél (Canad. J. Math.)</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 11 ================= -->
+                    <div id="section11">
+                        <h2>11. The Commuting-Functions Equation: \(f\circ g=g\circ f\)</h2>
+                        <p>
+                            Two maps that <em>commute</em> under composition share a great deal of dynamical structure. For
+                            polynomials, the question of which pairs commute has a striking and complete answer.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Commuting (permutable) maps.</strong>
+                            \[
+                            f\circ g=g\circ f.
+                            \]
+                            Such \(f,g\) are called <em>permutable</em>; they share fixed-point and Julia-set structure.
+                        </div>
+
+                        <p>
+                            For polynomials, the classification was obtained independently by <strong>G. Julia</strong>,
+                            <em>Mémoire sur la permutabilité des fractions rationnelles</em>, Ann. Sci. ÉNS (4)
+                            <strong>39</strong> (1922), 131–215, and <strong>J. F. Ritt</strong>, <em>Permutable rational
+                            functions</em>, Trans. AMS <strong>25</strong> (1923), 399–448.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>The Ritt–Julia theorem (informal).</strong> Up to a common linear conjugacy, a pair of
+                            non-linear permutable polynomials either <em>shares a common iterate</em>, or both arise from the
+                            multiplication / addition formulas of the exponential — i.e. they are (conjugates of) the power
+                            maps \(z\mapsto z^{m}\), the \(\pm\)Chebyshev polynomials \(T_m\), or members of Ritt's
+                            exceptional families that share iterates. The precise division of the statement between the two
+                            1922/1923 papers is summarised here, not quoted verbatim.
+                        </div>
+
+                        <div class="keypoint">
+                            The power maps and Chebyshev polynomials are exactly the &ldquo;solvable&rdquo; targets of the
+                            <a href="theory.html#section4">Theory page</a> — \(z\mapsto z^n\) is the
+                            <a href="#section6">Böttcher</a> normal form, and \(T_2(x)=2x^2-1\) is the angle-doubling behind
+                            \(f(f(x))=x^2-2\). Commutativity is, again, the same family of linearizable maps wearing a
+                            different hat. The theory was revisited modernly by Eremenko and by Pakovich (arXiv:1808.02774).
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>G. Julia, <em>Mémoire sur la permutabilité des fractions rationnelles</em>, Ann. Sci. ÉNS (4) <strong>39</strong> (1922) 131–215.
+                                <span class="ref-tag">Julia 1922</span></li>
+                            <li>J. F. Ritt, <em>Permutable rational functions</em>, Trans. AMS <strong>25</strong> (1923) 399–448.
+                                <span class="ref-tag">Ritt 1923</span></li>
+                            <li>F. Pakovich, <em>Commuting rational functions revisited</em>, arXiv:1808.02774.
+                                <span class="ref-tag">arXiv:1808.02774</span></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 12 ================= -->
+                    <div id="section12">
+                        <h2>12. Cocycle &amp; Lévy; the Cross-Map Table</h2>
+                        <p>
+                            Two further equations round out the atlas — the inhomogeneous Abel-type equation that pervades
+                            ergodic theory, and Paul Lévy's explicit limit formula for the parabolic Abel function — before we
+                            collect everything in one table.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Cohomological (additive cocycle / coboundary) equation.</strong>
+                            \[
+                            \psi\!\left(F(x)\right)-\psi(x)=g(x).
+                            \]
+                            This is the inhomogeneous Abel-type equation; for \(g\equiv1\) it is exactly
+                            <a href="#section4">Abel's equation</a>. It is central in ergodic theory (Livšic theory) as the
+                            obstruction to writing \(g\) as a coboundary \(\psi\circ F-\psi\).
+                        </div>
+
+                        <div class="theorem">
+                            <strong>Lévy's limit formula.</strong> In the parabolic case \(\lambda=1\), the regular Abel
+                            function is given by the explicit limit (attributed to Paul Lévy in the regular-iteration
+                            literature)
+                            \[
+                            \alpha_u(z)=\lim_{k\to\infty}\frac{F^{[k]}(z)-F^{[k]}(u)}{F^{[k+1]}(u)-F^{[k]}(u)},
+                            \]
+                            the parabolic analogue of Koenigs' hyperbolic limit \(\sigma=\lim_{k\to\infty}F^{\circ k}/s^{\,k}\)
+                            from §5. (We leave the primary date unstated: the attribution to Lévy is standard but the exact
+                            original reference is not confirmed here.)
+                        </div>
+
+                        <h3>The cross-map summary</h3>
+                        <p>
+                            Every entry of this atlas, side by side — the equation, the regime it belongs to, the normal form
+                            it conjugates to, and the names attached.
+                        </p>
+
+                        <div class="table-wrap">
+                            <table class="class-table">
+                                <thead>
+                                    <tr>
+                                        <th>Equation</th><th>Form</th><th>Regime</th><th>Normal form</th><th>Key names</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><a href="#section2">Babbage</a></td>
+                                        <td>\(F^{\circ n}=\mathrm{id}\)</td>
+                                        <td>periodic</td>
+                                        <td>—</td>
+                                        <td>Babbage 1820</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section3">Iterative root</a></td>
+                                        <td>\(F^{\circ n}=G\)</td>
+                                        <td>\(n\)-th root</td>
+                                        <td>—</td>
+                                        <td>Kuczma 1961; Kneser 1950</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section4">Abel</a></td>
+                                        <td>\(\alpha\circ F=\alpha+1\)</td>
+                                        <td>\(\lambda=1\)</td>
+                                        <td>\(+1\)</td>
+                                        <td>Abel; Fatou / Leau</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section5">Schröder</a></td>
+                                        <td>\(\sigma\circ F=s\,\sigma\)</td>
+                                        <td>\(0&lt;|\lambda|\neq1\)</td>
+                                        <td>\(\times\,s\)</td>
+                                        <td>Schröder 1870; Koenigs 1884</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section6">Böttcher</a></td>
+                                        <td>\(B\circ F=B^{\,n}\)</td>
+                                        <td>\(\lambda=0\)</td>
+                                        <td>\(w^{\,n}\)</td>
+                                        <td>Böttcher 1904; Ritt 1920</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section7">Julia</a></td>
+                                        <td>\(G\circ F\cdot F'=G\)</td>
+                                        <td>generator</td>
+                                        <td>flow</td>
+                                        <td>Aczél–Jabotinsky; Écalle</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section8">Conjugacy</a></td>
+                                        <td>\(f\circ h=h\circ g\)</td>
+                                        <td>all</td>
+                                        <td>\(g\)</td>
+                                        <td>Kuczma et al.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section9">Translation</a></td>
+                                        <td>\(F(F(x,s),t)=F(x,s{+}t)\)</td>
+                                        <td>flow law</td>
+                                        <td>\(+t\)</td>
+                                        <td>Aczél</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section10">Aczél–Jabotinsky</a></td>
+                                        <td>\(H\circ\Phi=\Phi'\,H\)</td>
+                                        <td>embedding</td>
+                                        <td>—</td>
+                                        <td>Aczél, Jabotinsky</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#section11">Commuting</a></td>
+                                        <td>\(f\circ g=g\circ f\)</td>
+                                        <td>symmetry</td>
+                                        <td>—</td>
+                                        <td>Julia 1922; Ritt 1923</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>A rough timeline</h3>
+                        <p>
+                            The named equations did not arrive in their logical order. The discrete root problem came first
+                            (Babbage), then the linearizers (Schröder, Koenigs, Böttcher), then the structural and
+                            differential theory (Julia, Ritt, Aczél, Jabotinsky), and finally the modern transseries /
+                            transcendence results.
+                        </p>
+
+                        <ul class="eq-timeline">
+                            <li><span class="yr">1815–1820</span> Babbage — solutions of \(F^{\circ n}=\mathrm{id}\) and the conjugation symmetry of solution sets.</li>
+                            <li><span class="yr">1870</span> Schröder — <em>Ueber iterirte Functionen</em>, the linearization equation \(\sigma\circ F=s\,\sigma\).</li>
+                            <li><span class="yr">1884</span> Koenigs — uniqueness and the limit formula for the hyperbolic Schröder (Koenigs) function.</li>
+                            <li><span class="yr">1904</span> Böttcher — the superattracting normal form \(w\mapsto w^{\,n}\) (sketched; completed by Ritt, commonly cited 1920).</li>
+                            <li><span class="yr">1922–1923</span> Julia &amp; Ritt — classification of commuting (permutable) polynomials.</li>
+                            <li><span class="yr">1944 / 1961</span> Bödewadt; Kuczma — iterative roots \(\leftrightarrow\) conjugacy; continuous roots of interval maps.</li>
+                            <li><span class="yr">1950</span> Kneser — real-analytic half-iterate of \(e^x\).</li>
+                            <li><span class="yr">1990</span> Kuczma–Choczewski–Ger — <em>Iterative Functional Equations</em>, the standard monograph.</li>
+                            <li><span class="yr">2013–2023</span> Aschenbrenner–Bergweiler; Jabłoński — differential transcendence of \(\mathrm{itlog}\); structure of Aczél–Jabotinsky solution groups.</li>
+                        </ul>
+
+                        <div class="keypoint">
+                            <strong>Where to go next.</strong>
+                            <ul style="margin:0;">
+                                <li><a href="theory.html">Theory</a> — derives Schröder, Abel and Böttcher and works the
+                                    contrasting cases \(f(f(x))=x^2-2\) and \(x^2+1\).</li>
+                                <li><a href="connections.html">Connections</a> — how these equations interlock, and the
+                                    bridges to tetration, transfer operators and Lie theory.</li>
+                                <li><a href="solver.html">Solver</a> — computes half-iterates via composita series and local
+                                    Schröder coordinates.</li>
+                                <li><a href="composita.html">Composita Calculator</a> — the recurrence that powers the series
+                                    machinery behind §5.</li>
+                                <li><a href="history.html">History</a> and <a href="bibliography.html">Bibliography</a> — the
+                                    people and the primary sources behind every entry above; also the
+                                    <a href="shelf.html">Shelf</a> and the <a href="blog.html">Notes</a>.</li>
+                            </ul>
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>Lévy limit formula for the regular Abel function (multiplier 1), arXiv:1105.4735.
+                                <span class="ref-tag">arXiv:1105.4735</span></li>
+                            <li>Cohomological (coboundary) equation \(\psi\circ F-\psi=g\); Livšic theory context.
+                                <span class="ref-tag">cocycle / Livšic</span></li>
+                            <li>Scholarpedia, <em>Siegel disks / Linearization</em> — the fixed-point classification.
+                                <span class="ref-tag">Scholarpedia</span></li>
+                        </ul>
+                    </div>
+
+                </article>
+            </main>
+
+            <!-- Next Page -->
+            <div class="nextPage">
+                <a href="connections.html">Next: Connections <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <!-- Dark mode toggle -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>

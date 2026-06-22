@@ -1,9 +1,27 @@
-# TODO seed (pilot backlog — scout refines this into state/backlog.jsonl)
+# TODO backlog — "The Shelf" content build (supersedes the engine-refactor pilot backlog)
 
-- **[T-engine-fromlocal]** Refactor `engine.js`: add the *FromLocal* variants + `classifyFromLocal` + `findFixedPointsNumeric`; remove the orphaned `classifyFixedPointLegacy`. _(value 3, near dep-free, feasible — the pattern already exists in the file)_
-- **[T-engine-export]** Export the new functions + add Node tests for `x^2-x+1`@1, `x^2-2`@2, `exp(x)-1`@0, `sin(x)`, `exp(x)-1`. _(depends: T-engine-fromlocal)_
-- **[T-solver-input]** Replace the coef-grid with `#expr-input` + live KaTeX preview + parse-error display; wire series & analytic modes to `Expr`. _(depends: T-engine-export)_
-- **[T-solver-presets]** Update presets to expression strings; grapher/orbit/fixed-points use `solverState.targetFn`. _(depends: T-solver-input)_
-- **[T-verify]** `npm run lint` + Playwright UI smoke. _(depends: T-solver-presets)_
+Tiering: T0 = core shelf pages (must ship); T1 = integration + bibliography; T2 = polish/extras.
 
-> Dependency chain is mostly linear, so expect a thin frontier (one or two T0 items unblocked at a time) — a good stress test for the automatic re-plan (plan §8).
+- **[S-research]** Web-research the field into sourced briefs in `state/research/` (history, equations
+  atlas, connections×2, literature, landscape) + Chrome/alphaXiv deep extracts. _(T0 — DONE: WF
+  `ife-shelf-research` + host Chrome fetches)_
+- **[S-shelf]** `shelf.html` — map of the field (generality hub): families of equations, the central
+  problems, eras/schools, the web of connections, a visual field-map, links into every page. _(T0)_
+- **[S-history]** `history.html` — chronological history Babbage 1815 → modern, timeline + figures. _(T0)_
+- **[S-equations]** `equations.html` — atlas of the canonical named equations (Babbage, iterative-root,
+  Abel, Schröder, Böttcher, Julia, conjugacy, translation/Lévy, Aczél–Jabotinsky, commuting). _(T0)_
+- **[S-connections]** `connections.html` — connections to other fields (complex dynamics, dynamical
+  systems, continuous iteration/flows & Lie, tetration, combinatorics/formal groups, probability/
+  branching, operator theory, numerics, physics/RG). _(T0)_
+- **[S-biblio]** Expand `bibliography.html` into a sectioned, link-rich annotated bibliography. _(T1)_
+- **[S-index]** Update `index.html` hub cards + hero copy to surface the shelf and reframe the site
+  around the whole field (generality), not only half-iterates. _(T1)_
+- **[S-nav]** Update the prev/next fixed-bar chain on existing pages (index, theory, solver) to the new
+  reading order. _(T1)_
+- **[S-verify]** Adversarial fact-check of key dates/attributions/equation statements; fix flagged
+  errors. `npm run format`; spot-check KaTeX render + internal links in Chrome. _(T1)_
+- **[S-docs]** Refresh `README.md` + `CLAUDE.md` to describe the broadened scope. _(T2)_
+- **[S-blog]** (optional) Add 1–2 new blog notes tying the shelf back to the solver. _(T2 — defer)_
+
+> Dependency: S-research → {S-shelf, S-history, S-equations, S-connections, S-biblio} (parallel writers)
+> → S-index/S-nav/S-verify (host integration) → S-docs. Shelf writer consumes the FULL corpus.

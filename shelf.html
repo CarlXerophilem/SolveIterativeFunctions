@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Shelf — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="The Shelf — Iterative Functional Equations">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-22">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="The Shelf — Iterative Functional Equations">
+    <meta property="og:description" content="A field map of iterative functional equations: the central problems, the canonical equations from Babbage to Böttcher, the web of connections, and a guide to every page on the site.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/shelf.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <meta name="twitter:card" content="A field map of the theory of iterative functional equations.">
+    <meta name="twitter:title" content="The Shelf — Iterative Functional Equations">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
+
+    <!-- Small scoped style: ONLY for the field-map SVG and the eras timeline.
+         Uses theme variables only, so light/dark mode keep working. -->
+    <style>
+        /* Field-map SVG */
+        .field-map-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--box-bg);
+            padding: 0.75rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .field-map-wrap svg { width: 100%; height: auto; display: block; min-width: 520px; }
+        .field-map-wrap .fm-cluster { fill: var(--toc-bg); stroke: var(--border-color); }
+        .field-map-wrap .fm-node { fill: var(--card-bg); stroke: var(--theorem-border); }
+        .field-map-wrap .fm-node-sa { fill: var(--card-bg); stroke: var(--practice-border); }
+        .field-map-wrap .fm-label { fill: var(--text-color); font-size: 12px; font-weight: 600; }
+        .field-map-wrap .fm-sub { fill: var(--footer-text); font-size: 10px; }
+        .field-map-wrap .fm-cl-label { fill: var(--footer-text); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .field-map-wrap .fm-bridge { stroke: var(--footer-text); stroke-width: 1.3; stroke-dasharray: 4 3; fill: none; opacity: 0.8; }
+        .field-map-wrap .fm-bridge-label { fill: var(--footer-text); font-size: 9.5px; font-style: italic; }
+
+        /* Eras timeline */
+        .era-timeline { list-style: none; padding-left: 0; margin: 1.25rem 0; }
+        .era-timeline li {
+            position: relative;
+            padding: 0.55rem 0 0.55rem 5.5rem;
+            border-left: 2px solid var(--border-color);
+            margin-left: 1.5rem;
+        }
+        .era-timeline li .era-year {
+            position: absolute;
+            left: -1.5rem;
+            top: 0.5rem;
+            width: 4.7rem;
+            text-align: right;
+            font-weight: 700;
+            color: var(--link-color);
+            font-size: 0.9rem;
+        }
+        .era-timeline li::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 0.85rem;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--theorem-border);
+            border: 2px solid var(--box-bg);
+        }
+        .era-timeline li .era-body { font-size: 0.95rem; }
+    </style>
+</head>
+<body data-type="book" id="top">
+
+    <!-- Loader -->
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>
+        window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });
+    </script>
+
+    <!-- Fixed Navigation Bar -->
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="index.html" id="prev-link" title="Home"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="shelf.html" id="center-link">
+                <span class="hover-prev">Home</span>
+                <span class="title-main">The Shelf</span>
+                <span class="hover-next">History</span>
+            </a>
+        </div>
+        <a href="history.html" id="next-link" title="History"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <section data-type="chapter" id="shelf">
+
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section1">1. What is an iterative functional equation?</a></li>
+                    <li><a href="#section2">2. The central problems</a></li>
+                    <li><a href="#section3">3. A map of the canonical equations</a></li>
+                    <li><a href="#section4">4. The web of connections</a></li>
+                    <li><a href="#section5">5. Eras &amp; schools</a></li>
+                    <li><a href="#section6">6. Using this shelf</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>The Shelf</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        A field map of <em>iterative functional equations</em> &mdash; the unknown function composed with itself
+                        &mdash; from Babbage&rsquo;s involutions to the linearizers of complex dynamics. This is the front door:
+                        every door in the library opens from here.
+                    </p>
+                    <hr>
+
+                    <!-- ================= Section 1 ================= -->
+                    <div id="section1">
+                        <h2>1. What is an iterative functional equation?</h2>
+                        <p>
+                            An <strong>iterative functional equation</strong> is a functional equation in a single variable
+                            whose unknown is a <em>function</em> that appears <strong>composed with itself</strong> &mdash; or
+                            composed with a known map &mdash; rather than merely evaluated at shifted or scaled arguments.
+                            Where a classical functional equation might relate \(\varphi(x)\) to \(\varphi(x+1)\) or to
+                            \(\varphi(2x)\), an iterative one couples \(\varphi\) to its own iterate
+                            \(\varphi\circ\varphi\), \(\varphi\circ\varphi\circ\varphi\), and so on. The
+                            \(n\)-th <strong>iterate</strong> of \(f\) is
+                            \[
+                            f^{\circ 0}(x)=x,\qquad f^{\circ(n+1)}(x)=f\!\left(f^{\circ n}(x)\right),
+                            \]
+                            and integer iteration obeys the semigroup law \(f^{\circ(m+n)}=f^{\circ m}\circ f^{\circ n}\).
+                            (The compositional-power notation \(f^{n}\) is commonly traced to John Frederick William
+                            Herschel around 1813; the bracketed form \(f^{[n]}\) is due to Benjamin Peirce.)
+                        </p>
+
+                        <div class="definition">
+                            <strong>The general object.</strong> Given a known map \(F\) (a target, a normal form, or a flow),
+                            an iterative functional equation asks for an unknown \(f\) tied to \(F\) through composition.
+                            Canonical instances include
+                            \[
+                            f\!\left(f(x)\right)=F(x),\qquad
+                            \alpha\!\left(F(x)\right)=\alpha(x)+1,\qquad
+                            \sigma\!\left(F(x)\right)=s\,\sigma(x),\qquad
+                            f\circ g = g\circ f .
+                            \]
+                            The first asks for a <em>half-iterate</em> of \(F\); the middle two ask for a <em>change of
+                            coordinate</em> that turns \(F\) into a translation or a dilation; the last asks which maps
+                            <em>commute</em>.
+                        </div>
+
+                        <p>
+                            The rest of this site grew out of one especially vivid case &mdash; the <strong>functional square
+                            root</strong> or <strong>half-iterate</strong>, the equation \(f(f(x))=F(x)\) explored in detail on
+                            the <a href="theory.html">Theory</a> page and computed on the <a href="solver.html">Solver</a>.
+                            But the half-iterate is only one room in a much larger house. The genuine subject is the whole
+                            family of <em>one-variable functional equations of iteration</em>: the equations governing
+                            iterative roots, fractional and continuous iteration, embedding a map into a flow, linearization
+                            near a fixed point, and classification up to conjugacy. The Shelf broadens the lens from
+                            \(f(f(x))=F(x)\) to that entire field.
+                        </p>
+
+                        <div class="keypoint">
+                            <strong>Why &ldquo;iterative.&rdquo;</strong> The defining feature is self-composition. The unknown is
+                            applied to its own output, so a solution is a <em>dynamical object</em> &mdash; a discrete-time flow,
+                            its fractional-time interpolation, or the coordinate that straightens that flow into a translation.
+                            This single feature is what links Babbage&rsquo;s 1815 involutions to the Schröder, Abel, and
+                            Böttcher equations of modern complex dynamics.
+                        </div>
+
+                        <p>
+                            Two structural remarks frame everything that follows. First, conjugation is a symmetry of the whole
+                            problem: if \(f\) solves an iterative equation, so does \(\psi^{-1}\circ f\circ\psi\) for any
+                            invertible \(\psi\) &mdash; an observation already made by Babbage. Second, the local behaviour of an
+                            iteration near a fixed point \(a=F(a)\) is dictated by a single number, the <strong>multiplier</strong>
+                            \(s=F'(a)\); the value of \(|s|\) selects which canonical equation governs the dynamics there. These
+                            two ideas &mdash; conjugacy and the multiplier &mdash; organize the map in Section 3.
+                        </p>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 2 ================= -->
+                    <div id="section2">
+                        <h2>2. The central problems</h2>
+                        <p>
+                            Given a self-map \(f\colon X\to X\), iteration theory asks a small number of recurring questions.
+                            They are not independent: each is, in disguise, a question about solving one of the canonical
+                            functional equations of Section 3.
+                        </p>
+
+                        <h3>Iterative roots &amp; half-iterates</h3>
+                        <p>
+                            Find \(g\) with \(g^{\circ n}=f\) &mdash; an <strong>iterative (or functional) \(n\)-th root</strong> of
+                            \(f\). The case \(n=2\) is the <strong>functional square root</strong> or <strong>half-iterate</strong>,
+                            \(g(g(x))=f(x)\). Roots are generally <em>non-unique</em> without side constraints; uniqueness is
+                            restored by demanding analyticity, monotonicity, or bounded variation. For strictly monotone
+                            continuous self-maps of an interval, M. Kuczma (1961) gave a complete description of continuous
+                            iterative roots, and the iterative-root problem is equivalent to a conjugacy problem (an
+                            observation often credited to Bödewadt, 1944). The canonical hard instance is the half-iterate of
+                            the exponential, \(g(g(x))=e^{x}\), which Hellmuth Kneser solved real-analytically in a 1950 paper.
+                        </p>
+
+                        <h3>Fractional / continuous iteration &amp; embedding in a flow</h3>
+                        <p>
+                            Define \(f^{t}\) for non-integer (real or complex) \(t\), with \(f^{1}=f\) and the group law
+                            \(f^{s}\circ f^{t}=f^{s+t}\). The <strong>embedding problem</strong> asks whether a given \(f\)
+                            extends to a one-parameter (semi)group &mdash; a continuous flow \(\{f^{t}\}\) with \(f^{1}=f\). When
+                            an <em>Abel function</em> \(\alpha\) is available (solving \(\alpha\circ f=\alpha+1\)), the iterates
+                            come for free:
+                            \[
+                            f^{t}(x)=\alpha^{-1}\!\bigl(\alpha(x)+t\bigr),
+                            \]
+                            and equivalently \(f^{t}=\sigma^{-1}(s^{t}\,\sigma)\) via a Schröder function \(\sigma\). The
+                            infinitesimal generator of the flow is an Aczél&ndash;Jabotinsky vector field; embeddability of a
+                            map is equivalent to convergence of its <em>iterative logarithm</em>.
+                        </p>
+
+                        <h3>Linearization &amp; normal forms</h3>
+                        <p>
+                            Conjugate \(f\) near a fixed point to its <em>linear part</em> &mdash; or to the simplest available
+                            model &mdash; so that the recurrence \(x_{n+1}=f(x_{n})\) becomes solvable. This is exactly what the
+                            Schröder, Abel, and Böttcher equations do: in the new coordinate, \(f\) becomes a dilation, a
+                            translation, or a power map. The normal form depends on the multiplier (Section 3).
+                        </p>
+
+                        <h3>Conjugacy &amp; classification</h3>
+                        <p>
+                            Classify maps up to conjugacy \(\psi^{-1}\circ f\circ\psi\) &mdash; separately in the
+                            <em>formal</em>, <em>analytic</em>, <em>smooth</em>, and <em>topological</em> categories. A formal
+                            power-series conjugacy may diverge (small divisors); Sternberg&rsquo;s theorem shows a hyperbolic
+                            germ that is formally linearizable is also smoothly and analytically linearizable, while
+                            Hartman&ndash;Grobman gives only topological equivalence. The obstructions are <em>resonances</em>
+                            among the eigenvalues.
+                        </p>
+
+                        <h3>Existence, uniqueness, regularity</h3>
+                        <p>
+                            For each of the above, three layered questions recur: does a solution <em>exist</em>; is it
+                            <em>unique</em> (and under what side conditions); and how <em>regular</em> is it &mdash; continuous,
+                            smooth, analytic, entire? The answers swing sharply with regularity. Continuous iterative roots can
+                            be abundant or absent: continuous self-maps with no square root are <em>dense</em> in the space of
+                            continuous self-maps of the cube \([0,1]^{m}\) and of \(\mathbb{R}^{m}\) (Bhat &amp; Gopalakrishna,
+                            published in <em>Ergodic Theory and Dynamical Systems</em> in 2023). Analytic uniqueness, by
+                            contrast, is often pinned down by a single normalization &mdash; as in Koenigs&rsquo; theorem.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>The unifying slogan.</strong> Solving an iterative functional equation = finding coordinates
+                            in which \(f\) becomes a simple normal form. The conjugacy equation \(\psi\circ f=g\circ\psi\) is the
+                            master equation; Schröder (\(g=s\cdot\)), Abel (\(g=\,\cdot+1\)), and Böttcher (\(g=(\cdot)^{n}\))
+                            are its three classical special cases, one for each regime of the multiplier.
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 3 ================= -->
+                    <div id="section3">
+                        <h2>3. A map of the canonical equations</h2>
+                        <p>
+                            Local behaviour at a fixed point \(a=F(a)\) is governed by the multiplier \(s=F'(a)\). The value of
+                            \(|s|\) splits the world into a <strong>fixed-point trichotomy</strong> &mdash; with a fourth,
+                            arithmetically delicate, neutral case &mdash; and each regime is encoded by exactly one classical
+                            functional equation. Conjugacy invariance of \(s\) is the organizing principle (Milnor,
+                            <em>Dynamics in One Complex Variable</em>).
+                        </p>
+
+                        <div class="table-wrap">
+                            <table class="class-table">
+                                <thead>
+                                    <tr><th>Regime</th><th>Multiplier \(s=F'(a)\)</th><th>Equation</th><th>Normal form</th><th>Key names</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Hyperbolic (attracting / repelling)</td>
+                                        <td>\(0&lt;|s|&lt;1\) or \(|s|&gt;1\)</td>
+                                        <td>Schröder \(\sigma\circ F=s\,\sigma\)</td>
+                                        <td>dilation \(y\mapsto sy\)</td>
+                                        <td>Schröder 1870; Koenigs 1884</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Superattracting</td>
+                                        <td>\(s=0\), local degree \(n\ge 2\)</td>
+                                        <td>Böttcher \(B\circ F=B^{\,n}\)</td>
+                                        <td>power \(w\mapsto w^{n}\)</td>
+                                        <td>Böttcher 1904; Ritt 1920</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Parabolic / rationally indifferent</td>
+                                        <td>\(s\) a root of unity</td>
+                                        <td>Abel \(\alpha\circ F=\alpha+1\)</td>
+                                        <td>translation \(w\mapsto w+1\)</td>
+                                        <td>Abel; Leau&ndash;Fatou</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Irrationally indifferent</td>
+                                        <td>\(s=e^{2\pi i\theta}\), \(\theta\) irrational</td>
+                                        <td>linearization \(\sigma\circ F=s\,\sigma\) (small divisors)</td>
+                                        <td>rotation \(w\mapsto sw\)</td>
+                                        <td>Siegel / Cremer; Brjuno, Yoccoz</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p>
+                            The hyperbolic and irrationally-indifferent rows share the <em>same</em> equation &mdash; Schröder&rsquo;s
+                            linearization &mdash; but its solvability is qualitatively different: trivial in the hyperbolic case
+                            (Koenigs), and an arithmetic small-divisor question in the neutral case (the Siegel/Cremer dichotomy).
+                            The parabolic case \(s=1\) is the boundary where Schröder degenerates and Abel takes over; indeed the
+                            substitution \(\alpha=\log\sigma/\log s\) converts Schröder&rsquo;s multiplicative equation into
+                            Abel&rsquo;s additive one, so &ldquo;Abel = Schröder in the limit \(s\to 1\).&rdquo;
+                        </p>
+
+                        <h3>The field map</h3>
+                        <p>
+                            The diagram below clusters the canonical equations by what they do, and draws the bridges between
+                            them. Three linearizers sit at the centre, one per multiplier regime; around them orbit the problems
+                            of <em>iteration</em> (Babbage, iterative roots, commuting maps) and of <em>flows</em> (Julia&rsquo;s
+                            generator, translation, conjugacy). Every cluster links to the full
+                            <a href="equations.html">Atlas of Equations</a>.
+                        </p>
+
+                        <div class="field-map-wrap">
+                            <svg viewBox="0 0 760 430" role="img" aria-label="Field map of the canonical iterative functional equations, clustered into linearizers, iteration problems, and flow problems, with bridges between them.">
+                                <!-- Cluster: Linearizers (centre) -->
+                                <rect class="fm-cluster" x="250" y="40" width="270" height="200" rx="10"/>
+                                <text class="fm-cl-label" x="385" y="60" text-anchor="middle">Linearizers &middot; fixed-point trichotomy</text>
+
+                                <a href="equations.html#section5">
+                                    <rect class="fm-node" x="270" y="78" width="105" height="44" rx="7"/>
+                                    <text class="fm-label" x="322" y="98" text-anchor="middle">Schröder</text>
+                                    <text class="fm-sub" x="322" y="112" text-anchor="middle">hyperbolic &middot; ×s</text>
+                                </a>
+                                <a href="equations.html#section6">
+                                    <rect class="fm-node-sa" x="395" y="78" width="105" height="44" rx="7"/>
+                                    <text class="fm-label" x="447" y="98" text-anchor="middle">Böttcher</text>
+                                    <text class="fm-sub" x="447" y="112" text-anchor="middle">superattr. &middot; w&#8319;</text>
+                                </a>
+                                <a href="equations.html#section4">
+                                    <rect class="fm-node" x="270" y="148" width="105" height="44" rx="7"/>
+                                    <text class="fm-label" x="322" y="168" text-anchor="middle">Abel</text>
+                                    <text class="fm-sub" x="322" y="182" text-anchor="middle">parabolic &middot; +1</text>
+                                </a>
+                                <a href="connections.html#section1">
+                                    <rect class="fm-node" x="395" y="148" width="105" height="44" rx="7"/>
+                                    <text class="fm-label" x="447" y="164" text-anchor="middle">Siegel /</text>
+                                    <text class="fm-label" x="447" y="178" text-anchor="middle">Cremer</text>
+                                    <text class="fm-sub" x="447" y="192" text-anchor="middle">neutral &middot; rotation</text>
+                                </a>
+
+                                <!-- Cluster: Iteration problems (left) -->
+                                <rect class="fm-cluster" x="20" y="40" width="200" height="200" rx="10"/>
+                                <text class="fm-cl-label" x="120" y="60" text-anchor="middle">Iteration problems</text>
+                                <a href="equations.html#section2">
+                                    <rect class="fm-node" x="40" y="78" width="160" height="40" rx="7"/>
+                                    <text class="fm-label" x="120" y="96" text-anchor="middle">Babbage</text>
+                                    <text class="fm-sub" x="120" y="110" text-anchor="middle">F&#8319; = id</text>
+                                </a>
+                                <a href="equations.html#section3">
+                                    <rect class="fm-node" x="40" y="128" width="160" height="40" rx="7"/>
+                                    <text class="fm-label" x="120" y="146" text-anchor="middle">Iterative root</text>
+                                    <text class="fm-sub" x="120" y="160" text-anchor="middle">F&#8319; = G &middot; half-iterate</text>
+                                </a>
+                                <a href="equations.html#section11">
+                                    <rect class="fm-node" x="40" y="178" width="160" height="40" rx="7"/>
+                                    <text class="fm-label" x="120" y="196" text-anchor="middle">Commuting maps</text>
+                                    <text class="fm-sub" x="120" y="210" text-anchor="middle">f&#8728;g = g&#8728;f</text>
+                                </a>
+
+                                <!-- Cluster: Flows & generators (right) -->
+                                <rect class="fm-cluster" x="550" y="40" width="190" height="200" rx="10"/>
+                                <text class="fm-cl-label" x="645" y="60" text-anchor="middle">Flows &amp; generators</text>
+                                <a href="equations.html#section9">
+                                    <rect class="fm-node" x="566" y="78" width="158" height="40" rx="7"/>
+                                    <text class="fm-label" x="645" y="96" text-anchor="middle">Translation eq.</text>
+                                    <text class="fm-sub" x="645" y="110" text-anchor="middle">F(F(x,s),t)=F(x,s+t)</text>
+                                </a>
+                                <a href="equations.html#section7">
+                                    <rect class="fm-node" x="566" y="128" width="158" height="40" rx="7"/>
+                                    <text class="fm-label" x="645" y="146" text-anchor="middle">Julia / generator</text>
+                                    <text class="fm-sub" x="645" y="160" text-anchor="middle">G&#8728;F&middot;F&#8242; = G</text>
+                                </a>
+                                <a href="equations.html#section8">
+                                    <rect class="fm-node" x="566" y="178" width="158" height="40" rx="7"/>
+                                    <text class="fm-label" x="645" y="196" text-anchor="middle">Conjugacy</text>
+                                    <text class="fm-sub" x="645" y="210" text-anchor="middle">f&#8728;h = h&#8728;g</text>
+                                </a>
+
+                                <!-- Bridges -->
+                                <path class="fm-bridge" d="M200 148 L270 168"/>
+                                <text class="fm-bridge-label" x="218" y="150">reduces to conjugacy</text>
+
+                                <path class="fm-bridge" d="M375 170 L395 170"/>
+                                <path class="fm-bridge" d="M322 122 L322 148"/>
+                                <text class="fm-bridge-label" x="328" y="140">s&#8594;1</text>
+
+                                <path class="fm-bridge" d="M500 170 L566 192"/>
+                                <text class="fm-bridge-label" x="505" y="205">normal form</text>
+
+                                <path class="fm-bridge" d="M520 100 L566 148"/>
+                                <text class="fm-bridge-label" x="512" y="118">differentiate</text>
+
+                                <path class="fm-bridge" d="M447 122 L447 148"/>
+                                <text class="fm-bridge-label" x="453" y="140">|s|=1</text>
+
+                                <!-- Footing row: regularity axis -->
+                                <text class="fm-cl-label" x="380" y="280" text-anchor="middle">one master equation, four regimes</text>
+                                <text class="fm-sub" x="380" y="300" text-anchor="middle">conjugacy  &#8594;  Schröder / Böttcher / Abel  &#8594;  flows</text>
+
+                                <!-- Legend -->
+                                <rect class="fm-node" x="250" y="330" width="14" height="14" rx="3"/>
+                                <text class="fm-sub" x="272" y="342">linearizable by a Koenigs/Fatou-type coordinate</text>
+                                <rect class="fm-node-sa" x="250" y="356" width="14" height="14" rx="3"/>
+                                <text class="fm-sub" x="272" y="368">power-map / superattracting (Böttcher) coordinate</text>
+                                <text class="fm-sub" x="250" y="394">Dashed bridges = changes of variable or differentiation linking equations.</text>
+                                <text class="fm-sub" x="250" y="410">Tap any card to open its full entry in the Atlas of Equations.</text>
+                            </svg>
+                        </div>
+
+                        <p class="text-sm" style="color:var(--footer-text);">
+                            Beyond the trichotomy sit the equations of <em>iteration as such</em>: <strong>Babbage&rsquo;s
+                            equation</strong> \(F^{\circ n}=\mathrm{id}\) (the iterative roots of the identity &mdash;
+                            involutions for \(n=2\)); the <strong>iterative-root equation</strong> \(F^{\circ n}=G\); the
+                            <strong>translation equation</strong> \(F(F(x,s),t)=F(x,s+t)\) defining a one-parameter iteration
+                            group; <strong>Julia&rsquo;s equation</strong> \(G(F(x))F'(x)=G(x)\) for the infinitesimal generator
+                            (its solution is the iterative logarithm, a term due to Écalle); the <strong>Aczél&ndash;Jabotinsky
+                            differential equation</strong> \(H\circ\Phi=\Phi'\,H\) for embedding into a flow; the master
+                            <strong>conjugacy equation</strong> \(f\circ h=h\circ g\); and the <strong>commuting-functions
+                            equation</strong> \(f\circ g=g\circ f\), whose polynomial solutions were classified by Julia (1922)
+                            and Ritt (1923). All of these, and their cross-links, are catalogued in the
+                            <a href="equations.html">Atlas of Equations</a>.
+                        </p>
+
+                        <div class="diagram-grid">
+                            <a href="equations.html#section5" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Schröder</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(\sigma(F(x))=s\,\sigma(x)\). Linearizes a hyperbolic fixed point to \(y\mapsto sy\);
+                                    Koenigs&rsquo; limit \(\sigma=\lim F^{\circ n}/s^{n}\).
+                                </p>
+                            </a>
+                            <a href="equations.html#section4" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-arrow-right-long"></i> Abel</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(\alpha(F(x))=\alpha(x)+1\). The parabolic normal form; its solutions are Fatou
+                                    coordinates and they embed \(F\) in a flow.
+                                </p>
+                            </a>
+                            <a href="equations.html#section6" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-superscript"></i> Böttcher</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(B(F(z))=B(z)^{n}\). The superattracting coordinate conjugating \(F\) to \(z\mapsto z^{n}\),
+                                    unique up to an \((n{-}1)\)-st root of unity.
+                                </p>
+                            </a>
+                            <a href="equations.html#section2" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-rotate"></i> Babbage</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(F^{\circ n}=\mathrm{id}\). Roots of the identity: involutions and periodic functions, the
+                                    historical seed of the whole subject (1815).
+                                </p>
+                            </a>
+                            <a href="equations.html#section7" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-wind"></i> Julia / generator</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(G(F(x))\,F'(x)=G(x)\). The infinitesimal generator (iterative logarithm) of a flow;
+                                    differentiating Abel&rsquo;s equation lands here.
+                                </p>
+                            </a>
+                            <a href="equations.html#section11" class="mini-diagram" style="text-decoration:none; color:inherit;">
+                                <h3 style="margin-top:0; font-size:1.05rem;"><i class="fa-solid fa-arrows-left-right"></i> Commuting maps</h3>
+                                <p style="font-size:0.88rem; color:var(--footer-text); margin:0.3rem 0 0;">
+                                    \(f\circ g=g\circ f\). Permutable maps; for polynomials, power maps and Chebyshev families
+                                    (Ritt&ndash;Julia theory).
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. The web of connections</h2>
+                        <p>
+                            Iterative functional equations are not an isolated curiosity. The same linearizing coordinates and
+                            embedding problems reappear &mdash; under different names and with different toolkits &mdash; across
+                            complex dynamics, smooth dynamical systems, the theory of flows, tetration, combinatorics,
+                            probability, operator theory, and physics. Each card below opens the corresponding tour on the
+                            <a href="connections.html">Connections</a> page.
+                        </p>
+
+                        <div class="card-grid">
+                            <a href="connections.html#section1" class="card">
+                                <h3><i class="fa-solid fa-circle-nodes"></i> Complex dynamics</h3>
+                                <p>Fatou and Julia sets, normal families, and the local theory of Koenigs, Böttcher, Leau&ndash;Fatou, Siegel and Cremer &mdash; the linearizers <em>are</em> the local models of rational iteration.</p>
+                                <span class="card-badge">Schröder &middot; Böttcher</span>
+                            </a>
+                            <a href="connections.html#section2" class="card">
+                                <h3><i class="fa-solid fa-diagram-project"></i> Dynamical systems</h3>
+                                <p>Hartman&ndash;Grobman, Sternberg smooth linearization, Poincaré&ndash;Dulac normal forms, resonances, and KAM theory &mdash; conjugacy and small divisors in higher dimensions.</p>
+                                <span class="card-badge">Normal forms</span>
+                            </a>
+                            <a href="connections.html#section3" class="card">
+                                <h3><i class="fa-solid fa-wind"></i> Flows &amp; Lie theory</h3>
+                                <p>Embedding a map into a one-parameter flow, the infinitesimal generator as a vector field, regular iteration (Szekeres), and the Berkson&ndash;Porta generators on the disk.</p>
+                                <span class="card-badge">Generators</span>
+                            </a>
+                            <a href="connections.html#section4" class="card">
+                                <h3><i class="fa-solid fa-layer-group"></i> Tetration</h3>
+                                <p>Super-exponentials, super-logarithms, and the half-iterate of \(\exp\): Kneser&rsquo;s real-analytic construction and the uniqueness results of Trappmann&ndash;Kouznetsov and Paulsen&ndash;Cowgill.</p>
+                                <span class="card-badge">Half-exp</span>
+                            </a>
+                            <a href="connections.html#section5" class="card">
+                                <h3><i class="fa-solid fa-table-cells"></i> Combinatorics &amp; formal groups</h3>
+                                <p>Bell / Jabotinsky / Carleman matrices turn composition into matrix products; the composita, Lagrange inversion, and formal group laws with their logarithms &mdash; iteration linearized algebraically.</p>
+                                <span class="card-badge">Composita</span>
+                            </a>
+                            <a href="connections.html#section6" class="card">
+                                <h3><i class="fa-solid fa-dice"></i> Probability &amp; branching</h3>
+                                <p>Galton&ndash;Watson generating functions iterate under composition; extinction is a fixed point, and Koenigs functions of PGFs (Goryainov) test embedding into a Markov branching flow.</p>
+                                <span class="card-badge">Galton&ndash;Watson</span>
+                            </a>
+                            <a href="connections.html#section7" class="card">
+                                <h3><i class="fa-solid fa-wave-square"></i> Operators</h3>
+                                <p>Composition, Koopman, and transfer (Perron&ndash;Frobenius) operators: the Koenigs eigenfunction is the Schröder solution, an eigenvector with eigenvalue \(F'(a)\).</p>
+                                <span class="card-badge">Koopman</span>
+                            </a>
+                            <a href="connections.html#section8" class="card">
+                                <h3><i class="fa-solid fa-atom"></i> Physics &amp; RG</h3>
+                                <p>The Feigenbaum&ndash;Cvitanović fixed-point equation of period doubling, and Curtright&ndash;Zachos&rsquo; Schröder/Abel framing of renormalization-group flow.</p>
+                                <span class="card-badge">Renormalization</span>
+                            </a>
+                        </div>
+
+                        <div class="notice-box">
+                            <strong>One thread runs through all of it.</strong> Whether the object is a rational map, a
+                            diffeomorphism, a branching process, a generating function, or an RG step-scaling map, the question
+                            is the same: <em>in what coordinate does iteration become trivial?</em> That coordinate is the
+                            solution of a Schröder, Abel, or Böttcher equation. Follow the full tour on the
+                            <a href="connections.html">Connections</a> page, then see the algebra made concrete on the
+                            <a href="composita.html">Composita</a> calculator.
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. Eras &amp; schools</h2>
+                        <p>
+                            The subject has a long arc. It opens with Charles Babbage&rsquo;s systematic study of one-variable
+                            functional equations in 1815, passes through the nineteenth-century linearizers &mdash; Abel,
+                            Schröder, Koenigs &mdash; and the local fixed-point theory of Leau and Böttcher, then merges into the
+                            global complex dynamics of Fatou and Julia around 1918. In the mid-twentieth century Kneser,
+                            Szekeres, and Jabotinsky built the real-analytic and matrix theories of fractional iteration; the
+                            modern field was consolidated by Marek Kuczma&rsquo;s Silesian school and the ECIT conference series,
+                            while Écalle&rsquo;s resurgence theory and the Mandelbrot-era revival of complex dynamics carried the
+                            classical equations into contemporary mathematics and physics.
+                        </p>
+
+                        <ul class="era-timeline">
+                            <li><span class="era-year">1815</span><span class="era-body"><strong>Babbage</strong> &mdash; <em>An Essay towards the Calculus of Functions</em>; the equation \(\varphi(\varphi(x))=x\) and the roots of identity.</span></li>
+                            <li><span class="era-year">1820s</span><span class="era-body"><strong>Abel</strong> &mdash; the Abel equation \(\alpha(f(x))=\alpha(x)+1\) (published posthumously in the 1881 <em>Œuvres</em>).</span></li>
+                            <li><span class="era-year">1870</span><span class="era-body"><strong>Schröder</strong> &mdash; <em>Ueber iterirte Functionen</em>; the linearizing equation \(\sigma(f(x))=s\,\sigma(x)\).</span></li>
+                            <li><span class="era-year">1884</span><span class="era-body"><strong>Koenigs</strong> &mdash; rigorous linearization at attracting (non-superattracting) fixed points.</span></li>
+                            <li><span class="era-year">1904</span><span class="era-body"><strong>Böttcher</strong> &mdash; the superattracting equation \(B(F(z))=B(z)^{n}\) (full proof by Ritt, 1920).</span></li>
+                            <li><span class="era-year">1918</span><span class="era-body"><strong>Fatou &amp; Julia</strong> &mdash; the global iteration theory of rational maps; the Grand Prix to Julia; Lattès maps.</span></li>
+                            <li><span class="era-year">1950</span><span class="era-body"><strong>Kneser</strong> &mdash; a real-analytic half-iterate of \(\exp\), solving \(\varphi(\varphi(x))=e^{x}\).</span></li>
+                            <li><span class="era-year">1958</span><span class="era-body"><strong>Szekeres</strong> &mdash; regular (fractional) iteration, <em>Acta Mathematica</em> 100.</span></li>
+                            <li><span class="era-year">1968</span><span class="era-body"><strong>Kuczma</strong> &mdash; <em>Functional Equations in a Single Variable</em>; the Silesian school (the 1990 monograph with Choczewski &amp; Ger followed).</span></li>
+                            <li><span class="era-year">1973&ndash;</span><span class="era-body"><strong>ECIT</strong> &mdash; the European Conference on Iteration Theory begins (Toulouse 1973), running ever since.</span></li>
+                            <li><span class="era-year">1981</span><span class="era-body"><strong>Targoński; Écalle</strong> &mdash; <em>Topics in Iteration Theory</em>; resurgence theory and Écalle&ndash;Voronin moduli.</span></li>
+                        </ul>
+
+                        <p class="text-center">
+                            <a href="history.html"><strong>Read the full history &rarr;</strong></a>
+                        </p>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Using this shelf</h2>
+                        <p>
+                            This site is organized as a small library with a fixed reading order &mdash;
+                            <strong>Home &rarr; Shelf &rarr; History &rarr; Theory &rarr; Atlas &rarr; Connections &rarr; Solver
+                            &rarr; Composita &rarr; Bibliography &rarr; Blog</strong> &mdash; but every page is also a standalone
+                            entry. Use the cards below to jump straight to any room.
+                        </p>
+
+                        <div class="card-grid">
+                            <a href="history.html" class="card">
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> History</h3>
+                                <p>The chronological development from Babbage and Abel through Schröder, Koenigs, Böttcher, Fatou&ndash;Julia, Kneser, and the Kuczma school.</p>
+                                <span class="card-badge">Narrative</span>
+                            </a>
+                            <a href="theory.html" class="card">
+                                <h3><i class="fa-solid fa-book"></i> Theory</h3>
+                                <p>Function iteration, fixed points and multipliers, Schröder&ndash;Koenigs linearization, and why \(f(f(x))=x^2-2\) is solvable but \(f(f(x))=x^2+1\) is not.</p>
+                                <span class="card-badge">Read</span>
+                            </a>
+                            <a href="equations.html" class="card">
+                                <h3><i class="fa-solid fa-sitemap"></i> Atlas of Equations</h3>
+                                <p>A precise catalog of the canonical named equations &mdash; Babbage, iterative root, Abel, Schröder, Böttcher, Julia, conjugacy, translation, Aczél&ndash;Jabotinsky, commuting.</p>
+                                <span class="card-badge">Reference</span>
+                            </a>
+                            <a href="connections.html" class="card">
+                                <h3><i class="fa-solid fa-circle-nodes"></i> Connections</h3>
+                                <p>How the equations organize complex dynamics, flows and Lie theory, tetration, combinatorics, probability, operators, and renormalization physics.</p>
+                                <span class="card-badge">Cross-field</span>
+                            </a>
+                            <a href="solver.html" class="card">
+                                <h3><i class="fa-solid fa-calculator"></i> Solver</h3>
+                                <p>Explore \(f(f(x))=F(x)\) two ways: a composita mode for iterative roots and a local analytic fixed-point mode, with rendered formulas and verification plots.</p>
+                                <span class="card-badge">Interactive</span>
+                            </a>
+                            <a href="composita.html" class="card">
+                                <h3><i class="fa-solid fa-table"></i> Composita</h3>
+                                <p>Compute and explore the composita \(F^{\Delta}(n,k)\) of generating functions, after Kruchinin &amp; Kruchinin.</p>
+                                <span class="card-badge">Tool</span>
+                            </a>
+                            <a href="bibliography.html" class="card">
+                                <h3><i class="fa-solid fa-graduation-cap"></i> Bibliography</h3>
+                                <p>Books, classical papers, and the modern research streams &mdash; with working links and verified citations.</p>
+                                <span class="card-badge">References</span>
+                            </a>
+                            <a href="blog.html" class="card">
+                                <h3><i class="fa-solid fa-pen"></i> Blog Notes</h3>
+                                <p>Finished notes on fixed points, composita half-iterates, and numerical/analytic solution strategies, each linked to the solver.</p>
+                                <span class="card-badge">Articles</span>
+                            </a>
+                        </div>
+
+                        <div class="keypoint">
+                            <strong>A suggested path.</strong> First-time readers can follow the spine in order. If you came for
+                            a specific equation, jump from the <a href="#section3">field map</a> to its entry in the
+                            <a href="equations.html">Atlas</a>. If you came to <em>compute</em> a half-iterate, go straight to the
+                            <a href="solver.html">Solver</a> and <a href="composita.html">Composita</a> tools. If you want the
+                            story, start with the <a href="history.html">History</a>.
+                        </div>
+
+                        <p>
+                            Make yourself at home. The next door along the spine is the <a href="history.html">History</a> &mdash;
+                            where the field map of Section 3 unrolls into two centuries of names and theorems.
+                        </p>
+                    </div>
+
+                </article>
+            </main>
+
+            <div class="nextPage">
+                <a href="history.html">Next: History <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <!-- Dark mode toggle (REQUIRED, verbatim) -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>
