@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>History — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="History — Iterative Functional Equations">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-22">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="History — Iterative Functional Equations">
+    <meta property="og:description" content="From Babbage's 1815 Calculus of Functions to Écalle's resurgence — two centuries of iteration, linearization, and the functional square root.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/history.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+    <meta name="twitter:card" content="A history of iterative functional equations.">
+    <meta name="twitter:title" content="History — Iterative Functional Equations">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
+
+    <!-- Scoped styles: a vertical timeline + a small "lineage map". Theme variables only. -->
+    <style>
+        .tl {
+            list-style: none;
+            margin: 1.5rem 0;
+            padding-left: 0;
+            position: relative;
+            border-left: 2px solid var(--border-color);
+        }
+        .tl > li {
+            position: relative;
+            margin: 0 0 1.4rem 0;
+            padding: 0 0 0 1.4rem;
+        }
+        .tl > li::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 0.35rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--link-color);
+            border: 2px solid var(--box-bg);
+        }
+        .tl .tl-year {
+            font-weight: 700;
+            color: var(--link-color);
+            font-variant-numeric: tabular-nums;
+            margin-right: 0.5rem;
+        }
+        .tl .tl-who { font-weight: 600; color: var(--text-color); }
+        .tl .tl-what { color: var(--footer-text); }
+        .tl-era {
+            margin: 1.6rem 0 0.6rem;
+            padding-left: 1.4rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--footer-text);
+            position: relative;
+        }
+        .tl-era::before {
+            content: "";
+            position: absolute;
+            left: -5px;
+            top: 0.25rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--footer-text);
+        }
+        .lineage {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--toc-bg);
+            padding: 1rem 1.2rem;
+            margin: 1.2rem 0;
+        }
+        .lineage h4 { margin: 0 0 0.6rem; }
+        .lineage-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.5rem 0;
+            font-size: 0.92rem;
+        }
+        .lineage-node {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            color: var(--text-color);
+            white-space: nowrap;
+        }
+        .lineage-arrow { color: var(--footer-text); }
+        .tl-cap {
+            font-size: 0.85rem;
+            color: var(--footer-text);
+            margin-top: 0.4rem;
+        }
+    </style>
+</head>
+<body data-type="book" id="top">
+
+    <!-- Loader -->
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>
+        window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });
+    </script>
+
+    <!-- Fixed Navigation Bar -->
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="shelf.html" id="prev-link" title="The Shelf"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="history.html" id="center-link">
+                <span class="hover-prev">The Shelf</span>
+                <span class="title-main">History</span>
+                <span class="hover-next">Theory</span>
+            </a>
+        </div>
+        <a href="theory.html" id="next-link" title="Theory"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <section data-type="chapter" id="history">
+
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section1">1. The Founding Period: Babbage (1815)</a></li>
+                    <li><a href="#section2">2. Abel &amp; the Additive Normal Form</a></li>
+                    <li><a href="#section3">3. Schröder &amp; Koenigs: Linearization</a></li>
+                    <li><a href="#section4">4. The Parabolic Case &amp; the Leau&ndash;Fatou Flower</a></li>
+                    <li><a href="#section5">5. Böttcher &amp; Superattracting Fixed Points</a></li>
+                    <li><a href="#section6">6. Fatou, Julia &amp; Lattès: the Global Theory</a></li>
+                    <li><a href="#section7">7. Mid-Century Real-Analytic Iteration</a></li>
+                    <li><a href="#section8">8. The Silesian School &amp; Consolidation</a></li>
+                    <li><a href="#section9">9. The Modern Revival</a></li>
+                    <li><a href="#section10">10. A Visual Timeline</a></li>
+                    <li><a href="#section11">11. Key Figures</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>A History of Iterative Functional Equations</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        Two centuries of one idea &mdash; the <em>square root of a function under composition</em> &mdash;
+                        from Babbage's <em>Calculus of Functions</em> to resurgence theory and the complex-dynamics boom.
+                    </p>
+                    <hr>
+
+                    <p>
+                        This page tells the story behind the mathematics laid out in the
+                        <a href="theory.html">Theory</a> chapter and catalogued in the
+                        <a href="equations.html">Atlas of Equations</a>. The thread running through it is a single
+                        deceptively simple question: given a map \(f\), what does it mean to apply it
+                        &ldquo;half a time&rdquo;? Formally, an <strong>iterative functional equation</strong> is an
+                        equation whose unknown is a function composed with itself or with a known map &mdash; the
+                        archetype being the <strong>functional (compositional) square root</strong>
+                        \(\varphi(\varphi(x)) = f(x)\). Over two hundred years this question braided together with the
+                        theory of <em>iteration of functions</em> &mdash; today a cornerstone of holomorphic and complex
+                        dynamics &mdash; and produced a small family of canonical equations bearing the names of
+                        <a href="#section1">Babbage</a>, <a href="#section2">Abel</a>,
+                        <a href="#section3">Schröder</a>, <a href="#section3">Koenigs</a> and
+                        <a href="#section5">Böttcher</a>. The pages of the
+                        <a href="equations.html">Atlas</a> formalise each one; here we watch them being discovered.
+                    </p>
+
+                    <div class="notice-box mb-2">
+                        <strong>How to read the dates.</strong> Wherever a date, venue, or attribution is contested in
+                        the historical record, this page flags it (&ldquo;commonly dated to&rdquo;, &ldquo;often
+                        attributed to&rdquo;) rather than asserting a single value. Such hedges are deliberate, not
+                        vague. The riskiest specifics are gathered for checking in the
+                        <a href="bibliography.html">Bibliography</a>.
+                    </div>
+
+                    <!-- ================= Section 1 ================= -->
+                    <div id="section1">
+                        <h2>1. The Founding Period: Babbage (1815)</h2>
+                        <p>
+                            The systematic study of functional equations <em>in a single variable</em> begins with
+                            <strong>Charles Babbage</strong> (1791&ndash;1871), better remembered today for his
+                            calculating engines. His memoir <em>&ldquo;An Essay towards the Calculus of
+                            Functions&rdquo;</em> was read to the Royal Society on 15 June 1815 (communicated by W. H.
+                            Wollaston) and published in the <em>Philosophical Transactions of the Royal Society of
+                            London</em>, <strong>vol. 105 (1815), pp. 389&ndash;423</strong>; a second part followed in
+                            1816. Babbage, then twenty-three, treated equations containing only one variable far more
+                            systematically than any predecessor &mdash; the true start of the subject this whole site
+                            is built on.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Babbage's equation.</strong> Babbage studied the <em>involutions</em>
+                            \[
+                            \varphi(\varphi(x)) = x,
+                            \]
+                            whose solutions are the &ldquo;<em>roots of identity</em>&rdquo; &mdash; functions equal to
+                            their own inverse. More generally he considered the \(n\)-th order equation
+                            \(\varphi^{[n]}(x) = x\) (the iterate of \(\varphi\) composed \(n\) times equalling the
+                            identity), whose solutions are the <em>iterative roots of the identity</em>, i.e. periodic
+                            functions under composition.
+                        </div>
+
+                        <p>
+                            The leap from \(\varphi^{[2]} = \mathrm{id}\) to the general target is small but decisive:
+                            replacing the right-hand side by an arbitrary \(f\) gives
+                            \[
+                            \varphi(\varphi(x)) = f(x),
+                            \]
+                            which is exactly the <strong>functional square root</strong> that drives the
+                            <a href="solver.html">Solver</a> and the <a href="theory.html#section1">Theory</a> page.
+                            Babbage had already isolated two structural facts that the modern theory never outgrew.
+                            First, a <em>particular involution</em>: the Möbius family
+                            \(\varphi(x) = (b - x)/(1 + cx)\) (for \(bc \neq -1\)) solves \(\varphi(\varphi(x)) = x\).
+                            Second &mdash; and this is the seed of the entire <a href="theory.html#section6">conjugacy</a>
+                            viewpoint &mdash; he noticed that if \(\varphi\) is a solution, then so is any conjugate
+                            \(\psi^{-1} \circ \varphi \circ \psi\). In modern language, the group of invertible functions
+                            acts on the solution set by conjugation.
+                        </p>
+
+                        <div class="keypoint">
+                            Babbage's insight that <em>conjugation generates new solutions from old</em> is the historical
+                            root of the method the <a href="theory.html#section3">Theory</a> page calls
+                            <em>linearization</em>: relabel coordinates until the equation becomes trivial, solve it
+                            there, and conjugate back. Everything from <a href="#section3">Schröder</a> to
+                            <a href="#section5">Böttcher</a> is a way of choosing that coordinate well.
+                        </div>
+
+                        <details>
+                            <summary><strong>A note on Babbage's original notation</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    The crisp formula \(\varphi(\varphi(x)) = x\) is the way secondary sources render
+                                    Babbage's problem; his own 1815 notation differed, and the &ldquo;\(n\)-th
+                                    order&rdquo; framing \(\varphi^{[n]} = \mathrm{id}\) is drawn from later summaries
+                                    rather than verified line-by-line against the original text. The compositional power
+                                    notation \(f^{n}\) itself is usually traced to <strong>John Herschel</strong> (1813),
+                                    who credited earlier work of Hans Heinrich Bürmann; the bracketed variant
+                                    \(f^{[n]}\) is associated with Benjamin Peirce. None of this changes the mathematics,
+                                    but it is a reminder that the &ldquo;classical&rdquo; equations on this page were
+                                    often named and normalised decades after the fact.
+                                </p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 2 ================= -->
+                    <div id="section2">
+                        <h2>2. Abel &amp; the Additive Normal Form</h2>
+                        <p>
+                            <strong>Niels Henrik Abel</strong> (1802&ndash;1829) supplied the additive companion to
+                            Babbage's multiplicative world. The <strong>Abel functional equation</strong>,
+                            \[
+                            \alpha\bigl(f(x)\bigr) = \alpha(x) + 1,
+                            \]
+                            conjugates the iteration of \(f\) to a <em>unit translation</em>. If \(\alpha\) solves it,
+                            then the \(t\)-th iterate is simply
+                            \[
+                            f^{[t]}(x) = \alpha^{-1}\bigl(\alpha(x) + t\bigr),
+                            \]
+                            which interpolates the integer index \(t\) to any real (or complex) value &mdash; the precise
+                            mechanism by which a <em>half-iterate</em> \(f^{[1/2]} = \alpha^{-1}(\alpha + \tfrac12)\) is
+                            obtained on the <a href="theory.html#section3">Theory</a> page.
+                        </p>
+
+                        <p>
+                            The dating is genuinely delicate, and worth stating carefully. The Abel equation is
+                            commonly attributed to the <strong>1820s</strong>, but the directly relevant manuscript
+                            &mdash; <em>&ldquo;Détermination d'une fonction au moyen d'une équation qui ne contient
+                            qu'une seule variable&rdquo;</em> &mdash; appeared only <strong>posthumously</strong>, in
+                            Abel's <em>&OElig;uvres complètes</em> (edited by Ludwig Sylow and Sophus Lie,
+                            Christiania/Oslo, 1881), more than half a century after it was written. An exact composition
+                            year for the equation in the form \(\alpha(f) = \alpha + 1\) is not firmly pinned in the
+                            sources surveyed here, so it is best to say the equation is <em>of the 1820s, published
+                            1881</em>.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Schröder and Abel are two faces of one normal form.</strong> Abel's additive equation
+                            is the <em>logarithmic</em> form of <a href="#section3">Schröder's</a> multiplicative
+                            equation. Where Schröder asks for \(\Psi(f(x)) = s\,\Psi(x)\), the substitution
+                            \(\alpha = \log\Psi / \log s\) turns multiplication by \(s\) into addition of \(1\). The Abel
+                            form is the natural normal form at a <strong>parabolic</strong> fixed point (multiplier
+                            \(s = 1\)), where the multiplicative version degenerates &mdash; see
+                            <a href="#section4">§4</a> and the <a href="theory.html#section3">Theory</a> page.
+                        </div>
+
+                        <p>
+                            This additive picture is also the bridge to the modern <em>flow</em> viewpoint:
+                            writing the iteration velocity as a vector field \(v(x)\), the continuous index \(t\) realises
+                            \(f^{[t]} = \exp(t\,v\,\partial_x)\), and \(v\) is recovered from \(f\) via exactly this Abel
+                            equation. The <a href="connections.html">Connections</a> page follows that thread into the
+                            embedding-into-a-flow problem and the Aczél&ndash;Jabotinsky generator.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 3 ================= -->
+                    <div id="section3">
+                        <h2>3. Schröder &amp; Koenigs: Linearization</h2>
+                        <p>
+                            The decisive modern reframing came from <strong>Ernst Schröder</strong>
+                            (1841&ndash;1902), who published <em>&ldquo;Ueber iterirte Functionen&rdquo;</em> in
+                            <em>Mathematische Annalen</em> <strong>3 (1870), pp. 296&ndash;322</strong>. Schröder
+                            proposed studying the iteration of a (meromorphic) function \(f\) through what we now call
+                            the <strong>Schröder equation</strong>:
+                        </p>
+
+                        <div class="definition">
+                            <strong>Schröder's equation.</strong>
+                            \[
+                            \Psi\bigl(f(x)\bigr) = s\,\Psi(x), \qquad \Psi(0) = 0,\ \Psi'(0) \neq 0,
+                            \]
+                            where the constant \(s\) is the <em>multiplier</em> \(s = f'(0)\). This <em>linearizes</em>
+                            the dynamics: the \(n\)-th iterate becomes \(\Psi(f^{[n]}(x)) = s^{n}\Psi(x)\), so in the
+                            coordinate \(u = \Psi(x)\) the map \(f\) is the pure dilation \(u \mapsto s\,u\).
+                        </div>
+
+                        <p>
+                            Schröder gave striking worked examples in 1870 &mdash; including the chaotic logistic case
+                            \(f(x) = 4x(1-x)\), for which \(\Psi(x) = \arcsin(\sqrt{x})^{2}\) yields the closed-form
+                            iterate \(f^{[n]}(x) = \sin\!\bigl(2^{n}\arcsin\sqrt{x}\bigr)^{2}\). (A historical footnote
+                            worth a soft touch: the paper itself is dated <strong>1870</strong>, and some later sources
+                            phrase the functional-equation proposal as &ldquo;1871&rdquo;. Both years circulate; the
+                            <em>Annalen</em> volume is 1870.)
+                        </p>
+
+                        <p>
+                            Schröder stated the program; <strong>Gabriel Koenigs</strong> (1858&ndash;1931) made it a
+                            theorem. In <strong>1884</strong> Koenigs gave the first rigorous analytic theory of the
+                            attracting (non-superattracting) case.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Koenigs' theorem (1884).</strong> If \(f\) is holomorphic near an attracting fixed
+                            point (say \(0\)) with multiplier \(s = f'(0)\) satisfying \(0 &lt; |s| &lt; 1\), then there
+                            is a <em>unique</em> holomorphic <strong>Koenigs function</strong> \(\Psi\), normalised by
+                            \(\Psi(0) = 0\) and \(\Psi'(0) = 1\), solving Schröder's equation. Thus \(f\) is locally
+                            analytically conjugate to multiplication by \(s\). Koenigs constructed \(\Psi\) explicitly as
+                            the limit
+                            \[
+                            \Psi = \lim_{n \to \infty} s^{-n}\, f^{[n]}.
+                            \]
+                        </div>
+
+                        <p>
+                            The repelling case \(|s| &gt; 1\) reduces to the attracting one by passing to \(f^{-1}\);
+                            <em>Poincaré linearizers</em> (often called Poincaré functions) extend such local conjugacies
+                            to entire functions, a refinement built on Henri Poincaré's linearization ideas. Together,
+                            Schröder and Koenigs settle the entire <strong>hyperbolic</strong> regime
+                            \(0 &lt; |s| &lt; 1\) or \(|s| &gt; 1\). The <a href="theory.html#section3">Theory</a>
+                            page turns Koenigs' limit into the <a href="solver.html">Solver</a>'s local-analytic mode,
+                            which expands \(\Psi\) as a power series using the
+                            <a href="composita.html">composita</a> recurrences and reads off the half-iterate
+                            \(\Psi^{-1}(\sqrt{s}\,\Psi)\).
+                        </p>
+
+                        <div class="keypoint">
+                            Koenigs' result is the reason a hyperbolic fixed point with multiplier \(s &gt; 0\) always
+                            admits a clean local half-iterate: halving the index just means replacing \(s\) by
+                            \(\sqrt{s}\). The whole difficulty of the subject lives in the cases Koenigs <em>excluded</em>
+                            &mdash; \(s = 0\) (<a href="#section5">superattracting</a>) and \(|s| = 1\)
+                            (<a href="#section4">parabolic</a> and elliptic).
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. The Parabolic Case &amp; the Leau&ndash;Fatou Flower</h2>
+                        <p>
+                            When the multiplier is a root of unity &mdash; the <strong>parabolic</strong> or
+                            <em>rationally indifferent</em> case &mdash; simple linearization fails: there is no analytic
+                            Schröder function, because the resonance \(s^{n} = s\) blocks the coefficient recurrence
+                            (see the <a href="theory.html#section3">Theory</a> sketch). The structure that replaces it
+                            was uncovered around the turn of the twentieth century.
+                        </p>
+
+                        <p>
+                            <strong>Léopold Leau</strong> treated the case in his 1897 thesis
+                            <em>&ldquo;Études sur les équations fonctionnelles à une ou à plusieurs variables&rdquo;</em>,
+                            studying iteration near a rationally indifferent fixed point and obtaining the structure now
+                            called the <strong>(Leau&ndash;)Fatou flower theorem</strong>. Related algorithmic work came
+                            from <strong>A. Grévy</strong> and <strong>E.-M. Lémeray</strong> &mdash; the latter's
+                            <em>&ldquo;Sur quelques algorithmes généraux et sur l'itération&rdquo;</em> (1898). Here the
+                            local normal form is precisely <a href="#section2">Abel's equation</a>
+                            \(\alpha(f) = \alpha + 1\), whose analytic solutions were later understood as
+                            <strong>Fatou coordinates</strong>.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Leau&ndash;Fatou flower theorem (parabolic petals).</strong> At a parabolic fixed
+                            point of a map \(f(z) = z + a z^{n+1} + \cdots\) with \(a \neq 0\), the local dynamics
+                            organise into \(n\) <em>attracting</em> and \(n\) <em>repelling</em> <strong>petals</strong>,
+                            alternating around the fixed point, whose union together with the fixed point forms a
+                            punctured neighbourhood (a &ldquo;flower&rdquo;). On each petal a conformal Fatou coordinate
+                            \(\alpha\) satisfies \(\alpha(f(z)) = \alpha(z) + 1\).
+                        </div>
+
+                        <p>
+                            Precise attributions in this corner are mixed in the literature, so a light touch is in order:
+                            Leau's 1897 thesis and Lémeray's 1898 title are well attested, while Grévy's exact
+                            contribution (a paper on Abel's equation in the real case, of the mid-to-late 1890s) is less
+                            firmly pinned in the sources surveyed here. The flower theorem itself is usually credited
+                            jointly to Leau and to <a href="#section6">Fatou</a>, who recast it inside the global theory.
+                        </p>
+
+                        <div class="notice-box">
+                            The parabolic case is not a curiosity. It is the local model at multiplier \(s = 1\) &mdash;
+                            the regime that governs slow, algebraic convergence and the half-iterate of maps like
+                            \(x \mapsto x + 1\). It also reappears, much later, as the home of the
+                            <a href="#section9">Écalle&ndash;Voronin moduli</a> that completely classify parabolic germs.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. Böttcher &amp; Superattracting Fixed Points</h2>
+                        <p>
+                            The last of the four local regimes &mdash; the <strong>superattracting</strong> case, where
+                            the multiplier vanishes &mdash; was treated by <strong>Lucjan Emil Böttcher</strong>
+                            (1872&ndash;1937), described as a Polish pioneer of holomorphic dynamics. When
+                            \(f(z) = a z^{k} + O(z^{k+1})\) with \(a \neq 0\) and \(k \ge 2\), the fixed point at the
+                            origin attracts <em>quadratically</em> (or faster), and the right model is not a dilation but
+                            a <strong>power map</strong>.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Böttcher's equation.</strong>
+                            \[
+                            F\bigl(h(z)\bigr) = F(z)^{\,k},
+                            \]
+                            linearizes the iteration of a superattracting germ \(h(z) = a z^{k} + \cdots\) to the power
+                            map \(z \mapsto z^{k}\). <strong>Böttcher's theorem (1904):</strong> such a germ is
+                            analytically conjugate to \(z \mapsto z^{k}\) by a holomorphic <strong>Böttcher
+                            coordinate</strong> tangent to the identity.
+                        </div>
+
+                        <p>
+                            Böttcher sketched the proof in <strong>1904</strong>. His original paper appeared in the
+                            Russian/Polish-area journal literature of the time, and its exact title and venue are not
+                            captured in the sources surveyed here &mdash; one reason the result was slow to enter the
+                            Western canon. A complete proof was given independently by <strong>Joseph Fels
+                            Ritt</strong>, <em>&ldquo;On the Iteration of Rational Functions&rdquo;</em>,
+                            <em>Transactions of the American Mathematical Society</em>
+                            <strong>21, no. 3 (July 1920), pp. 348&ndash;356</strong> &mdash; Ritt being unaware of
+                            Böttcher's original work. (Sources sometimes write the equation with a general exponent
+                            \(n\); for a degree-\(k\) superattracting germ the exponent is the local degree \(k\).)
+                        </p>
+
+                        <div class="keypoint">
+                            With Böttcher, all four local fixed-point regimes have a governing equation:
+                            <strong>Schröder/Koenigs</strong> (hyperbolic), <strong>Böttcher</strong>
+                            (superattracting), <strong>Abel</strong> on petals (parabolic), and the
+                            small-divisor <strong>Siegel</strong> problem (elliptic, discussed on the
+                            <a href="connections.html">Connections</a> page). The <a href="theory.html#section6">Theory</a>
+                            page's half-iterate table is exactly this four-way split, one normal form per row.
+                        </div>
+
+                        <div class="lineage">
+                            <h4>The fixed-point trichotomy, by governing equation</h4>
+                            <div class="lineage-row">
+                                <span class="lineage-node">\(0 &lt; |s| &lt; 1,\ |s| &gt; 1\) &middot; hyperbolic</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">Schröder / Koenigs</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">\(u \mapsto s\,u\)</span>
+                            </div>
+                            <div class="lineage-row">
+                                <span class="lineage-node">\(s = 0\) &middot; superattracting</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">Böttcher</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">\(u \mapsto u^{k}\)</span>
+                            </div>
+                            <div class="lineage-row">
+                                <span class="lineage-node">\(s\) root of unity &middot; parabolic</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">Abel (on petals)</span>
+                                <span class="lineage-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="lineage-node">\(u \mapsto u + 1\)</span>
+                            </div>
+                            <p class="tl-cap">
+                                The four classical equations are not rivals but a partition of the fixed-point world by
+                                multiplier. Full definitions live in the <a href="equations.html">Atlas of Equations</a>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Fatou, Julia &amp; Lattès: the Global Theory</h2>
+                        <p>
+                            The four local pictures &mdash; attracting, repelling, parabolic, superattracting &mdash;
+                            became the foundation of a <strong>global</strong> theory of iteration of rational maps of
+                            the Riemann sphere, created almost simultaneously and largely independently by
+                            <strong>Pierre Fatou</strong> (1878&ndash;1929) and <strong>Gaston Julia</strong>
+                            (1893&ndash;1978) around 1918&ndash;1920.
+                        </p>
+
+                        <p>
+                            The catalyst was a prize. In 1915 the Académie des Sciences announced a <strong>Grand Prix
+                            des Sciences Mathématiques</strong>, to be awarded in <strong>1918</strong>, for the
+                            iteration of rational substitutions. <strong>Julia</strong> won it; his
+                            <em>&ldquo;Mémoire sur l'itération des fonctions rationnelles&rdquo;</em> (some 199 pages)
+                            appeared in the <em>Journal de Mathématiques Pures et Appliquées</em> in 1918, written while
+                            he was hospitalised after wounds suffered in the First World War. Fatou, working at the same
+                            time, published results of comparable depth and incisiveness.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>The Fatou&ndash;Julia dichotomy.</strong> For a rational map of the sphere, the
+                            sphere splits into the <strong>Fatou set</strong> &mdash; where the family of iterates is
+                            normal (locally equicontinuous), the locus of stable, predictable behaviour &mdash; and its
+                            complement, the <strong>Julia set</strong>, the chaotic locus on which the dynamics are
+                            sensitive and self-similar. Every local theory of <a href="#section3">§3</a>&ndash;<a href="#section5">§5</a>
+                            describes the behaviour of orbits as they approach this global skeleton.
+                        </div>
+
+                        <p>
+                            Months before his death, <strong>Samuel Lattès</strong> (1873&ndash;1918) published
+                            <em>&ldquo;Sur l'itération des substitutions rationnelles et les fonctions de
+                            Poincaré&rdquo;</em>, <em>Comptes Rendus de l'Académie des Sciences</em>
+                            <strong>166 (1918), pp. 26&ndash;28</strong>, exhibiting the maps now called
+                            <strong>Lattès maps</strong>: rational maps \(f = \Theta \circ L \circ \Theta^{-1}\) obtained
+                            by semiconjugating a torus (or affine) endomorphism \(L\) to the sphere via a Weierstrass-type
+                            \(\Theta\). Their defining feature is extreme: the Julia set is the <em>entire sphere</em>.
+                            Fatou later (from 1926) opened the parallel theory of iteration of <strong>transcendental
+                            entire</strong> functions, a thread picked up at mid-century by
+                            <a href="#section8">I. N. Baker</a>.
+                        </p>
+
+                        <p>
+                            This is the moment the &ldquo;iterative functional equations&rdquo; of
+                            <a href="#section1">Babbage</a> and the &ldquo;iteration of functions&rdquo; of the
+                            dynamicists fuse into one subject. The same Schröder, Abel and Böttcher coordinates that
+                            <em>solve</em> functional equations now <em>chart</em> the basins and the boundary of the
+                            Julia set. The <a href="connections.html">Connections</a> page maps that fusion in detail.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 7 ================= -->
+                    <div id="section7">
+                        <h2>7. Mid-Century Real-Analytic Iteration</h2>
+                        <p>
+                            The complex theory matured; the <em>real-analytic</em> problem &mdash; can one iterate a
+                            growing real function a fractional number of times, smoothly, on the whole line? &mdash;
+                            remained stubborn. Its most famous instance is the <strong>half-exponential</strong>.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Kneser (1950).</strong> <strong>Hellmuth Kneser</strong> (1898&ndash;1973)
+                            constructed a <em>real-analytic</em> solution \(\varphi\) of
+                            \[
+                            \varphi(\varphi(x)) = e^{x},
+                            \]
+                            a genuine &ldquo;half-iterate of the exponential&rdquo;, in
+                            <em>&ldquo;Reelle analytische Lösungen der Gleichung \(\varphi(\varphi(x)) = e^{x}\) und
+                            verwandter Funktionalgleichungen&rdquo;</em>, <em>Journal für die reine und angewandte
+                            Mathematik</em> (Crelle's Journal) <strong>187 (1950), pp. 56&ndash;67</strong>. The
+                            construction is complex-analytic at heart: an <a href="#section2">Abel function</a> built
+                            at a fixed point, with \(\varphi = g^{-1}(g(x) + \tfrac12)\).
+                        </div>
+
+                        <p>
+                            Kneser's method showed that the Abel equation admits <em>infinitely many</em> real-analytic
+                            solutions, so the existence of a half-exponential was never the hard part; the subtlety is
+                            singling out a <em>canonical</em> one. (The precise statement and scope of any
+                            <em>uniqueness</em> theorem for the real-analytic half-iterate of \(\exp\) on all of
+                            \(\mathbb{R}\) varies by author, and the year &ldquo;1950&rdquo; here follows the standard
+                            secondary attributions of Kneser's Crelle paper.) This question feeds directly into the
+                            modern <strong>tetration</strong> literature, surveyed on the <a href="connections.html">Connections</a>
+                            page.
+                        </p>
+
+                        <p>
+                            <strong>George Szekeres</strong> (1911&ndash;2005) systematised the general apparatus of
+                            <strong>regular (fractional) iteration</strong> in <em>&ldquo;Regular iteration of real and
+                            complex functions&rdquo;</em>, <em>Acta Mathematica</em>
+                            <strong>100 (1958), pp. 203&ndash;258</strong>, and later studied the fractional iteration of
+                            exponentially growing functions. A complementary, algebraic line is the
+                            <strong>Aczél&ndash;Jabotinsky</strong> approach to continuous iteration via infinite
+                            matrices and an infinitesimal-generator differential equation.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>The Jabotinsky matrix line.</strong> <strong>Eri Jabotinsky</strong> represented
+                            functional composition by infinite matrices (a note in <em>C. R. Acad. Sci. Paris</em>
+                            <strong>224 (1947), pp. 323&ndash;324</strong>) and developed continuous iteration through the
+                            <strong>Aczél&ndash;Jabotinsky differential equation</strong> in
+                            <em>&ldquo;Analytic Iteration&rdquo;</em>, <em>Transactions of the AMS</em>
+                            <strong>108 (1963), pp. 457&ndash;477</strong> &mdash; the joint name recognising related
+                            work of <strong>János Aczél</strong>. The same matrix idea, in coefficient form, is what the
+                            <a href="composita.html">Composita Calculator</a> implements as a recurrence.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 8 ================= -->
+                    <div id="section8">
+                        <h2>8. The Silesian School &amp; Consolidation</h2>
+                        <p>
+                            By mid-century the field had a wealth of results but no unifying treatise. The decisive
+                            consolidation was the work of <strong>Marek Kuczma</strong> (1935&ndash;1991) at the
+                            University of Silesia in Katowice, who is widely regarded as the creator of the modern
+                            systematic theory of <strong>iterative functional equations</strong> and the founder of the
+                            Polish (Silesian) school of functional equations.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <strong>M. Kuczma</strong>, <em>Functional Equations in a Single Variable</em>, PWN,
+                                Warsaw, 1968 (<em>Monografie Matematyczne 46</em>) &mdash; the foundational monograph.
+                                <span class="ref-tag">1968</span>
+                            </li>
+                            <li>
+                                <strong>M. Kuczma, B. Choczewski &amp; R. Ger</strong>, <em>Iterative Functional
+                                Equations</em>, <em>Encyclopedia of Mathematics and its Applications</em> <strong>32</strong>,
+                                Cambridge University Press, 1990 (576 pp.) &mdash; the definitive reference work.
+                                <span class="ref-tag">1990</span>
+                            </li>
+                            <li>
+                                <strong>J. Aczél</strong>, <em>Lectures on Functional Equations and Their
+                                Applications</em>, Academic Press, 1966 (German original Birkhäuser, 1961) &mdash; the
+                                standard text for the broader community.
+                                <span class="ref-tag">1966</span>
+                            </li>
+                            <li>
+                                <strong>Gy. Targonski</strong>, <em>Topics in Iteration Theory</em>, Vandenhoeck &amp;
+                                Ruprecht, Göttingen, 1981 &mdash; a field-shaping survey.
+                                <span class="ref-tag">1981</span>
+                            </li>
+                        </ul>
+
+                        <p>
+                            Around Kuczma's books grew the institutions of the field. <strong>János Aczél</strong>
+                            (1924&ndash;2020) anchored the wider functional-equations community and founded its flagship
+                            journal, <em>Aequationes Mathematicae</em>, where the iteration-theory surveys and conference
+                            proceedings still appear. <strong>György Targonski</strong> was a central organiser and
+                            editor of the field's meetings &mdash; he ran the 1980 Marburg conference and wrote the 1981
+                            survey above &mdash; though it is more accurate to call him a leading organiser than the sole
+                            &ldquo;founder&rdquo; of the conference series, which predates his book.
+                        </p>
+
+                        <div class="notice-box">
+                            <strong>The ECIT series.</strong> The <strong>European Conference on Iteration Theory
+                            (ECIT)</strong> began in <strong>Toulouse in 1973</strong>, continued in <strong>Graz
+                            (1977)</strong> and <strong>Marburg (1980)</strong>, and runs to this day (recent editions
+                            include 2014 and 2022). Its proceedings, alongside <em>Aequationes Mathematicae</em>, are the
+                            field's institutional memory.
+                        </div>
+
+                        <p>
+                            On the dynamics side, <strong>I. N. Baker</strong> (1932&ndash;2001) founded the modern theory
+                            of iteration of <strong>transcendental entire</strong> functions, extending Fatou's 1926
+                            program. His most celebrated discovery is that an entire function can possess a
+                            <strong>wandering domain</strong> &mdash; a component of the Fatou set never mapped back to
+                            itself or to a periodic one (<em>An entire function which has wandering domains</em>, J.
+                            Austral. Math. Soc., 1976). This is impossible for rational maps, by Dennis Sullivan's later
+                            <em>no-wandering-domains theorem</em> &mdash; a striking dividing line between the rational
+                            and entire worlds.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 9 ================= -->
+                    <div id="section9">
+                        <h2>9. The Modern Revival</h2>
+                        <p>
+                            The closing chapter is a revival on three fronts: a deep analytic completion of the parabolic
+                            case, the Mandelbrot-era explosion of complex dynamics, and a surprising re-emergence in
+                            physics.
+                        </p>
+
+                        <p>
+                            <strong>Jean Écalle</strong> developed <strong>resurgence theory</strong> and <em>mould
+                            calculus</em> (<em>Les fonctions résurgentes</em>, Publications Mathématiques d'Orsay
+                            81-05 and 81-06, 1981), giving a complete account of the generically <em>divergent</em>
+                            Fatou coordinates of <a href="#section4">§4</a> and reconstructing the
+                            <strong>Écalle&ndash;Voronin moduli</strong> &mdash; the invariants that <em>completely
+                            classify</em> parabolic germs up to analytic conjugacy. This is the long-delayed resolution
+                            of the one local case that resisted Schröder, Koenigs and Böttcher alike.
+                        </p>
+
+                        <p>
+                            Meanwhile the Mandelbrot-era boom &mdash; Douady, Hubbard, Sullivan, Milnor and many others
+                            &mdash; revived complex dynamics as a major field, with <a href="#section5">Böttcher</a> and
+                            <a href="#section3">Koenigs</a> coordinates as everyday tools (Böttcher coordinates, for
+                            instance, define the external rays that organise the Mandelbrot set). The local equations of
+                            the nineteenth century became the working vocabulary of late-twentieth-century research.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Iteration in physics.</strong> <strong>Thomas Curtright</strong> and <strong>Cosmas
+                            Zachos</strong> recast <em>time evolution</em> and <em>renormalization-group flow</em> in the
+                            language of Schröder's equation (<em>&ldquo;Evolution profiles and functional
+                            equations&rdquo;</em>, J. Phys. A, 2009, arXiv:0909.2424; <em>&ldquo;Renormalization Group
+                            Functional Equations&rdquo;</em>, 2010, arXiv:1010.5174), building exact continuous iterations
+                            (e.g. of \(2x(1+x)\)) and approximate continuous iterates of \(x\,e^{x}\). An RG flow is
+                            literally a continuous iteration; Schröder's 1870 equation is its natural normal form.
+                        </div>
+
+                        <div class="keypoint">
+                            Two centuries on, the arc closes on itself. Babbage asked for the square root of a function;
+                            the answer turned out to require a coordinate in which composition becomes arithmetic &mdash;
+                            multiplication (Schröder), addition (Abel), or raising to a power (Böttcher). The
+                            <a href="solver.html">Solver</a> on this site is a direct descendant: it computes those very
+                            coordinates, by series and by linearization, to produce half-iterates on demand. Continue to
+                            the <a href="theory.html">Theory</a> page to see the machinery at work.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 10 ================= -->
+                    <div id="section10">
+                        <h2>10. A Visual Timeline</h2>
+                        <p>
+                            The same story, compressed. Dates follow the attributions discussed above; where a date is
+                            contested it is the one most commonly cited.
+                        </p>
+
+                        <ul class="tl">
+                            <li class="tl-era">Founding period</li>
+                            <li>
+                                <span class="tl-year">1815</span>
+                                <span class="tl-who">Babbage</span> &mdash;
+                                <span class="tl-what"><em>Essay towards the Calculus of Functions</em>; the equation
+                                \(\varphi(\varphi(x)) = x\) and the roots of identity.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">~1820s / 1881</span>
+                                <span class="tl-who">Abel</span> &mdash;
+                                <span class="tl-what">the Abel equation \(\alpha(f(x)) = \alpha(x) + 1\); published
+                                posthumously in the <em>&OElig;uvres</em> (1881).</span>
+                            </li>
+
+                            <li class="tl-era">Classical linearization</li>
+                            <li>
+                                <span class="tl-year">1870</span>
+                                <span class="tl-who">Schröder</span> &mdash;
+                                <span class="tl-what"><em>Ueber iterirte Functionen</em>; the Schröder equation
+                                \(\Psi(f(x)) = s\,\Psi(x)\).</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1884</span>
+                                <span class="tl-who">Koenigs</span> &mdash;
+                                <span class="tl-what">rigorous linearization at attracting (non-superattracting) fixed
+                                points.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1897&ndash;1898</span>
+                                <span class="tl-who">Leau, Grévy, Lémeray</span> &mdash;
+                                <span class="tl-what">the parabolic case; the Leau&ndash;Fatou flower.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1904</span>
+                                <span class="tl-who">Böttcher</span> &mdash;
+                                <span class="tl-what">\(F(h(z)) = F(z)^{k}\) at superattracting fixed points (complete
+                                proof Ritt 1920).</span>
+                            </li>
+
+                            <li class="tl-era">Global theory</li>
+                            <li>
+                                <span class="tl-year">1918</span>
+                                <span class="tl-who">Fatou &amp; Julia</span> &mdash;
+                                <span class="tl-what">the global theory of rational iteration; Grand Prix to Julia;
+                                Lattès maps.</span>
+                            </li>
+
+                            <li class="tl-era">Real-analytic iteration</li>
+                            <li>
+                                <span class="tl-year">1947&ndash;1963</span>
+                                <span class="tl-who">Jabotinsky</span> &mdash;
+                                <span class="tl-what">matrix / continuous iteration; the Aczél&ndash;Jabotinsky
+                                equation.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1950</span>
+                                <span class="tl-who">Kneser</span> &mdash;
+                                <span class="tl-what">a real-analytic \(\varphi(\varphi(x)) = e^{x}\).</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1958</span>
+                                <span class="tl-who">Szekeres</span> &mdash;
+                                <span class="tl-what">regular (fractional) iteration, <em>Acta Math.</em> 100.</span>
+                            </li>
+
+                            <li class="tl-era">Consolidation</li>
+                            <li>
+                                <span class="tl-year">1966</span>
+                                <span class="tl-who">Aczél</span> &mdash;
+                                <span class="tl-what"><em>Lectures on Functional Equations</em>.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1968 / 1990</span>
+                                <span class="tl-who">Kuczma</span> (with Choczewski &amp; Ger) &mdash;
+                                <span class="tl-what"><em>Functional Equations in a Single Variable</em>;
+                                <em>Iterative Functional Equations</em>.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1973&ndash;</span>
+                                <span class="tl-who">ECIT</span> &mdash;
+                                <span class="tl-what">conference series (Toulouse 1973; Graz 1977; Marburg 1980;
+                                &hellip;).</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">1976</span>
+                                <span class="tl-who">I. N. Baker</span> &mdash;
+                                <span class="tl-what">wandering domains for entire functions.</span>
+                            </li>
+
+                            <li class="tl-era">Modern revival</li>
+                            <li>
+                                <span class="tl-year">1981</span>
+                                <span class="tl-who">Targonski; Écalle</span> &mdash;
+                                <span class="tl-what"><em>Topics in Iteration Theory</em>; <em>Les fonctions
+                                résurgentes</em>.</span>
+                            </li>
+                            <li>
+                                <span class="tl-year">2009&ndash;2010</span>
+                                <span class="tl-who">Curtright &amp; Zachos</span> &mdash;
+                                <span class="tl-what">Schröder-equation methods in physics and renormalization
+                                group.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 11 ================= -->
+                    <div id="section11">
+                        <h2>11. Key Figures</h2>
+                        <p>
+                            A compact roster of the people behind the equations. Dates and one-line contributions are
+                            drawn from the research brief; the central works are catalogued in full in the
+                            <a href="bibliography.html">Bibliography</a>.
+                        </p>
+
+                        <div class="table-wrap">
+                            <table class="class-table">
+                                <thead>
+                                    <tr>
+                                        <th>Figure</th>
+                                        <th>Dates</th>
+                                        <th>Central contribution</th>
+                                        <th>Equation / object</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Charles Babbage</td>
+                                        <td>1791&ndash;1871</td>
+                                        <td>Founded the calculus of functions; involutions and roots of identity (1815).</td>
+                                        <td>\(\varphi(\varphi(x)) = x\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Niels Henrik Abel</td>
+                                        <td>1802&ndash;1829</td>
+                                        <td>Additive normal form for iteration (1820s, publ. 1881).</td>
+                                        <td>\(\alpha(f(x)) = \alpha(x) + 1\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ernst Schröder</td>
+                                        <td>1841&ndash;1902</td>
+                                        <td>Programme of linearizing iteration via a multiplier (1870).</td>
+                                        <td>\(\Psi(f(x)) = s\,\Psi(x)\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gabriel Koenigs</td>
+                                        <td>1858&ndash;1931</td>
+                                        <td>First rigorous theory of the attracting case (1884).</td>
+                                        <td>Koenigs function \(\Psi\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Léopold Leau</td>
+                                        <td>&mdash;</td>
+                                        <td>Parabolic fixed points; petals / flower structure (1897).</td>
+                                        <td>Abel on petals</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lucjan E. Böttcher</td>
+                                        <td>1872&ndash;1937</td>
+                                        <td>Superattracting case; conjugacy to a power map (1904).</td>
+                                        <td>\(F(h(z)) = F(z)^{k}\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pierre Fatou</td>
+                                        <td>1878&ndash;1929</td>
+                                        <td>Global theory; Fatou set; entire-function iteration (1918&ndash;1926).</td>
+                                        <td>Fatou / Julia sets</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gaston Julia</td>
+                                        <td>1893&ndash;1978</td>
+                                        <td>Grand-Prix mémoire on rational iteration (1918).</td>
+                                        <td>Julia set</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Samuel Lattès</td>
+                                        <td>1873&ndash;1918</td>
+                                        <td>Maps with Julia set the whole sphere (1918).</td>
+                                        <td>Lattès maps</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hellmuth Kneser</td>
+                                        <td>1898&ndash;1973</td>
+                                        <td>Real-analytic half-iterate of \(\exp\) (1950).</td>
+                                        <td>\(\varphi(\varphi(x)) = e^{x}\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>George Szekeres</td>
+                                        <td>1911&ndash;2005</td>
+                                        <td>Regular (fractional) iteration (1958).</td>
+                                        <td>Regular iteration</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Eri Jabotinsky</td>
+                                        <td>&mdash;</td>
+                                        <td>Matrix / continuous iteration (1947, 1963).</td>
+                                        <td>Aczél&ndash;Jabotinsky eq.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>János Aczél</td>
+                                        <td>1924&ndash;2020</td>
+                                        <td>Functional-equations community; founded <em>Aequationes Math.</em></td>
+                                        <td>&mdash;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marek Kuczma</td>
+                                        <td>1935&ndash;1991</td>
+                                        <td>Silesian school; the standard monographs (1968, 1990).</td>
+                                        <td>Iterative functional eqs.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>I. N. Baker</td>
+                                        <td>1932&ndash;2001</td>
+                                        <td>Entire-function iteration; wandering domains (1976).</td>
+                                        <td>Wandering domains</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jean Écalle</td>
+                                        <td>&mdash;</td>
+                                        <td>Resurgence; classification of parabolic germs (1981).</td>
+                                        <td>Écalle&ndash;Voronin moduli</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="tl-cap">
+                            A dash &ldquo;&mdash;&rdquo; marks a date or object the research brief did not pin down; these
+                            are deliberately left blank rather than guessed.
+                        </p>
+
+                        <div class="notice-box mt-2">
+                            <strong>Where to go next.</strong> The <a href="theory.html">Theory</a> page builds the
+                            half-iterate machinery these figures invented; the <a href="equations.html">Atlas of
+                            Equations</a> states each equation precisely; the <a href="connections.html">Connections</a>
+                            page links them to tetration, Siegel disks, and the renormalization group; and the
+                            <a href="solver.html">Solver</a> and <a href="composita.html">Composita Calculator</a> let
+                            you compute with them. Full citations are in the <a href="bibliography.html">Bibliography</a>;
+                            shorter expository notes are on the <a href="blog.html">Notes</a> page, reached from
+                            <a href="shelf.html">The Shelf</a>.
+                        </div>
+                    </div>
+
+                </article>
+            </main>
+
+            <!-- Next Page -->
+            <div class="nextPage">
+                <a href="theory.html">Next: Theory <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <!-- Dark mode toggle -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>

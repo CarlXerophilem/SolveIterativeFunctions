@@ -277,7 +277,65 @@ const Engine = (() => {
     return deduped.sort((a, b) => a - b).map((x) => ({ x, derivative: evalPolynomial(derivative, x) }));
   }
 
+  // Classify a fixed point from its shifted local Taylor model
+  // localG = [F(x0)-x0, F'(x0), F''(x0)/2, ...]. Works for any F (polynomial or
+  // transcendental) once the local Taylor series is known.
+  function classifyFromLocal(localG) {
+    const lambda = Number(localG[1] || 0);
+    const residual = Number(localG[0] || 0);
+    let multiplicity = 1;
+    for (let i = 1; i < localG.length; i += 1) {
+      if (Math.abs(localG[i]) > 1e-10) { multiplicity = i; break; }
+    }
+    if (Math.abs(residual) > 1e-6) {
+      return { supported: false, type: 'not_fixed', lambda, residual, multiplicity, label: 'Not a fixed point', note: 'Choose x0 so that F(x0)=x0.' };
+    }
+    if (Math.abs(lambda) < 1e-10) {
+      return { supported: false, type: 'superattracting', lambda, residual, multiplicity, label: 'Superattracting fixed point', note: 'A real local half-iterate may require Böttcher-type coordinates or fractional powers; this lightweight calculator only classifies the case.' };
+    }
+    if (lambda <= 0) {
+      return { supported: false, type: 'nonpositive_multiplier', lambda, residual, multiplicity, label: 'Non-positive multiplier', note: 'The current real-valued analytic mode only supports positive multipliers, so branch choices remain explicit and stable.' };
+    }
+    if (Math.abs(lambda - 1) < 1e-8) {
+      return { supported: false, type: 'parabolic', lambda, residual, multiplicity, label: 'Parabolic / neutral fixed point', note: 'Parabolic fixed point: handled by the Fatou/Abel coordinate in analytic mode.' };
+    }
+    return { supported: true, type: lambda < 1 ? 'attracting' : 'repelling', lambda, residual, multiplicity, label: lambda < 1 ? 'Attracting fixed point' : 'Repelling fixed point', note: 'The calculator uses a truncated Schroeder-coordinate construction near the chosen fixed point.' };
+  }
+
   function classifyFixedPoint(coeffs, fixedPoint) {
+    const local = buildShiftedModel(coeffs, fixedPoint, Math.max(8, coeffs.length + 2));
+    return classifyFromLocal(local);
+  }
+
+  // Find real solutions of F(x) = x on [a,b] for a numeric F (any elementary fn).
+  function findFixedPointsNumeric(Ffn, a, b) {
+    const g = (x) => Ffn(x) - x;
+    const roots = [];
+    const steps = 600;
+    let px = a;
+    let py = g(a);
+    for (let i = 1; i <= steps; i += 1) {
+      const x = a + (b - a) * (i / steps);
+      const y = g(x);
+      if (Number.isFinite(py) && Number.isFinite(y) && py * y <= 0 && py !== 0) {
+        let lo = px;
+        let hi = x;
+        let flo = py;
+        for (let j = 0; j < 60; j += 1) {
+          const m = 0.5 * (lo + hi);
+          const fm = g(m);
+          if (Math.abs(fm) < 1e-13) { lo = m; hi = m; break; }
+          if (flo * fm <= 0) hi = m; else { lo = m; flo = fm; }
+        }
+        const r = 0.5 * (lo + hi);
+        if (roots.every((q) => Math.abs(q - r) > 1e-5)) roots.push(r);
+      }
+      px = x; py = y;
+    }
+    return roots.sort((u, v) => u - v).map((x) => ({ x, derivative: (Ffn(x + 1e-6) - Ffn(x - 1e-6)) / 2e-6 }));
+  }
+
+  function classifyFixedPointLegacy(coeffs, fixedPoint) {
     const derivative = derivativeSeries(coeffs);
     const lambda = evalPolynomial(derivative, fixedPoint);
     const residual = evalPolynomial(coeffs, fixedPoint) - fixedPoint;
@@ -394,6 +452,138 @@ const Engine = (() => {
       target,
       verification: verifyCandidate(candidate, target, fixedPoint - 0.35, fixedPoint + 0.35, 48),
     };
+  }
+
+  // Half-iterate at a PARABOLIC fixed point (multiplier lambda = 1) via the
+  // Fatou / Abel coordinate. Shift y = x - x0 so the germ g(y) = F(x0+y) - x0
+  // is tangent to the identity, g(y) = y + c2 y^2 + c3 y^3 + ... Then the Fatou
+  // coordinate Phi(g(y)) = Phi(y) + 1 has the asymptotic form
+  //   Phi(y) = -1/(c2 y) + A ln|y| + sum_{k>=1} p_k y^k,  A = (c2^2 - c3)/c2^2,
+  // and the half-iterate is f = Phi^{-1}(Phi + 1/2). It is evaluated
+  // semi-analytically: iterate g (or g^{-1}) to push y into a small
+  // neighbourhood where the truncated Phi is accurate, shift the coordinate by
+  // 1/2, then pull back. Accuracy converges with the order (not capped like the
+  // raw divergent Taylor half-iterate), reaching ~1e-15 near the fixed point.
+  function solveParabolicHalfIterate(coeffs, fixedPoint, order) {
+    const classification = classifyFixedPoint(coeffs, fixedPoint);
+    const lambda = classification.lambda;
+    if (classification.type === 'not_fixed') {
+      return { supported: false, classification, note: classification.note };
+    }
+    if (Math.abs(lambda - 1) > 1e-6) {
+      return { supported: false, classification, note: 'Parabolic mode expects multiplier lambda = 1; use Schroeder mode for this fixed point.' };
+    }
+    const M = Math.max(4, Math.min(order || 10, 16));
+    const degree = M + 3;
+    const gc = buildShiftedModel(coeffs, fixedPoint, degree);
+    gc[0] = 0;
+    gc[1] = 1; // tangent to identity
+    const c2 = gc[2] || 0;
+    if (Math.abs(c2) < 1e-12) {
+      return { supported: false, classification, note: 'Degenerate parabolic point (vanishing quadratic term); higher-order parabolic case is not supported.' };
+    }
+
+    // --- local truncated power-series helpers (index = power) ---
+    const N = M + 2;
+    const mul = (a, b) => {
+      const o = new Array(N + 1).fill(0);
+      for (let i = 0; i <= N; i += 1) { if (!a[i]) continue; for (let j = 0; i + j <= N; j += 1) { if (!b[j]) continue; o[i + j] += a[i] * b[j]; } }
+      return o;
+    };
+    const compose = (outer, inner) => {
+      const res = new Array(N + 1).fill(0); res[0] = outer[0] || 0;
+      let pw = new Array(N + 1).fill(0); pw[0] = 1;
+      for (let k = 1; k < outer.length; k += 1) { pw = mul(pw, inner); if (outer[k]) for (let i = 0; i <= N; i += 1) res[i] += outer[k] * pw[i]; }
+      return res;
+    };
+    const lnOnePlus = (uu) => {
+      const out = new Array(N + 1).fill(0);
+      let pw = new Array(N + 1).fill(0); pw[0] = 1;
+      for (let m = 1; m <= N; m += 1) { pw = mul(pw, uu); const s = (m % 2 ? 1 : -1) / m; for (let i = 0; i <= N; i += 1) out[i] += s * pw[i]; }
+      return out;
+    };
+    const divS = (num, den) => {
+      const o = new Array(N + 1).fill(0);
+      for (let n = 0; n <= N; n += 1) { let s = num[n] || 0; for (let k = 1; k <= n; k += 1) s -= (den[k] || 0) * o[n - k]; o[n] = s / den[0]; }
+      return o;
+    };
+
+    // build the Fatou coordinate series
+    const u = new Array(N + 1).fill(0);
+    for (let k = 1; k <= N; k += 1) u[k] = gc[k + 1] || 0;
+    const s2 = new Array(N + 1).fill(0);
+    const t = new Array(N + 1).fill(0);
+    for (let j = 0; j <= N; j += 1) { s2[j] = gc[j + 2] || 0; t[j] = gc[j + 1] || 0; }
+    const P = divS(s2, t).map((v) => v / c2);
+    const Lu = lnOnePlus(u);
+    const A = -P[1] / Lu[1];
+    const p = new Array(M + 2).fill(0);
+    for (let n = 2; n <= M + 1; n += 1) {
+      const psi2 = new Array(N + 1).fill(0);
+      for (let k = 1; k <= n - 2; k += 1) psi2[k] = p[k];
+      const psiG2 = compose(psi2, gc);
+      const sKnown = psiG2[n] - psi2[n];
+      const coeff = (n - 1) * c2;
+      p[n - 1] = -(P[n] + A * Lu[n] + sKnown) / coeff;
+    }
+
+    const asymPhi = (z) => { let s = -1 / (c2 * z) + A * Math.log(Math.abs(z)); let zk = 1; for (let k = 1; k <= M; k += 1) { zk *= z; s += p[k] * zk; } return s; };
+    const asymPhiP = (z) => { let s = 1 / (c2 * z * z) + A / z; let zk = 1; for (let k = 1; k <= M; k += 1) { s += k * p[k] * zk; zk *= z; } return s; };
+    const invAsym = (targetVal, z0) => { let z = z0; for (let it = 0; it < 80; it += 1) { const e = asymPhi(z) - targetVal; if (Math.abs(e) < 1e-15) break; const d = asymPhiP(z) || 1; z -= e / d; } return z; };
+
+    const dG = derivativeSeries(gc, degree);
+    const g = (y) => evalPolynomial(gc, y);
+    const gInv = (v) => { let w = v; for (let it = 0; it < 80; it += 1) { const fw = evalPolynomial(gc, w) - v; if (Math.abs(fw) < 1e-15) break; const d = evalPolynomial(dG, w) || 1; w -= fw / d; } return w; };
+    const tau = 0.06;
+    const halfGerm = (y) => {
+      if (!Number.isFinite(y) || y === 0) return y;
+      const useG = Math.abs(g(y)) < Math.abs(y); // iterate in the direction that approaches 0
+      let z = y;
+      let n = 0;
+      while (Math.abs(z) >= tau) {
+        const zn = useG ? g(z) : gInv(z);
+        if (!Number.isFinite(zn) || Math.abs(zn) >= Math.abs(z) + 1e-15) break;
+        z = zn; n += 1;
+        if (n > 200000) break;
+      }
+      const zeta = invAsym(asymPhi(z) + 0.5, z);
+      let w = zeta;
+      for (let i = 0; i < n; i += 1) w = useG ? gInv(w) : g(w);
+      return w;
+    };
+
+    const evaluator = (x) => fixedPoint + halfGerm(x - fixedPoint);
+    const target = (x) => evalPolynomial(coeffs, x);
+    const verification = verifyCandidate(evaluator, target, fixedPoint - 0.4, fixedPoint + 0.4, 60);
+
+    // formal local Taylor half-iterate (asymptotic) for display alongside Phi
+    const formal = solveHalfIterateSeries(gc, M);
+
+    return {
+      supported: true,
+      parabolic: true,
+      classification,
+      fixedPoint,
+      c2,
+      fatouA: A,
+      fatouCoeffs: trimCoeffs(p, M),
+      localModelCoeffs: trimCoeffs(gc, M),
+      localHalfCoeffs: formal && !formal.error ? trimCoeffs(formal.coefficients, M) : null,
+      evaluator,
+      target,
+      note: 'Parabolic fixed point (lambda = 1): half-iterate via the Fatou/Abel coordinate, f = Phi^{-1}(Phi + 1/2). Semi-analytical and convergent near x0.',
+      verification,
+    };
+  }
+
+  // Dispatch: choose Schroeder (hyperbolic, lambda>0, lambda!=1) or the Fatou
+  // parabolic method (lambda=1) for the chosen real fixed point.
+  function solveHalfIterateAtFixedPoint(coeffs, fixedPoint, order) {
+    const classification = classifyFixedPoint(coeffs, fixedPoint);
+    if (classification.type === 'parabolic') {
+      return solveParabolicHalfIterate(coeffs, fixedPoint, order);
+    }
+    return solveSchroederHalfIterate(coeffs, fixedPoint, order);
   }
 
   function compositaRecurrence(fCoeffs, n, k, memo) {
@@ -673,6 +863,8 @@ const Engine = (() => {
     approximateRealFixedPoints,
     classifyFixedPoint,
     solveSchroederHalfIterate,
+    solveParabolicHalfIterate,
+    solveHalfIterateAtFixedPoint,
     compositaRecurrence,
     compositaTable,
     compositionCoeffs,

@@ -1,6 +1,6 @@
 # Solve Iterative Functions
 
-An interactive exploration of iterative functional equations — functional square roots, the Composita method, fixed-point linearization, and the mathematical structure of equations like \(f(f(x)) = F(x)\).
+A small **library (a "shelf") for the whole field of iterative functional equations** — its history, its canonical equations, its connections to other fields, and the interactive tools that compute with them. It spans Babbage's involutions and the Schröder, Abel, and Böttcher linearizers, functional square roots and the Composita method, fixed-point linearization, and the links to complex dynamics, tetration, and the renormalization group. The interactive solver for \(f(f(x)) = F(x)\) is one room in it; [`shelf.html`](shelf.html) is the map.
 
 **Live site:** [carlxerophilem.github.io/SolveIterativeFunctions](https://carlxerophilem.github.io/SolveIterativeFunctions/)
 
@@ -9,6 +9,10 @@ An interactive exploration of iterative functional equations — functional squa
 | Page | Description |
 |------|-------------|
 | `index.html` | Navigation hub — overview of all sections |
+| `shelf.html` | **Map of the field** — central problems, the canonical equations, the web of connections, a field-map diagram, and a guide to every page |
+| `history.html` | Chronological **history** (Babbage 1815 → Abel, Schröder, Koenigs, Böttcher, Fatou & Julia, Kneser, the Kuczma school → modern), with a timeline and key-figures table |
+| `equations.html` | **Atlas** of the canonical named equations — Babbage, iterative-root, Abel, Schröder, Böttcher, Julia, conjugacy, translation, Aczél–Jabotinsky, commuting |
+| `connections.html` | **Connections** to complex dynamics, dynamical systems, flows & Lie theory, tetration, combinatorics & formal groups, probability & branching, operator theory, and physics/renormalization |
 | `theory.html` | Fixed points, conjugacy, solvable vs. unsolvable cases |
 | `solver.html` | Multi-mode solver for \(f(f(x)) = F(x)\): composita / paper mode and local analytic fixed-point mode |
 | `composita.html` | Composita \(F^\Delta(n,k)\) calculator based on Kruchinin (2013) |

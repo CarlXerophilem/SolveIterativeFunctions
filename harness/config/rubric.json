@@ -1,0 +1,7 @@
+{
+  "_comment": "auto-dev engineering-mode prioritization rubric (plan §5). Retune weights without touching logic.",
+  "axis_weights": { "value": 2, "effort": 1, "feasibility": 1, "dependency": 2, "confidence": 1 },
+  "tier_bands": { "t0_min": 17, "t1_min": 13, "t2_min": 9, "t3_min": 5 },
+  "t0_requires_feasibility_min": 2,
+  "minutes_per_effort_point": 25
+}

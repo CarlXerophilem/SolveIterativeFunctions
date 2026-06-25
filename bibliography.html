@@ -7,13 +7,13 @@
 
     <meta name="DC.Title" content="Bibliography — Iterative Functional Equations">
     <meta name="DC.Creator" content="CarlXerophilem">
-    <meta name="DC.Date" content="2026-06-01">
+    <meta name="DC.Date" content="2026-06-22">
     <meta name="DC.Type" content="Interactive Resource">
     <meta name="DC.Format" content="HTML">
     <meta name="DC.Language" content="en-US">
     <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
     <meta property="og:title" content="Bibliography — Iterative Functional Equations">
-    <meta property="og:description" content="References, academic papers, and credits for the study of iterative functional equations.">
+    <meta property="og:description" content="An annotated, link-rich bibliography for iterative functional equations: foundational books, classical papers with DOIs, local-analytic theory, the iterative-roots research stream, tetration, and the composita line.">
     <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/bibliography.html">
     <meta property="og:site_name" content="Solve Iterative Functions">
 
@@ -25,6 +25,47 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
     <script defer src="js/katex-init.js"></script>
+
+    <!-- Small scoped style for the field-map / timeline strips. Uses only theme variables. -->
+    <style>
+        .biblio-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        .biblio-map a {
+            display: block;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: border-color 0.15s ease;
+        }
+        .biblio-map a:hover { border-color: var(--link-color); }
+        .biblio-map a strong { color: var(--link-color); display: block; }
+        .biblio-map a span { color: var(--footer-text); font-size: 0.82rem; }
+
+        .era-strip {
+            border-left: 3px solid var(--border-color);
+            margin: 1rem 0 1rem 0.4rem;
+            padding-left: 1rem;
+        }
+        .era-strip > div {
+            position: relative;
+            padding: 0.35rem 0;
+            font-size: 0.92rem;
+        }
+        .era-strip .era-year {
+            display: inline-block;
+            min-width: 5.5rem;
+            font-weight: 700;
+            color: var(--link-color);
+        }
+    </style>
 </head>
 <body data-type="book" id="top">
 
@@ -51,105 +92,737 @@
 
     <div class="container">
         <section data-type="chapter" id="bibliography">
-            <h1>Bibliography &amp; Credits</h1>
-            <hr>
 
-            <h2>Primary References</h2>
-            <p>The mathematical core of the solver and articles is still grounded in the following two papers:</p>
-            <ol>
-                <li>
-                    <strong>Vladimir V. Kruchinin, Dmitry V. Kruchinin</strong> (2013).
-                    <em>Composita and its Properties</em>. arXiv:1103.2582v2.
-                    <br><a href="https://arxiv.org/abs/1103.2582" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> arXiv:1103.2582</a>
-                    &mdash; Introduces the composita \(F^{\Delta}(n,k)\), proves the recurrence formula, and establishes the composition theorem used in the calculator.
-                </li>
-                <li style="margin-top:1rem;">
-                    <strong>Dmitry V. Kruchinin, Vladimir V. Kruchinin</strong> (2013).
-                    <em>Method for solving an iterative functional equation \(A^{2^n}(x) = F(x)\)</em>. arXiv:1302.1986v2.
-                    <br><a href="https://arxiv.org/abs/1302.1986" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> arXiv:1302.1986</a>
-                    &mdash; Extends the composita method to iterative functional equations and motivates the paper-depth mode in the upgraded solver.
-                </li>
-            </ol>
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section1">1. How to Use This Bibliography</a></li>
+                    <li><a href="#section2">2. Foundational Books &amp; Monographs</a></li>
+                    <li><a href="#section3">3. Classical Papers (with DOIs)</a></li>
+                    <li><a href="#section4">4. Local-Analytic Theory &amp; Complex Dynamics</a></li>
+                    <li><a href="#section5">5. The Iterative-Roots Research Stream</a></li>
+                    <li><a href="#section6">6. Tetration &amp; the Half-Exponential</a></li>
+                    <li><a href="#section7">7. Combinatorics &amp; the Composita</a></li>
+                    <li><a href="#section8">8. Surveys, Encyclopedias &amp; the Open Web</a></li>
+                    <li><a href="#section9">9. Tools, Credits &amp; License</a></li>
+                </ul>
+            </div>
 
-            <h2>Fractional Iteration and Local Analytic Theory</h2>
-            <p>The new analytic fixed-point mode and the blog articles use the following references to frame what is supported locally and what remains subtle.</p>
-            <ol>
-                <li>
-                    <strong>Gabriel Koenigs</strong> (1884).
-                    <em>Recherches sur les int&eacute;grales de certaines &eacute;quations fonctionnelles</em>.
-                    &mdash; Classical source behind local linearization by Schr&ouml;der coordinates near non-parabolic fixed points.
-                </li>
-                <li style="margin-top:1rem;">
-                    <strong>Marek Kuczma, Bogdan Choczewski, Roman Ger</strong> (1990/2008).
-                    <em>Iterative Functional Equations</em>. Cambridge University Press.
-                    &mdash; Standard reference for the existence, uniqueness, and structural theory of iterative functional equations.
-                </li>
-                <li style="margin-top:1rem;">
-                    <strong>V. V. Goryainov</strong> (2002).
-                    <em>Koenigs function and fractional iterates of probability generating functions</em>.
-                    <br><a href="https://geodesic.mathdoc.fr/item/SM_2002_193_7_a2/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> MathDoc entry</a>
-                    &mdash; Connects Koenigs coordinates to fractional iteration and explains how local conjugacy becomes a practical iteration tool.
-                </li>
-                <li style="margin-top:1rem;">
-                    <strong>Hellmuth Kneser</strong> (1950).
-                    <em>Reelle analytische L&ouml;sungen der Gleichung \(\varphi(\varphi(x)) = e^x\)</em>.
-                    &mdash; Classical benchmark for the half-exponential problem and a reminder that global analytic roots are subtler than local series models.
-                </li>
-            </ol>
+            <main>
+                <article>
 
-            <h2>External Resources</h2>
-            <ol>
-                <li>
-                    <strong>Lars Regl&oslash;s</strong>.
-                    <em>\(f(f(x))\)</em> &mdash; Interactive exploration of functional square roots.
-                    <br><a href="https://reglos.de/lars/ffx.html" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> reglos.de/lars/ffx.html</a>
-                    &mdash; A visual counterpart to the site's focus on half-iterates and graphical experimentation.
-                </li>
-            </ol>
+                    <h1>Bibliography &amp; Sources</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        An annotated, link-rich reference shelf for the study of <em>iterative functional
+                        equations</em> &mdash; the canonical books, classical memoirs, and modern papers behind
+                        every claim on this site, grouped by theme and tagged for quick scanning.
+                    </p>
+                    <hr>
 
-            <h2>Further Reading</h2>
-            <ol>
-                <li><strong>R. P. Stanley</strong> (1999). <em>Enumerative Combinatorics, Vol. 2</em>. Cambridge University Press.</li>
-                <li style="margin-top:1rem;"><strong>L. Comtet</strong> (1974). <em>Advanced Combinatorics</em>. D. Reidel Publishing Company.</li>
-                <li style="margin-top:1rem;"><strong>R. L. Graham, D. E. Knuth, O. Patashnik</strong> (1989). <em>Concrete Mathematics</em>. Addison-Wesley.</li>
-                <li style="margin-top:1rem;"><strong>P. Flajolet, R. Sedgewick</strong> (2008). <em>Analytic Combinatorics</em>. Cambridge University Press.</li>
-                <li style="margin-top:1rem;"><strong>H. S. Wilf</strong> (1994). <em>Generatingfunctionology</em>. Academic Press.</li>
-            </ol>
+                    <!-- ================= Section 1 ================= -->
+                    <div id="section1">
+                        <h2>1. How to Use This Bibliography</h2>
+                        <p>
+                            This page is the citation backbone of the site. Wherever the
+                            <a href="theory.html">Theory</a>, <a href="equations.html">Atlas of Equations</a>,
+                            <a href="history.html">History</a>, or <a href="connections.html">Connections</a>
+                            pages make a non-trivial historical or mathematical claim, the supporting source
+                            should be findable below. Entries are grouped by theme; each carries a short
+                            <span class="ref-tag">TAG</span> in the margin marking its role, and &mdash; where a
+                            stable identifier exists &mdash; a DOI, arXiv ID, or permanent URL.
+                        </p>
 
-            <h2>Tools &amp; Libraries</h2>
-            <ul>
-                <li><a href="https://katex.org/" target="_blank" rel="noopener">KaTeX</a> &mdash; LaTeX rendering in HTML</li>
-                <li><a href="https://www.chartjs.org/" target="_blank" rel="noopener">Chart.js</a> &mdash; comparison charts on the theory page</li>
-                <li><a href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a> &mdash; icons</li>
-                <li><a href="https://giscus.app/" target="_blank" rel="noopener">giscus</a> &mdash; GitHub-powered comments</li>
-                <li><a href="https://www.manim.community/" target="_blank" rel="noopener">Manim Community</a> &mdash; optional animation source for lightweight explanatory media</li>
-                <li><a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> &mdash; hosting</li>
-            </ul>
+                        <div class="notice-box">
+                            <p style="margin:0;">
+                                <strong>Reliability note.</strong> Several classical citations (page ranges,
+                                supplement pagination, original venues for the early 20th-century papers) are
+                                reported here exactly as they appear in standard secondary literature. Where a
+                                detail could not be confirmed from a primary source, we soften the wording
+                                (&ldquo;commonly dated to&rdquo;, &ldquo;often attributed to&rdquo;, &ldquo;the
+                                commonly cited locus&rdquo;) rather than assert a possibly-wrong fact. The
+                                riskiest of these are flagged inline.
+                            </p>
+                        </div>
 
-            <h2>Credits</h2>
-            <ul>
-                <li><strong>CarlXerophilem</strong> &mdash; site design, implementation, and curation</li>
-                <li><strong>V.V. Kruchinin &amp; D.V. Kruchinin</strong> &mdash; the composita framework and iterative-equation method</li>
-                <li><strong>Gabriel Koenigs, Hellmuth Kneser, Marek Kuczma and collaborators</strong> &mdash; local and global theory of fractional iteration</li>
-                <li><strong>Lars Regl&oslash;s</strong> &mdash; interactive functional-equation visualization</li>
-                <li>The page format remains adapted from the <a href="https://complex-analysis.com/" target="_blank" rel="noopener">Complex Analysis</a> online textbook by Juan Carlos Ponce Campuzano</li>
-            </ul>
+                        <p>The central objects throughout are the conjugacy equations of one-dimensional iteration. For a map \(f\) fixing a point with multiplier \(s = f'(x^*)\):</p>
+                        <ul>
+                            <li><strong>Schröder's equation</strong> &nbsp;\(\Psi(f(x)) = s\,\Psi(x)\)&nbsp; (linearization; \(0 &lt; |s| \neq 1\)).</li>
+                            <li><strong>Abel's equation</strong> &nbsp;\(\alpha(f(x)) = \alpha(x) + 1\)&nbsp; (parabolic / translation normal form, \(s = 1\)).</li>
+                            <li><strong>Böttcher's equation</strong> &nbsp;\(B(f(z)) = B(z)^{k}\)&nbsp; (superattracting, \(f(z) = a_k z^k + \cdots\), \(k \ge 2\)).</li>
+                            <li><strong>Iterative root / functional square root</strong>: solve \(g^{\circ n} = f\); the case \(n = 2\) gives the half-iterate \(g \circ g = f\).</li>
+                            <li><strong>Babbage's equation</strong> &nbsp;\(f^{\circ n} = \mathrm{id}\)&nbsp; (and the generalization \(f^{\circ n} = f^{\circ k}\)).</li>
+                        </ul>
+                        <p>
+                            A change of variables links these: Abel \(\leftrightarrow\) Schröder \(\leftrightarrow\)
+                            Böttcher. For the precise statements and the dictionary between them, see the
+                            <a href="equations.html">Atlas of Equations</a>; for the historical arc, the
+                            <a href="history.html">History</a> page.
+                        </p>
 
-            <hr>
+                        <p><strong>Jump to a companion page:</strong></p>
+                        <div class="biblio-map">
+                            <a href="index.html"><strong>Home</strong><span>site overview</span></a>
+                            <a href="shelf.html"><strong>The Shelf</strong><span>annotated reading list</span></a>
+                            <a href="history.html"><strong>History</strong><span>1815 &rarr; today</span></a>
+                            <a href="theory.html"><strong>Theory</strong><span>the core ideas</span></a>
+                            <a href="equations.html"><strong>Atlas</strong><span>named equations</span></a>
+                            <a href="connections.html"><strong>Connections</strong><span>links across fields</span></a>
+                            <a href="solver.html"><strong>Solver</strong><span>compute half-iterates</span></a>
+                            <a href="composita.html"><strong>Composita</strong><span>the Kruchinin method</span></a>
+                            <a href="blog.html"><strong>Blog</strong><span>worked notes</span></a>
+                        </div>
+                    </div>
+                    <hr>
 
-            <h2>License</h2>
-            <p>
-                <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
-                    <i class="fa-brands fa-creative-commons"></i>
-                    <i class="fa-brands fa-creative-commons-by"></i>
-                    <i class="fa-brands fa-creative-commons-sa"></i> Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
-                </a>
-            </p>
-            <p>
-                <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions" target="_blank" rel="noopener">
-                    <i class="fa-brands fa-github"></i> View source on GitHub
-                </a>
-            </p>
+                    <!-- ================= Section 2 ================= -->
+                    <div id="section2">
+                        <h2>2. Foundational Books &amp; Monographs</h2>
+                        <p>
+                            These are the shelf anchors: the systematic monographs that defined the modern theory
+                            of iterative functional equations and the complex dynamics it grew into. If you read
+                            only one book on the subject, make it Kuczma&ndash;Choczewski&ndash;Ger.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">B1</span>
+                                <strong>Marek Kuczma.</strong> <em>Functional Equations in a Single Variable.</em>
+                                Monografie Matematyczne, Tom 46, PWN &mdash; Państwowe Wydawnictwo Naukowe, Warsaw,
+                                <strong>1968</strong> (English, ~383 pp.).
+                                <a href="https://archive.org/details/functionalequati0000kucz" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> archive.org</a>
+                                <br>The first systematic monograph on one-variable functional equations &mdash;
+                                foundational for Schröder/Abel theory, iterative roots, and linearization. Kuczma
+                                (1935&ndash;1991, University of Silesia, Katowice) is widely credited with creating
+                                the modern theory; see the <a href="history.html">History</a> page.
+                            </li>
+                            <li>
+                                <span class="ref-tag">B2</span>
+                                <strong>Marek Kuczma, Bogdan Choczewski, Roman Ger.</strong>
+                                <em>Iterative Functional Equations.</em> Encyclopedia of Mathematics and its
+                                Applications, Vol. 32, Cambridge University Press, <strong>1990</strong>
+                                (ISBN 9780521355612; ~576 pp.).
+                                <a href="https://www.cambridge.org/core/books/iterative-functional-equations/37D010F4F9B5FD44143F6F4EC8FD2807" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Cambridge</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://archive.org/details/iterativefunctio0000kucz" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> archive.org</a>
+                                <br>The standard exhaustive reference for existence, uniqueness, and the structural
+                                theory of iterative functional equations &mdash; the natural next step after the
+                                <a href="theory.html">Theory</a> page.
+                            </li>
+                            <li>
+                                <span class="ref-tag">B3</span>
+                                <strong>György Targoński (Targonski).</strong> <em>Topics in Iteration Theory.</em>
+                                Studia Mathematica Skript, Vol. 6, Vandenhoeck &amp; Ruprecht, Göttingen,
+                                <strong>1981</strong>.
+                                <a href="https://openlibrary.org/books/OL21839648M/Topics_in_iteration_theory" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> Open Library</a>
+                                <br>An influential survey of abstract iteration theory (iteration groups and
+                                semigroups, embeddings, &ldquo;phantom roots&rdquo;). Targoński was a central
+                                organizer of the field's conferences. <span class="pill pill-info">series numbering not independently confirmed</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">B4</span>
+                                <strong>János Aczél.</strong> <em>Lectures on Functional Equations and Their
+                                Applications.</em> Mathematics in Science and Engineering, Vol. 19, Academic Press,
+                                New York, <strong>1966</strong> (~510 pp.); Dover reprint 2006 (ISBN 9780486445236).
+                                <a href="https://shop.elsevier.com/books/lectures-on-functional-equations-and-their-applications/aczel/978-0-12-043750-4" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Elsevier</a>
+                                <br>The broad classic on functional equations; Aczél (1924&ndash;2020) founded the
+                                journal <em>Aequationes Mathematicae</em> and anchored the wider community.
+                            </li>
+                            <li>
+                                <span class="ref-tag">B5</span>
+                                <strong>John Milnor.</strong> <em>Dynamics in One Complex Variable.</em> 3rd edition,
+                                Annals of Mathematics Studies 160, Princeton University Press, <strong>2006</strong>
+                                (ISBN 9780691124889).
+                                <a href="https://arxiv.org/abs/math/9201272" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> arXiv:math/9201272 (lectures)</a>
+                                <br>The standard text on iteration of rational maps; covers Koenigs, Böttcher, and
+                                the Écalle&ndash;Voronin parabolic theory, and is our reference for the
+                                multiplier classification used throughout the <a href="equations.html">Atlas</a>.
+                            </li>
+                            <li>
+                                <span class="ref-tag">B6</span>
+                                <strong>Lennart Carleson, Theodore W. Gamelin.</strong> <em>Complex Dynamics.</em>
+                                Universitext, Springer-Verlag, New York, <strong>1993</strong>
+                                (ISBN 9780387979427; ~201 pp.).
+                                <a href="https://link.springer.com/book/10.1007/978-1-4612-4364-9" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Springer</a>
+                                <br>A compact analytic introduction to complex dynamics, the Julia/Fatou dichotomy,
+                                and the Mandelbrot set &mdash; the most approachable companion to Milnor.
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 3 ================= -->
+                    <div id="section3">
+                        <h2>3. Classical Papers (with DOIs)</h2>
+                        <p>
+                            The original memoirs. Each defined one of the named equations in the
+                            <a href="equations.html">Atlas</a>; together they span the period 1815&ndash;1958, from
+                            Babbage's involutions to Szekeres's regular iteration. Several early-20th-century papers
+                            appeared in journals whose pagination is reported here from secondary literature; those
+                            are flagged.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">C1</span>
+                                <strong>Charles Babbage.</strong> <em>An Essay towards the Calculus of Functions.</em>
+                                Philosophical Transactions of the Royal Society of London <strong>105</strong>
+                                (1815), pp. 389&ndash;423 (Part I; Part II in vol. 106, 1816,
+                                doi:10.1098/rstl.1816.0012).
+                                <a href="https://www.jstor.org/stable/107377" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> JSTOR</a>
+                                <br>The first systematic study of one-variable functional equations, including the
+                                <strong>Babbage equation</strong> \(\varphi(\varphi(x)) = x\) (involutions / &ldquo;roots
+                                of identity&rdquo;) and the conjugation symmetry of its solution set. Read 15 June 1815.
+                            </li>
+                            <li>
+                                <span class="ref-tag">C2</span>
+                                <strong>Niels Henrik Abel.</strong> <em>Détermination d'une fonction au moyen d'une
+                                équation qui ne contient qu'une seule variable</em> (in <em>Œuvres complètes</em>,
+                                eds. L. Sylow &amp; S. Lie, Christiania, <strong>1881</strong>).
+                                <a href="https://en.wikipedia.org/wiki/Abel_equation" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> overview</a>
+                                <br>Source of the <strong>Abel equation</strong> \(\alpha(f(x)) = \alpha(x) + 1\), the
+                                additive (logarithmic) normal form at a parabolic fixed point. The work dates to the
+                                1820s but appeared posthumously; <span class="pill pill-info">exact composition year not pinned</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C3</span>
+                                <strong>Ernst Schröder.</strong> <em>Ueber iterirte Functionen.</em> Mathematische
+                                Annalen <strong>3</strong>(2) (1870), pp. 296&ndash;322.
+                                doi:<a href="https://doi.org/10.1007/BF01443992" target="_blank" rel="noopener">10.1007/BF01443992</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://eudml.org/doc/156489" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> EUDML</a>
+                                <br>Origin of <strong>Schröder's equation</strong> \(\Psi(f(x)) = s\,\Psi(x)\),
+                                which linearizes iteration. <span class="pill pill-warn">commonly dated 1870 (vol. 3); some sources say &ldquo;1871&rdquo;</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C4</span>
+                                <strong>Gabriel Koenigs.</strong> <em>Recherches sur les intégrales de certaines
+                                équations fonctionnelles.</em> Annales scientifiques de l'École Normale Supérieure
+                                (3) <strong>1</strong> (<strong>1884</strong>), suppl. pp. 3&ndash;41.
+                                <a href="https://mathshistory.st-andrews.ac.uk/Biographies/Koenigs/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> MacTutor</a>
+                                <br>The first rigorous linearization theorem: near an attracting, non-superattracting
+                                fixed point (\(0 &lt; |s| &lt; 1\)) there is a unique holomorphic <strong>Koenigs
+                                function</strong> \(\Psi\) with \(\Psi'(0)=1\) solving Schröder's equation, built as
+                                \(\Psi = \lim_{n\to\infty} s^{-n} f^{\circ n}\).
+                                <span class="pill pill-warn">exact title &amp; supplement pagination not fully confirmed from a primary source</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C5</span>
+                                <strong>Lucjan Emil Böttcher</strong> (1904) / <strong>Joseph Fels Ritt.</strong>
+                                <em>On the Iteration of Rational Functions.</em> Transactions of the AMS
+                                <strong>21</strong>, no. 3 (July <strong>1920</strong>), pp. 348&ndash;356.
+                                <a href="https://www.ams.org/journals/tran/1920-021-03/S0002-9947-1920-1501149-6/S0002-9947-1920-1501149-6.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> AMS</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/B%C3%B6ttcher%27s_equation" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> overview</a>
+                                <br><strong>Böttcher's equation</strong> \(B(f(z)) = B(z)^{k}\) linearizes a
+                                superattracting germ \(f(z) = a_k z^k + \cdots\) (\(k \ge 2\)) to the power map
+                                \(w \mapsto w^k\). Böttcher sketched existence in <strong>1904</strong>; the first
+                                complete proof is Ritt's 1920 paper above.
+                                <span class="pill pill-warn">Böttcher's original 1904 venue (Russian/Polish journals) not retrieved here</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C6</span>
+                                <strong>Gaston Julia.</strong> <em>Mémoire sur l'itération des fonctions
+                                rationnelles.</em> Journal de Mathématiques Pures et Appliquées, sér. 8,
+                                <strong>1</strong> (<strong>1918</strong>), pp. 47&ndash;245.
+                                <a href="https://www.numdam.org/item/JMPA_1918_8_1__47_0.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> Numdam</a>
+                                <br>The global theory of iteration of rational maps, written while Julia recovered
+                                from WWI injuries; winner of the Académie's 1918 Grand Prix.
+                                <span class="pill pill-info">page span across installments worth verifying</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C7</span>
+                                <strong>Pierre Fatou.</strong> <em>Sur les équations fonctionnelles.</em> Bulletin de
+                                la Société Mathématique de France <strong>47</strong> (1919), pp. 161&ndash;271
+                                (continued in vol. 48, 1920).
+                                <a href="https://en.wikipedia.org/wiki/Pierre_Fatou" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> overview</a>
+                                <br>Founded the Fatou/Julia dichotomy of the sphere into the <strong>Fatou set</strong>
+                                (normal family) and the chaotic <strong>Julia set</strong>.
+                                <span class="pill pill-info">part numbering &amp; exact pages span vols. 47&ndash;48</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">C8</span>
+                                <strong>Hellmuth Kneser.</strong> <em>Reelle analytische Lösungen der Gleichung
+                                \(\varphi(\varphi(x)) = e^{x}\) und verwandter Funktionalgleichungen.</em> Journal für
+                                die reine und angewandte Mathematik (Crelle) <strong>187</strong> (<strong>1950</strong>),
+                                pp. 56&ndash;67.
+                                doi:<a href="https://doi.org/10.1515/crll.1950.187.56" target="_blank" rel="noopener">10.1515/crll.1950.187.56</a>
+                                <br>The first <strong>real-analytic half-iterate of the exponential</strong> &mdash; a
+                                &ldquo;half-exponential&rdquo; \(\varphi\) with \(\varphi(\varphi(x)) = e^x\) &mdash;
+                                constructed via an Abel function at a complex fixed point. The benchmark hard case of
+                                the whole subject; see the <a href="theory.html#section5">Theory</a> page.
+                            </li>
+                            <li>
+                                <span class="ref-tag">C9</span>
+                                <strong>George Szekeres.</strong> <em>Regular iteration of real and complex
+                                functions.</em> Acta Mathematica <strong>100</strong> (<strong>1958</strong>),
+                                pp. 203&ndash;258.
+                                doi:<a href="https://doi.org/10.1007/BF02559539" target="_blank" rel="noopener">10.1007/BF02559539</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://projecteuclid.org/euclid.acta/1485889052" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Project Euclid</a>
+                                <br>Systematized <strong>regular (fractional) iteration</strong> via the Abel function.
+                                <span class="pill pill-info">Wikipedia cites the page range as 361&ndash;376; secondary indices give 203&ndash;258 &mdash; verify</span>
+                            </li>
+                        </ul>
+
+                        <div class="keypoint">
+                            <p style="margin:0;">
+                                <strong>The arc at a glance.</strong> Babbage asks <em>which functions are their own
+                                inverse</em>; Schröder and Koenigs answer <em>how to linearize near a hyperbolic fixed
+                                point</em>; Böttcher handles the superattracting case; Abel and the parabolic theory
+                                handle multiplier \(1\); and Kneser&ndash;Szekeres push fractional iteration into the
+                                real-analytic regime. The same change-of-variable dictionary ties them all together
+                                &mdash; see the <a href="connections.html">Connections</a> page.
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. Local-Analytic Theory &amp; Complex Dynamics</h2>
+                        <p>
+                            The bridge between the classical memoirs and modern practice: how local conjugacy
+                            (Koenigs/Schröder coordinates, Fatou coordinates, resurgent Abel functions) becomes a
+                            working tool for fractional iteration, and how mathematical physics adopted Schröder's
+                            equation for renormalization-group flow.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">D1</span>
+                                <strong>V. V. Goryainov</strong> (2002). <em>Koenigs function and fractional iterates
+                                of probability generating functions.</em> Sbornik: Mathematics <strong>193</strong>(7).
+                                <a href="https://geodesic.mathdoc.fr/item/SM_2002_193_7_a2/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> MathDoc</a>
+                                <br>Connects Koenigs coordinates to fractional iteration and explains how local
+                                conjugacy becomes a practical iteration tool &mdash; the analytic backbone of the
+                                site's fixed-point mode.
+                            </li>
+                            <li>
+                                <span class="ref-tag">D2</span>
+                                <strong>Jean Écalle</strong> (1981). <em>Les fonctions résurgentes</em> (Tomes I&ndash;III).
+                                Publ. Math. d'Orsay 81-05, 81-06, 85-05.
+                                <a href="https://www.numdam.org/item/RCP25_1984__34__105_0/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Numdam (intro)</a>
+                                <br>Resurgence theory and mould calculus: a complete account of divergent
+                                <strong>Fatou coordinates</strong> and the <strong>Écalle&ndash;Voronin moduli</strong>
+                                that classify parabolic germs. Underlies the modern understanding of the iterative
+                                logarithm (Julia's equation) in the <a href="equations.html">Atlas</a>.
+                            </li>
+                            <li>
+                                <span class="ref-tag">D3</span>
+                                <strong>Thomas Curtright &amp; Cosmas Zachos.</strong> <em>Evolution profiles and
+                                functional equations.</em> Journal of Physics A <strong>42</strong> (2009), 485208.
+                                arXiv:<a href="https://arxiv.org/abs/0909.2424" target="_blank" rel="noopener">0909.2424</a>
+                                <br>Casts time evolution in terms of Schröder's equation and builds exact continuous
+                                iterations (e.g. of \(2x(1+x)\)).
+                            </li>
+                            <li>
+                                <span class="ref-tag">D4</span>
+                                <strong>Thomas Curtright &amp; Cosmas Zachos.</strong> <em>Renormalization Group
+                                Functional Equations.</em> Physical Review D <strong>83</strong> (2011), 065019.
+                                arXiv:<a href="https://arxiv.org/abs/1010.5174" target="_blank" rel="noopener">1010.5174</a>
+                                <br>Renormalization-group flow as continuous iteration; approximate continuous iterates
+                                of \(x e^{x}\), with Schröder/Abel methods throughout.
+                            </li>
+                            <li>
+                                <span class="ref-tag">D5</span>
+                                <strong>Thomas Curtright, Cosmas Zachos &amp; Xiang Jin.</strong> <em>Approximate
+                                solutions of functional equations.</em> Journal of Physics A <strong>44</strong>(40)
+                                (2011), 405205. doi:10.1088/1751-8113/44/40/405205.
+                                arXiv:<a href="https://arxiv.org/abs/1105.3664" target="_blank" rel="noopener">1105.3664</a>
+                                <br>Practical approximation schemes for Schröder/Abel solutions, including half-iterate
+                                constructions &mdash; close in spirit to the numerical methods in the
+                                <a href="post-numerical-half-iterate-methods.html">blog notes</a>.
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. The Iterative-Roots Research Stream</h2>
+                        <p>
+                            The active modern literature on iterative roots of continuous self-maps &mdash; the
+                            piecewise-monotone (PM) theory of the Zhang Weinian school, the multifunction
+                            generalizations, and recent density / nonexistence results. The iterative-root problem is
+                            closely tied to the embedding-flow, invariant-curve, and linearization problems; its
+                            origins are traced to Babbage, Abel, and Koenigs.
+                        </p>
+
+                        <div class="method-callout">
+                            <p style="margin:0;">
+                                <strong>The characteristic-interval idea.</strong> For a PM (piecewise-monotone) map
+                                \(F\), the maximal interval \(K(F) \supseteq F([a,b])\) on which \(F\) is monotone &mdash;
+                                its <em>characteristic interval</em> &mdash; reduces the PM root problem to the monotone
+                                case. Introduced by <strong>Zhang &amp; Yang (1983)</strong> and refined by
+                                <strong>W. Zhang (1997)</strong>; it is the workhorse of the whole stream.
+                            </p>
+                        </div>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">E1</span>
+                                <strong>Weinian Zhang.</strong> <em>PM functions, their characteristic intervals and
+                                iterative roots.</em> Annales Polonici Mathematici <strong>65</strong> (1997), no. 2,
+                                pp. 119&ndash;128.
+                                <a href="https://eudml.org/doc/269950" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> EUDML</a>
+                                <br>The refined statement of the characteristic-interval method, building on the
+                                Zhang&ndash;Yang (1983) approach.
+                            </li>
+                            <li>
+                                <span class="ref-tag">E2</span>
+                                <strong>B. V. Rajarama Bhat &amp; Chaitanya Gopalakrishna.</strong> <em>Iterative
+                                square roots of functions.</em> Ergodic Theory and Dynamical Systems
+                                <strong>43</strong> (2023), no. 7, pp. 2201&ndash;2227.
+                                arXiv:<a href="https://arxiv.org/abs/2105.02171" target="_blank" rel="noopener">2105.02171</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://www.cambridge.org/core/journals/ergodic-theory-and-dynamical-systems/article/iterative-square-roots-of-functions/F82D948C755B4698F419716EF6256A3F" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> ETDS</a>
+                                <br>Proves that continuous self-maps with <strong>no</strong> square root are
+                                <strong>dense</strong> in \(C(X)\) for spaces \(X\) homeomorphic to the unit cube in
+                                \(\mathbb{R}^m\) and to all of \(\mathbb{R}^m\) (every \(m\)); a striking
+                                &ldquo;most maps have no half-iterate&rdquo; result.
+                                <span class="pill pill-info">authors are Bhat &amp; Gopalakrishna, not Zhang</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">E3</span>
+                                <strong>B. V. Rajarama Bhat &amp; Chaitanya Gopalakrishna.</strong> <em>Iterative Roots
+                                of Multifunctions.</em> (Fundamenta Mathematicae.)
+                                arXiv:<a href="https://arxiv.org/abs/2212.05305" target="_blank" rel="noopener">2212.05305</a>
+                                <br>Sufficient conditions for nonexistence of iterative roots of set-valued maps via a
+                                graph &ldquo;in-degree&rdquo; obstruction; applied to nonexistence of roots of some
+                                complex polynomials.
+                            </li>
+                            <li>
+                                <span class="ref-tag">E4</span>
+                                <strong>Liu Liu &amp; Lin Li.</strong> <em>Iterative roots of exclusive
+                                multifunctions.</em>
+                                arXiv:<a href="https://arxiv.org/abs/2011.13543" target="_blank" rel="noopener">2011.13543</a>
+                                <br>Strictly monotone upper-semicontinuous multifunctions with finitely many jumps;
+                                introduces the &ldquo;intensity&rdquo; of jumps and constructs order-\(n\) roots.
+                            </li>
+                            <li>
+                                <span class="ref-tag">E5</span>
+                                <strong>Xiao Tang &amp; Lin Li.</strong> <em>A sufficient condition for existence of
+                                iterative roots of PM functions without the characteristic endpoints condition.</em>
+                                arXiv:<a href="https://arxiv.org/abs/2109.12747" target="_blank" rel="noopener">2109.12747</a>
+                                <br>The order-2, height-2 case when the number of forts exceeds the order &mdash; a
+                                partial answer to the characteristic-endpoints problem.
+                            </li>
+                            <li>
+                                <span class="ref-tag">E6</span>
+                                <strong>Liu Liu &amp; Weinian Zhang.</strong> <em>Genetics of iterative roots for PM
+                                functions.</em> Discrete and Continuous Dynamical Systems (Series A)
+                                <strong>41</strong> (2021), no. 5, pp. 2391&ndash;2409.
+                                doi:<a href="https://doi.org/10.3934/dcds.2020369" target="_blank" rel="noopener">10.3934/dcds.2020369</a>
+                                <br>A &ldquo;genetic&rdquo; root is topologically conjugate to its parent; the paper
+                                shows PM functions of height \(&gt; 1\) have no genetic root.
+                            </li>
+                            <li>
+                                <span class="ref-tag">E7</span>
+                                <strong>Marc Homs-Dones.</strong> <em>A generalisation of the Babbage functional
+                                equation.</em> (Published in DCDS, doi:10.3934/dcds.2020303.)
+                                arXiv:<a href="https://arxiv.org/abs/2001.04573" target="_blank" rel="noopener">2001.04573</a>
+                                <br>Shows that in \(\mathbb{R}\) and \(\mathbb{R}^2\) the \(C^l\) solutions of
+                                \(f^{\circ n} = \mathrm{id}\) are \(C^l\)-linearizable for \(l \in \{0,1,\dots,\infty\}\),
+                                with counterexamples for \(l=0\) and for \(f^{\circ n} = f^{\circ k}\) (\(n &gt; k \ge 2\)).
+                                <span class="pill pill-info">author is Homs-Dones, not Zhang</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">E8</span>
+                                <strong>Witold Jarczyk.</strong> <em>Recent results on iterative roots.</em> ESAIM:
+                                Proceedings and Surveys <strong>46</strong> (2014), pp. 47&ndash;62.
+                                <a href="https://www.esaim-proc.org/articles/proc/pdf/2014/03/proc144605.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> ESAIM</a>
+                                <br>A readable survey of the whole stream: conjugacy of PM functions and their roots,
+                                stability, set-valued generalizations, and &ldquo;phantom roots.&rdquo; The best entry
+                                point to this section.
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Tetration &amp; the Half-Exponential</h2>
+                        <p>
+                            The most famous instance of the iterative-root problem &mdash; a function \(\varphi\) with
+                            \(\varphi(\varphi(x)) = e^x\) &mdash; sits inside the theory of <strong>tetration</strong>,
+                            the analytic continuation of the iterated exponential. Kneser's 1950 construction (above,
+                            <span class="ref-tag" style="min-width:0;">C8</span>) is the cornerstone; the modern
+                            papers extend it to other bases and make it computable.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">F1</span>
+                                <strong>Dmitrii Kouznetsov.</strong> <em>Solution of \(F(z+1) = \exp(F(z))\) in complex
+                                \(z\)-plane.</em> Mathematics of Computation <strong>78</strong> (2009), no. 267,
+                                pp. 1647&ndash;1670.
+                                <a href="https://www.ams.org/journals/mcom/2009-78-267/S0025-5718-09-02188-7/S0025-5718-09-02188-7.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> AMS</a>
+                                <br>An analytic tetration \(F\) with \(F(0)=1\), growing on \(\mathbb{R}\) and
+                                approaching the fixed point \(L\) along the imaginary axis &mdash; a high-precision
+                                construction of the continuous iterated exponential.
+                            </li>
+                            <li>
+                                <span class="ref-tag">F2</span>
+                                <strong>Henryk Trappmann &amp; Dmitrii Kouznetsov.</strong> <em>Uniqueness of
+                                Holomorphic Abel Functions at a Complex Fixed Point Pair.</em> Aequationes Mathematicae
+                                (2011); preprint arXiv:<a href="https://arxiv.org/abs/1006.3981" target="_blank" rel="noopener">1006.3981</a>.
+                                <br>A uniqueness criterion satisfied by Kneser's real-analytic Abel function of
+                                \(\exp\). <span class="pill pill-info">published title vs. the related &ldquo;superlogarithms&rdquo; manuscript worth confirming</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">F3</span>
+                                <strong>William Paulsen &amp; Samuel Cowgill.</strong> <em>Solving
+                                \(F(z+1) = b^{F(z)}\) in the complex plane.</em> Advances in Computational Mathematics
+                                <strong>43</strong> (2017), no. 6, pp. 1261&ndash;1282.
+                                doi:<a href="https://doi.org/10.1007/s10444-017-9524-1" target="_blank" rel="noopener">10.1007/s10444-017-9524-1</a>
+                                <br>Extends Kneser's construction to bases \(b &gt; e^{1/e}\), gives a high-precision
+                                numerical method, and supplies conditions forcing Kneser's solution to be unique
+                                (answering a Trappmann&ndash;Kouznetsov conjecture).
+                                <span class="pill pill-info">some indices report the page range as 1&ndash;22</span>
+                            </li>
+                            <li>
+                                <span class="ref-tag">F4</span>
+                                <strong>Wikipedia.</strong> <em>Tetration</em> &amp; <em>Half-exponential function.</em>
+                                <a href="https://en.wikipedia.org/wiki/Tetration" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Tetration</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/Half-exponential_function" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Half-exponential</a>
+                                <br>Encyclopedic entry points connecting the half-exponential to Kneser's 1950 result
+                                and to non-integer tetration.
+                            </li>
+                        </ul>
+
+                        <div class="notice-box">
+                            <p style="margin:0;">
+                                <strong>Why it is hard.</strong> The half-exponential reduces to solving
+                                <strong>Abel's equation for \(\exp\)</strong>, which has no fixed point on the real
+                                line and infinitely many smooth (non-analytic) solutions. Real-analytic uniqueness only
+                                emerges from the complex fixed-point structure &mdash; exactly Kneser's insight. See the
+                                <a href="theory.html#section5">Theory</a> page and the
+                                <a href="post-numerical-half-iterate-methods.html">numerical methods note</a>.
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 7 ================= -->
+                    <div id="section7">
+                        <h2>7. Combinatorics &amp; the Composita</h2>
+                        <p>
+                            The site's <a href="solver.html">solver</a> and <a href="composita.html">Composita</a>
+                            page rest on a combinatorial method for the coefficients of powers and compositions of
+                            ordinary generating functions. These references provide both the specific composita papers
+                            and the broader generating-function toolkit.
+                        </p>
+
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">G1</span>
+                                <strong>Vladimir V. Kruchinin &amp; Dmitry V. Kruchinin.</strong> <em>Composita and its
+                                properties.</em>
+                                arXiv:<a href="https://arxiv.org/abs/1103.2582" target="_blank" rel="noopener">1103.2582</a>
+                                <br>Introduces the composita \(F^{\Delta}(n,k)\) &mdash; the coefficients of powers of
+                                an ordinary generating function &mdash; proves the recurrence and composition theorems,
+                                and via the composita solves \(B(x) = H(x B(x)^m)\). The mathematical core of the
+                                calculator.
+                            </li>
+                            <li>
+                                <span class="ref-tag">G2</span>
+                                <strong>Dmitry V. Kruchinin &amp; Vladimir V. Kruchinin.</strong> <em>Method for solving
+                                an iterative functional equation \(A^{2^{n}}(x) = F(x)\).</em>
+                                arXiv:<a href="https://arxiv.org/abs/1302.1986" target="_blank" rel="noopener">1302.1986</a>
+                                <br>Uses the composita to solve \(A^{\circ 2^n} = F\) for formal power series with
+                                \(f(1) \neq 0\), and proves integrality of the \(A\) obtained from
+                                \(4 A(A(x)) = F(4x)\) when \(F\) has integer coefficients. Motivates the
+                                paper-depth mode of the upgraded solver.
+                            </li>
+                            <li>
+                                <span class="ref-tag">G3</span>
+                                <strong>Richard P. Stanley.</strong> <em>Enumerative Combinatorics, Vol. 2.</em>
+                                Cambridge University Press, 1999.
+                                <br>The standard reference for compositional structures and the exponential/ordinary
+                                generating-function formalism behind the composita.
+                            </li>
+                            <li>
+                                <span class="ref-tag">G4</span>
+                                <strong>Louis Comtet.</strong> <em>Advanced Combinatorics.</em> D. Reidel Publishing
+                                Company, 1974.
+                                <br>Classic source for Bell polynomials and the coefficients of function powers &mdash;
+                                the combinatorial ancestors of the composita.
+                            </li>
+                            <li>
+                                <span class="ref-tag">G5</span>
+                                <strong>Philippe Flajolet &amp; Robert Sedgewick.</strong> <em>Analytic
+                                Combinatorics.</em> Cambridge University Press, 2009.
+                                <br>The modern symbolic method for generating functions; context for the asymptotics
+                                and singularity analysis around the composita method.
+                            </li>
+                            <li>
+                                <span class="ref-tag">G6</span>
+                                <strong>R. L. Graham, D. E. Knuth, O. Patashnik.</strong> <em>Concrete Mathematics.</em>
+                                Addison-Wesley, 1989. &nbsp;&middot;&nbsp;
+                                <strong>H. S. Wilf.</strong> <em>generatingfunctionology.</em> Academic Press, 1994.
+                                <br>Two staples for the generating-function manipulations used throughout the
+                                <a href="composita.html">Composita</a> page.
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 8 ================= -->
+                    <div id="section8">
+                        <h2>8. Surveys, Encyclopedias &amp; the Open Web</h2>
+                        <p>
+                            Open, browsable references &mdash; ideal for a first pass before going to the primary
+                            literature, and for cross-checking dates and statements. The MacTutor biographies and the
+                            Wikipedia atlas entries were the backbone of the site's <a href="history.html">History</a>
+                            and <a href="equations.html">Atlas</a> pages.
+                        </p>
+
+                        <h3>Encyclopedic &amp; biographical</h3>
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">W1</span>
+                                <strong>MacTutor History of Mathematics Archive</strong> (University of St Andrews).
+                                <a href="https://mathshistory.st-andrews.ac.uk/Biographies/Schroder/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Schröder</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://mathshistory.st-andrews.ac.uk/Biographies/Koenigs/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Koenigs</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://mathshistory.st-andrews.ac.uk/Biographies/Kneser_Hellmuth/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Kneser</a>
+                                <br>Authoritative short biographies of the principal figures.
+                            </li>
+                            <li>
+                                <span class="ref-tag">W2</span>
+                                <strong>Encyclopedia of Mathematics</strong> (Springer/EMS) and
+                                <strong>Scholarpedia</strong>. The latter's <em>Siegel disks / Linearization</em>
+                                article is our source for the irrationally-indifferent (Siegel vs. Cremer) regime that
+                                sits outside the classical Schröder/Abel/Böttcher trio.
+                                <a href="http://www.scholarpedia.org/article/Siegel_disks/Linearization" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Scholarpedia</a>
+                            </li>
+                            <li>
+                                <span class="ref-tag">W3</span>
+                                <strong>nLab.</strong> Category-theoretic and structural notes on iteration, flows, and
+                                functional equations &mdash; useful for the abstract framing on the
+                                <a href="connections.html">Connections</a> page.
+                                <a href="https://ncatlab.org/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> ncatlab.org</a>
+                            </li>
+                        </ul>
+
+                        <h3>Wikipedia atlas (the named equations)</h3>
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">W4</span>
+                                <a href="https://en.wikipedia.org/wiki/Iterated_function" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Iterated function</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/Functional_square_root" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Functional square root</a>
+                                <br>The compositional-power notation (traced to Herschel, 1813), Picard orbits, the
+                                translation functional equation, and the half-iterate examples used on the
+                                <a href="theory.html">Theory</a> page.
+                            </li>
+                            <li>
+                                <span class="ref-tag">W5</span>
+                                <a href="https://en.wikipedia.org/wiki/Schr%C3%B6der%27s_equation" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Schröder's equation</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/Abel_equation" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Abel equation</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/Koenigs_function" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Koenigs function</a>
+                                <br>The hyperbolic and parabolic normal forms and the change-of-variable dictionary
+                                between them.
+                            </li>
+                            <li>
+                                <span class="ref-tag">W6</span>
+                                <a href="https://en.wikipedia.org/wiki/B%C3%B6ttcher%27s_equation" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Böttcher's equation</a>
+                                &nbsp;&middot;&nbsp;
+                                <a href="https://en.wikipedia.org/wiki/Tetration" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> Tetration</a>
+                                <br>The superattracting normal form and the iterated-exponential / half-exponential
+                                circle of ideas.
+                            </li>
+                        </ul>
+
+                        <h3>External interactive resources</h3>
+                        <ul class="ref-list">
+                            <li>
+                                <span class="ref-tag">X1</span>
+                                <strong>Lars / Henryk Trappmann.</strong> <em>Iterative Roots and Fractional
+                                Iteration</em> &mdash; \(f(f(x))\).
+                                <a href="https://reglos.de/lars/ffx.html" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> reglos.de/lars/ffx.html</a>
+                                <br>An accessible, visual overview of half-iterates of \(\exp\), the Abel/Schröder
+                                methods, and the Kneser and Kouznetsov&ndash;Trappmann constructions &mdash; a friendly
+                                companion to this site's <a href="solver.html">solver</a>.
+                            </li>
+                        </ul>
+
+                        <div class="keypoint">
+                            <p style="margin:0;">
+                                <strong>A century-and-a-bit on one strip.</strong>
+                            </p>
+                            <div class="era-strip">
+                                <div><span class="era-year">1815</span> Babbage &mdash; calculus of functions; \(\varphi(\varphi(x)) = x\).</div>
+                                <div><span class="era-year">1870 / 1884</span> Schröder &amp; Koenigs &mdash; linearization at hyperbolic fixed points.</div>
+                                <div><span class="era-year">1904 / 1920</span> Böttcher / Ritt &mdash; superattracting normal form.</div>
+                                <div><span class="era-year">1918&ndash;20</span> Fatou &amp; Julia &mdash; global theory of rational iteration.</div>
+                                <div><span class="era-year">1950 / 1958</span> Kneser &amp; Szekeres &mdash; real-analytic &amp; regular fractional iteration.</div>
+                                <div><span class="era-year">1968 / 1990</span> Kuczma (with Choczewski &amp; Ger) &mdash; the systematic monographs.</div>
+                                <div><span class="era-year">1981</span> Targoński &amp; Écalle &mdash; iteration theory &amp; resurgence.</div>
+                                <div><span class="era-year">2009&ndash;23</span> Curtright&ndash;Zachos, Kruchinin, Bhat&ndash;Gopalakrishna &amp; the PM-roots school.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- ================= Section 9 ================= -->
+                    <div id="section9">
+                        <h2>9. Tools, Credits &amp; License</h2>
+
+                        <h3>Tools &amp; libraries</h3>
+                        <ul class="ref-list">
+                            <li><span class="ref-tag"><i class="fa-solid fa-square-root-variable"></i></span> <a href="https://katex.org/" target="_blank" rel="noopener">KaTeX</a> &mdash; fast LaTeX rendering in the browser.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-chart-line"></i></span> <a href="https://www.chartjs.org/" target="_blank" rel="noopener">Chart.js</a> &mdash; comparison charts on the Theory page.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-icons"></i></span> <a href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a> &mdash; icons.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-comments"></i></span> <a href="https://giscus.app/" target="_blank" rel="noopener">giscus</a> &mdash; GitHub-powered comments.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-film"></i></span> <a href="https://www.manim.community/" target="_blank" rel="noopener">Manim Community</a> &mdash; optional source for lightweight explanatory animation.</li>
+                            <li><span class="ref-tag"><i class="fa-brands fa-github"></i></span> <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> &mdash; hosting.</li>
+                        </ul>
+
+                        <h3>Credits</h3>
+                        <ul class="ref-list">
+                            <li><span class="ref-tag"><i class="fa-solid fa-pen-nib"></i></span> <strong>CarlXerophilem</strong> &mdash; site design, implementation, and curation.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-square-root-variable"></i></span> <strong>V. V. Kruchinin &amp; D. V. Kruchinin</strong> &mdash; the composita framework and the iterative-equation method.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-landmark"></i></span> <strong>Gabriel Koenigs, Hellmuth Kneser, Marek Kuczma and collaborators</strong> &mdash; the local and global theory of fractional iteration.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-diagram-project"></i></span> <strong>The Zhang Weinian school, Bhat &amp; Gopalakrishna, and collaborators</strong> &mdash; the modern iterative-roots literature.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-globe"></i></span> <strong>Lars / Henryk Trappmann</strong> &mdash; interactive functional-equation visualization.</li>
+                            <li><span class="ref-tag"><i class="fa-solid fa-book-open"></i></span> The page format remains adapted from the <a href="https://complex-analysis.com/" target="_blank" rel="noopener">Complex Analysis</a> online textbook by Juan Carlos Ponce Campuzano.</li>
+                        </ul>
+
+                        <h3>License</h3>
+                        <p>
+                            <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">
+                                <i class="fa-brands fa-creative-commons"></i>
+                                <i class="fa-brands fa-creative-commons-by"></i>
+                                <i class="fa-brands fa-creative-commons-sa"></i> Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+                            </a>
+                        </p>
+                        <p>
+                            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions" target="_blank" rel="noopener">
+                                <i class="fa-brands fa-github"></i> View source on GitHub
+                            </a>
+                        </p>
+
+                        <div class="notice-box">
+                            <p style="margin:0;">
+                                <strong>Spotted an error?</strong> This is a public reference work; corrections to
+                                dates, page ranges, attributions, or links are welcome via the GitHub repository.
+                                Continue to the <a href="blog.html">Blog</a> for worked notes that put these sources
+                                to use.
+                            </p>
+                        </div>
+                    </div>
+
+                </article>
+            </main>
+
+            <div class="nextPage">
+                <a href="blog.html">Next: Blog <i class="fa-solid fa-angles-right"></i></a>
+            </div>
         </section>
     </div>
 

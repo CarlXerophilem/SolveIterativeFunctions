@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Connections — Iterative Functional Equations</title>
+
+    <meta name="DC.Title" content="Connections — Iterative Functional Equations">
+    <meta name="DC.Creator" content="CarlXerophilem">
+    <meta name="DC.Date" content="2026-06-22">
+    <meta name="DC.Type" content="Interactive Resource">
+    <meta name="DC.Format" content="HTML">
+    <meta name="DC.Language" content="en-US">
+    <meta name="DC.Rights" content="https://creativecommons.org/licenses/by-sa/4.0/">
+    <meta property="og:title" content="Connections — Iterative Functional Equations">
+    <meta property="og:description" content="How Schröder, Abel and Böttcher's equations become the shared language of complex dynamics, ergodic theory, tetration, formal power series, branching processes, operator theory, numerics and the renormalization group.">
+    <meta property="og:url" content="https://carlxerophilem.github.io/SolveIterativeFunctions/connections.html">
+    <meta property="og:site_name" content="Solve Iterative Functions">
+
+    <link rel="icon" type="image/x-icon" href="ff.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script defer src="js/katex-init.js"></script>
+
+    <!-- Page-scoped components: field-map and a small chronology rail.
+         Uses ONLY theme variables so light/dark mode keep working. -->
+    <style>
+        .field-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.7rem;
+            margin: 1.25rem 0;
+        }
+        .field-node {
+            border: 1px solid var(--border-color);
+            background: var(--toc-bg);
+            border-radius: 8px;
+            padding: 0.65rem 0.8rem;
+            font-size: 0.86rem;
+            color: var(--text-color);
+        }
+        .field-node strong { display: block; margin-bottom: 0.2rem; color: var(--link-color); }
+        .field-node .eqn { color: var(--footer-text); font-size: 0.82rem; }
+        .chrono {
+            list-style: none;
+            padding-left: 0;
+            margin: 1rem 0;
+            border-left: 2px solid var(--border-color);
+        }
+        .chrono li {
+            position: relative;
+            padding: 0.35rem 0 0.35rem 1.1rem;
+            font-size: 0.92rem;
+        }
+        .chrono li::before {
+            content: "";
+            position: absolute;
+            left: -0.32rem;
+            top: 0.75rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--link-color);
+        }
+        .chrono .yr { font-weight: 700; color: var(--link-color); margin-right: 0.45rem; }
+    </style>
+</head>
+<body data-type="book" id="top">
+
+    <!-- Loader -->
+    <div class="myLoader" id="loader">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loadingMessage">Loading...</div>
+    </div>
+    <script>
+        window.addEventListener('load', function(){ document.getElementById('loader').style.display = 'none'; });
+    </script>
+
+    <!-- Fixed Navigation Bar -->
+    <div class="fixed-bar">
+        <div class="link-container">
+            <a href="equations.html" id="prev-link" title="Atlas of Equations"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
+        </div>
+        <div class="center-link-group">
+            <a href="connections.html" id="center-link">
+                <span class="hover-prev">Atlas</span>
+                <span class="title-main">Connections</span>
+                <span class="hover-next">Solver</span>
+            </a>
+        </div>
+        <a href="solver.html" id="next-link" title="Solver"><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span></a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <section data-type="chapter" id="connections">
+
+            <div class="toc-chapter" id="toc-chapter">
+                <p><i class="fa-solid fa-list"></i> Contents</p>
+                <ul>
+                    <li><a href="#section0">0. One Equation, Many Fields</a></li>
+                    <li><a href="#section1">1. Complex &amp; Holomorphic Dynamics</a></li>
+                    <li><a href="#section2">2. Dynamical Systems &amp; Ergodic Theory</a></li>
+                    <li><a href="#section3">3. Continuous Iteration, Flows &amp; Generators</a></li>
+                    <li><a href="#section4">4. Special Functions, Tetration &amp; Hyperoperations</a></li>
+                    <li><a href="#section5">5. Combinatorics &amp; Formal Power Series</a></li>
+                    <li><a href="#section6">6. Probability &amp; Branching Processes</a></li>
+                    <li><a href="#section7">7. Operator Theory</a></li>
+                    <li><a href="#section8">8. Numerical Analysis &amp; Computer Science</a></li>
+                    <li><a href="#section9">9. Physics &amp; the Renormalization Group</a></li>
+                    <li><a href="#section10">10. The Whole Web at a Glance</a></li>
+                </ul>
+            </div>
+
+            <main>
+                <article>
+
+                    <h1>Connections</h1>
+                    <p style="color:var(--footer-text); margin-top:-0.5rem;">
+                        How the <a href="equations.html">Schröder, Abel and Böttcher equations</a> stop being
+                        a curiosity about half-iterates and become the shared grammar of nine other fields —
+                        complex dynamics, ergodic theory, continuous iteration, tetration, formal power series,
+                        branching probability, operator theory, numerics and the renormalization group.
+                    </p>
+                    <hr>
+
+                    <!-- ================= Section 0 ================= -->
+                    <div id="section0">
+                        <h2>0. One Equation, Many Fields</h2>
+                        <p>
+                            Everything on this site has revolved around a single move: relabel coordinates so that an
+                            awkward map \(f\) becomes a map you can iterate by inspection. The <a href="theory.html#section6">Theory</a>
+                            page called this a <strong>conjugacy</strong>; the <a href="equations.html">Atlas</a> catalogued the
+                            classical functional equations that realise it. The reason this site keeps insisting on that one idea
+                            is that it is not local to our problem. The <strong>conjugacy equation</strong>
+                            \[
+                            \psi \circ f = g \circ \psi
+                            \]
+                            — &ldquo;find coordinates \(\psi\) in which \(f\) becomes the simple model \(g\)&rdquo; — is the
+                            organising question of a surprising number of mathematical and physical disciplines. Solving an
+                            iterative functional equation <em>is</em> finding a normal form; finding a normal form <em>is</em>
+                            what dynamicists, number theorists, probabilists, operator theorists and physicists each do under
+                            their own vocabulary.
+                        </p>
+
+                        <div class="keypoint">
+                            The four classical local models all sit inside \(\psi\circ f = g\circ\psi\); the multiplier
+                            \(\lambda=f'(0)\) of a germ fixing \(0\) decides which model \(g\) applies:
+                            <ul style="margin:0.5rem 0 0;">
+                                <li><strong>Schröder</strong> \(\;\psi\circ f=\lambda\,\psi\;\) — attracting/repelling \((0&lt;|\lambda|\neq 1)\), model \(z\mapsto\lambda z\).</li>
+                                <li><strong>Böttcher</strong> \(\;\varphi\circ f=\varphi^{\,n}\;\) — superattracting \((f(z)=az^n+\cdots,\ n\ge2)\), model \(z\mapsto z^n\).</li>
+                                <li><strong>Abel</strong> \(\;\alpha\circ f=\alpha+1\;\) — parabolic / the translation model \(w\mapsto w+1\) (a <em>Fatou coordinate</em>).</li>
+                                <li><strong>Linearization</strong> \(\;\psi\circ f=\lambda\,\psi\;\) again — neutral \(|\lambda|=1\), but now solvability is an arithmetic (small-divisor) question.</li>
+                            </ul>
+                        </div>
+
+                        <p>
+                            These equations are old. The functional equation now named for <strong>Niels Henrik Abel</strong> dates
+                            to 1826; the Schröder equation appears in <strong>Ernst Schröder</strong>'s memoir
+                            &ldquo;Ueber iterirte Functionen,&rdquo; <em>Mathematische Annalen</em> <strong>3</strong> (1870),
+                            pp.&nbsp;296&ndash;322. What this page documents is how far that 19th-century seed has spread. Each
+                            section names a field, the precise functional-equation link, the key names, and where to read more on
+                            this site. A condensed map closes the page in <a href="#section10">§10</a>.
+                        </p>
+
+                        <div class="field-map">
+                            <div class="field-node"><strong>Complex dynamics</strong><span class="eqn">Koenigs / Böttcher / Fatou coords; Siegel &amp; Cremer</span></div>
+                            <div class="field-node"><strong>Dynamical systems</strong><span class="eqn">Sternberg, Poincaré&ndash;Dulac, KAM</span></div>
+                            <div class="field-node"><strong>Continuous iteration</strong><span class="eqn">flows, generators (Szekeres, Zdun)</span></div>
+                            <div class="field-node"><strong>Tetration</strong><span class="eqn">half-exp; Abel function of \(\exp\) (Kneser)</span></div>
+                            <div class="field-node"><strong>Formal power series</strong><span class="eqn">Bell / Jabotinsky / Carleman matrices</span></div>
+                            <div class="field-node"><strong>Branching probability</strong><span class="eqn">PGF iteration; Koenigs function</span></div>
+                            <div class="field-node"><strong>Operator theory</strong><span class="eqn">composition / Koopman / transfer</span></div>
+                            <div class="field-node"><strong>Numerics &amp; CS</strong><span class="eqn">Newton; fractional-iterate algorithms</span></div>
+                            <div class="field-node"><strong>Physics / RG</strong><span class="eqn">Feigenbaum&ndash;Cvitanović fixed point</span></div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 1 ================= -->
+                    <div id="section1">
+                        <h2>1. Complex &amp; Holomorphic Dynamics</h2>
+                        <p>
+                            The richest home for these equations is the iteration of holomorphic maps of the Riemann sphere.
+                            Here the four local models are not just convenient changes of variable — they are forced on you by
+                            the multiplier, and each carries the name of the mathematician who solved its functional equation.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Fatou and Julia sets.</strong> For a rational map \(f\) of the sphere, the <em>Fatou set</em>
+                            is the largest open set on which the family of iterates \(\{f^{\circ n}\}\) is a
+                            <strong>normal family</strong>; the <em>Julia set</em> is its complement, where iteration is
+                            chaotic. Normality is controlled by <strong>Montel's theorem</strong> (a family omitting three
+                            values is normal) and, through Arzelà&ndash;Ascoli, is equivalent to equicontinuity in the
+                            spherical metric. The canonical modern reference is J.&nbsp;Milnor, <em>Dynamics in One Complex
+                            Variable</em>.
+                        </div>
+
+                        <p>
+                            On the Fatou set, near a fixed point \(a=f(a)\) with multiplier \(\lambda=f'(a)\), the local picture
+                            is exactly the <a href="theory.html#section3">Schröder/Koenigs</a> story — but four regimes appear,
+                            one per functional equation.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Koenigs (attracting / repelling).</strong> Gabriel Koenigs, &ldquo;Recherches sur les
+                            intégrales de certaines équations fonctionnelles,&rdquo; <em>Ann. Sci. ÉNS</em> (1884): if
+                            \(0&lt;|\lambda|&lt;1\) or \(|\lambda|&gt;1\), the Schröder equation \(\psi\circ f=\lambda\,\psi\)
+                            has a unique holomorphic solution with \(\psi'(a)=1\). The associated composition operator has the
+                            eigenvalue ladder \(\{\lambda^{k}\}_{k\ge0}\) — a fact that returns in <a href="#section7">§7</a>.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Böttcher (superattracting).</strong> For \(f(z)=az^{n}+\cdots\) with \(n\ge2\), the
+                            <strong>Böttcher equation</strong> \(\varphi\circ f=\varphi^{\,n}\) conjugates \(f\) to
+                            \(z\mapsto z^{n}\); its logarithm is a Schröder equation. The result was sketched by
+                            <strong>Lucjan Emil Böttcher (commonly dated to 1904)</strong>, with the first complete proof often
+                            attributed to <strong>Joseph Ritt (1920)</strong>. The Böttcher coordinate is unique up to an
+                            \((n-1)\)th root of unity.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Parabolic — the Fatou coordinate.</strong> When \(\lambda\) is a root of unity
+                            (tangent-to-identity case), the <strong>Leau&ndash;Fatou flower theorem</strong> gives alternating
+                            attracting and repelling petals. On each attracting petal there is a <em>Fatou coordinate</em>
+                            \(\chi\) solving the <strong>Abel equation</strong> \(\chi\circ f=\chi+1\), conjugating \(f\) to the
+                            translation \(w\mapsto w+1\). See M.&nbsp;Abate's survey of parabolic dynamics.
+                        </div>
+
+                        <p>
+                            The fourth regime, the <em>irrationally neutral</em> case \(\lambda=e^{2\pi i\alpha}\) with \(\alpha\)
+                            irrational, is where the subject becomes deep. Solving Schröder's equation now produces
+                            <strong>small divisors</strong> \(\lambda^{n}-1\) that can be arbitrarily close to zero, so the
+                            formal series for \(\psi\) may diverge. Whether it converges is an arithmetic property of \(\alpha\).
+                        </p>
+
+                        <div class="chrono-wrap">
+                        <ul class="chrono">
+                            <li><span class="yr">1912</span><strong>E.&nbsp;Kasner</strong> conjectured that linearization always holds.</li>
+                            <li><span class="yr">1917</span><strong>G.&nbsp;A.&nbsp;Pfeiffer</strong> gave the first non-linearizable example.</li>
+                            <li><span class="yr">1927&ndash;38</span><strong>H.&nbsp;Cremer</strong>: under an arithmetic genericity condition \(f\) need not be linearizable; such a point is a <strong>Cremer point</strong>.</li>
+                            <li><span class="yr">1942</span><strong>C.&nbsp;L.&nbsp;Siegel</strong>: a <strong>Diophantine</strong> \(\alpha\) forces linearizability — a <strong>Siegel disk</strong> on which \(f\) is conjugate to a rotation.</li>
+                            <li><span class="yr">1988&ndash;95</span><strong>A.&nbsp;D.&nbsp;Brjuno</strong> sharpened the condition; <strong>J.-C.&nbsp;Yoccoz</strong> proved the <strong>Brjuno condition</strong> necessary and sufficient for quadratic polynomials (<em>Astérisque</em> 231, 1995).</li>
+                        </ul>
+                        </div>
+
+                        <div class="theorem">
+                            <strong>The Brjuno condition.</strong> With \(p_n/q_n\) the continued-fraction convergents of
+                            \(\alpha\), the number \(\alpha\) is <em>Brjuno</em> iff
+                            \[
+                            B(\alpha)=\sum_{n\ge0}\frac{\log q_{n+1}}{q_n}&lt;\infty .
+                            \]
+                            Almost every real number is Brjuno, and every Diophantine number is Brjuno. For quadratic
+                            polynomials, this exact arithmetic condition decides whether the linearizing Schröder coordinate
+                            exists — small divisors made precise.
+                        </div>
+
+                        <div class="keypoint">
+                            The trichotomy on this site (<a href="theory.html#section2">attracting / repelling / superattracting /
+                            parabolic / elliptic</a>) is exactly the case split of holomorphic dynamics. Koenigs, Böttcher and the
+                            Fatou coordinate are the same Schröder, Böttcher and Abel equations the <a href="solver.html">Solver</a>
+                            integrates numerically; Siegel/Cremer is the regime where the half-iterate construction can fail for
+                            an <em>arithmetic</em> reason rather than a geometric one.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 2 ================= -->
+                    <div id="section2">
+                        <h2>2. Dynamical Systems &amp; Ergodic Theory</h2>
+                        <p>
+                            Move from one complex variable to a real diffeomorphism in several variables and the conjugacy
+                            equation becomes the <strong>linearization / normal-form</strong> problem near a fixed point. The
+                            question &ldquo;is \(f\) conjugate to its linear part \(Df(0)\)?&rdquo; is graded by category —
+                            topological, smooth, analytic — and each level has its own theorem.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Topological — Hartman&ndash;Grobman.</strong> Near a <em>hyperbolic</em> fixed point, a
+                            \(C^1\) diffeomorphism is \(C^0\)-conjugate (topologically) to its linear part \(Df(0)\). This is the
+                            conjugacy equation \(\psi\circ f=Df(0)\,\psi\) solved in the continuous category only.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Smooth — Sternberg.</strong> S.&nbsp;Sternberg (1950s) showed a \(C^k\) germ is smoothly
+                            conjugate to its linear part provided the eigenvalues satisfy a <strong>non-resonance</strong>
+                            condition \(\lambda_j\neq\prod_i\lambda_i^{m_i}\) for \(\sum_i m_i\ge2\). The conjugacy again solves
+                            \(\psi\circ f=Df(0)\,\psi\). In the smooth category, &ldquo;small divisors are invisible&rdquo;: formal
+                            linearizability upgrades to smooth linearizability.
+                        </div>
+
+                        <p>
+                            When non-resonance fails, exact linearization is impossible and one keeps only the irreducible
+                            <strong>resonant monomials</strong>: this is the <strong>Poincaré&ndash;Dulac normal form</strong>.
+                            Analytic convergence of the normalizing transformation in the Siegel domain again requires a
+                            small-divisor (Brjuno / Siegel) hypothesis, tying this section back to <a href="#section1">§1</a>.
+                        </p>
+
+                        <div class="keypoint">
+                            <strong>KAM theory.</strong> Kolmogorov&ndash;Arnold&ndash;Moser: invariant tori carrying a
+                            Diophantine frequency \(\omega\) survive small perturbations. The homological equation one must solve
+                            has small divisors \(\langle k,\omega\rangle\) — the multidimensional analogue of the
+                            \(\lambda^{n}-1\) of <a href="#section1">§1</a>. The arithmetic of frequencies plays the role the
+                            arithmetic of the multiplier played for a single map.
+                        </div>
+
+                        <p>
+                            <strong>Renormalization</strong> closes the loop. Feigenbaum's period-doubling universality and the
+                            renormalization of critical circle maps (Yoccoz; the Yoccoz puzzle) recast self-similarity as a
+                            <em>fixed point of a renormalization operator</em>. The slogan of the area —
+                            &ldquo;renormalization turns small divisors into large divisors&rdquo; — explains why a problem that is
+                            delicate one scale at a time becomes hyperbolic, hence rigid, once you iterate the renormalization
+                            map. We return to the explicit Feigenbaum&ndash;Cvitanović equation in <a href="#section9">§9</a>.
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 3 ================= -->
+                    <div id="section3">
+                        <h2>3. Continuous Iteration, Flows &amp; Generators</h2>
+                        <p>
+                            A half-iterate is the index \(t=\tfrac12\) of a would-be one-parameter family \(\{f^{t}\}\). Asking for
+                            the whole family — a <strong>flow</strong> with \(f^{1}=f\) and \(f^{s}\circ f^{t}=f^{s+t}\) — is the
+                            <strong>embedding problem</strong>, and it is solved by exactly the same equations.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Embedding via Abel / Schröder.</strong> Given an Abel function \(\alpha\) (solving
+                            \(\alpha\circ f=\alpha+1\)),
+                            \[
+                            f^{t}(z)=\alpha^{-1}\!\big(\alpha(z)+t\big)
+                            \]
+                            automatically satisfies the iteration-semigroup law for every real \(t\). Equivalently, from a
+                            Schröder function \(\psi\) (\(\psi\circ f=\lambda\,\psi\)),
+                            \[
+                            f^{t}(z)=\psi^{-1}\!\big(\lambda^{t}\,\psi(z)\big).
+                            \]
+                            Halving the index (\(t=\tfrac12\)) recovers the <a href="theory.html#section3">half-iterate</a>;
+                            this is the continuous-time version of the same conjugacy.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Regular iteration — Szekeres.</strong> G.&nbsp;Szekeres, &ldquo;Regular iteration of real and
+                            complex functions,&rdquo; <em>Acta Mathematica</em> <strong>100</strong> (1958), constructs the
+                            principal (regular) iterate and the <strong>infinitesimal generator</strong>; his
+                            &ldquo;Fractional iteration of exponentially growing functions&rdquo; (<em>J. Austral. Math. Soc.</em>,
+                            1962) extends this to fast-growing maps such as \(\exp\).
+                        </div>
+
+                        <p>
+                            The <strong>Lie viewpoint</strong> makes the generator concrete. A continuous iteration semigroup is
+                            the flow of an autonomous ODE
+                            \[
+                            \frac{\partial f^{t}(z)}{\partial t}=G\!\big(f^{t}(z)\big),
+                            \qquad
+                            G(z)=\left.\frac{\partial f^{t}(z)}{\partial t}\right|_{t=0},
+                            \]
+                            where \(G\) is the holomorphic <strong>infinitesimal generator</strong> (the Lie vector field, also
+                            called the <em>iteration velocity</em> or <em>beta function</em>). On the unit disk,
+                            <strong>Berkson&ndash;Porta (1978)</strong> characterize exactly which \(G\) generate a semigroup of
+                            holomorphic self-maps: \(G(\xi)=(\xi-b)(\bar b\xi-1)\,p(\xi)\) with \(\operatorname{Re}p\ge0\).
+                        </p>
+
+                        <div class="keypoint">
+                            <strong>Erdős&ndash;Jabotinsky and Zdun.</strong> E.&nbsp;Jabotinsky's &ldquo;Analytic iteration&rdquo;
+                            (1963) and the Aczél&ndash;Jabotinsky functional-differential equation tie the generator to the
+                            iterates; the recovery of \(G\) from \(f\) is the generic <a href="equations.html">Abel equation</a> in
+                            disguise. M.&nbsp;C.&nbsp;Zdun's <em>Continuous and Differentiable Iteration Semigroups</em> develops
+                            embeddability criteria for one-dimensional diffeomorphisms into differentiable flows — when a discrete
+                            map sits inside a smooth flow at all. This is the abstract backbone of every &ldquo;fractional
+                            iterate&rdquo; the <a href="solver.html">Solver</a> reports.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 4 ================= -->
+                    <div id="section4">
+                        <h2>4. Special Functions, Tetration &amp; Hyperoperations</h2>
+                        <p>
+                            The most famous iterative functional equation outside dynamics is
+                            \(f(f(x))=e^{x}\): the <strong>half-exponential</strong>, or functional square root of \(\exp\). It is
+                            the headline example because it is provably <em>not</em> elementary.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Half-exponential.</strong> A function \(f\) with \(f(f(x))=e^{x}\) (more generally
+                            \(f(f(x))=a\,b^{x}\)) is a <em>half-exponential</em>. No Hardy \(L\)-function is half-exponential, so
+                            \(f\) cannot be built from elementary operations — it is inherently an object of iteration theory.
+                        </div>
+
+                        <p>
+                            Hyperoperations supply the surrounding hierarchy. A <strong>super-exponential</strong> (or
+                            <em>tetration</em>) to base \(b\) is a function \(F\) with
+                            \[
+                            F(z+1)=b^{\,F(z)} ,
+                            \]
+                            i.e. a <em>superfunction</em> of \(x\mapsto b^{x}\); tetration normalizes \(F(0)=1\). Its inverse, the
+                            <strong>super-logarithm</strong>, is exactly an <strong>Abel function of \(\exp\)</strong>:
+                            \(A(b^{z})=A(z)+1\). So the entire tetration program is the Abel equation
+                            \(\alpha\circ f=\alpha+1\) for \(f=\exp\) — the same equation that produces the
+                            <a href="#section1">Fatou coordinate</a>.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Kneser's real-analytic tetration.</strong> Hellmuth Kneser, &ldquo;Reelle analytische
+                            Lösungen der Gleichung \(\varphi(\varphi(x))=e^{x}\) und verwandter Funktionalgleichungen,&rdquo;
+                            <em>J. reine angew. Math.</em> <strong>187</strong> (1950), 56&ndash;67, constructed a real-analytic
+                            solution of \(f(f(x))=e^{x}\) by building a real-analytic Abel function of \(\exp\). The construction
+                            exploits the complex fixed points of \(\exp\) and a Schröder / Riemann-mapping argument — the only
+                            way to anchor a coordinate when there is <a href="theory.html#section5">no real fixed point</a>.
+                        </div>
+
+                        <p>
+                            Because the Abel equation has infinitely many real-analytic solutions, the hard part is
+                            <strong>uniqueness</strong>: which super-logarithm is &ldquo;the&rdquo; natural one? Two threads
+                            address it.
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Paulsen &amp; Cowgill (2017),</strong> &ldquo;Solving \(F(z+1)=b^{F(z)}\) in the complex
+                                plane,&rdquo; <em>Advances in Computational Mathematics</em> <strong>43</strong>, proved existence
+                                and uniqueness of a tetration holomorphic on \(\mathbb{C}\setminus(-\infty,-2]\) and real on
+                                \((-2,\infty)\) for suitable bases (commonly stated as \(b&gt;e^{1/e}\)), under a bounded
+                                half-plane growth condition that singles out Kneser's solution.
+                            </li>
+                            <li>
+                                <strong>Trappmann &amp; Kouznetsov (2011),</strong> &ldquo;Uniqueness of holomorphic Abel
+                                functions at a complex fixed point pair,&rdquo; <em>Aequationes Math.</em> <strong>81</strong>,
+                                65&ndash;76, give a holomorphic-uniqueness criterion that Kneser's Abel function satisfies, in
+                                support of the conjecture that Kneser's tetration is canonical. Their survey
+                                &ldquo;5+&nbsp;methods for real analytic tetration&rdquo; collects the competing constructions.
+                            </li>
+                        </ul>
+
+                        <div class="keypoint">
+                            Tetration is the &ldquo;real fixed point fails, so go complex&rdquo; theme of
+                            <a href="theory.html#section5">Theory §5</a> taken to its limit: \(\exp\) has no real fixed point, so
+                            every honest half-iterate of \(\exp\) is built through complex fixed points and an Abel/Schröder
+                            coordinate. The half-exponential is, in a precise sense, the simplest function the
+                            <a href="solver.html">Solver</a> cannot return in closed form — only as a series or a numerically
+                            integrated Abel function.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 5 ================= -->
+                    <div id="section5">
+                        <h2>5. Combinatorics &amp; Formal Power Series</h2>
+                        <p>
+                            Strip away analysis and keep only Taylor coefficients, and iteration becomes <em>linear algebra on
+                            formal power series</em>. This is the algebraic engine behind the <a href="composita.html">Composita
+                            Calculator</a> and the <a href="solver.html">Solver</a>'s series mode.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Composition is governed by Bell polynomials.</strong> The derivatives of a composition are
+                            <strong>Faà di Bruno's formula</strong>
+                            \[
+                            \frac{d^{n}}{dx^{n}}f\big(g(x)\big)=\sum_{k=0}^{n}f^{(k)}\!\big(g(x)\big)\,
+                            B_{n,k}\!\big(g'(x),g''(x),\dots,g^{(n-k+1)}(x)\big),
+                            \]
+                            where the \(B_{n,k}\) are the partial (incomplete) exponential <strong>Bell polynomials</strong>. Every
+                            coefficient recurrence on this site is, under the hood, a Bell-polynomial identity.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Iteration / Jabotinsky / Carleman matrices.</strong> To a series \(f\) with \(f(0)=0\) one
+                            attaches an infinite lower-triangular matrix \(B(f)\) built from Bell polynomials, so that composition
+                            becomes a matrix product:
+                            \[
+                            B(f\circ g)=B(g)\,B(f).
+                            \]
+                            In Riordan-group language \(B(f)\) is the array \((1,f)\). Comtet's <em>Advanced Combinatorics</em>
+                            popularized these as &ldquo;iteration matrices&rdquo;; Knuth calls the closely related object a
+                            convolution / Carleman matrix. Computing the \(t\)-th iterate \(f^{\circ t}\) reduces to the
+                            \(t\)-th <em>power</em> of the matrix, and a non-integer power
+                            \(M^{t}(f)=U^{-1}\Lambda^{t}U\) (diagonalize, raise eigenvalues to the power \(t\)) is precisely a
+                            solution of Schröder/Abel \(u(f(x))=\lambda\,u(x)\). This is how half-iterates and fractional iterates
+                            are computed coefficient by coefficient.
+                        </div>
+
+                        <p>
+                            The additive (composition-)logarithm is the <strong>iterative logarithm</strong>
+                            \(\operatorname{itlog}(f):=\tfrac{d}{ds}f^{\circ s}\big|_{s=0}\) — the discrete shadow of the
+                            generator \(G\) of <a href="#section3">§3</a>. Its first terms are due to Korkine, and the case
+                            \(f'(0)=1\) to <strong>Jabotinsky</strong>; convergence of \(\operatorname{itlog}(f)\) near \(0\) is
+                            equivalent to embeddability of \(f\) in a flow. An Erdős&ndash;Jabotinsky / Baker&ndash;Szekeres
+                            result shows the only meromorphic germs for which it converges near \(0\) are
+                            \(f(z)=z/(1-cz)\), with \(\operatorname{itlog}(f)(z)=c\,z^{2}\) — a sharp warning that
+                            &ldquo;the&rdquo; continuous iterate is the exception, not the rule.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Composita (Kruchinin).</strong> For \(F(x)=\sum_{n&gt;0}f_n x^n\), V.&nbsp;V.&nbsp;Kruchinin's
+                            <strong>composita</strong> is
+                            \[
+                            F^{\Delta}(n,k)=\!\!\sum_{\lambda_1+\cdots+\lambda_k=n}\!\! f_{\lambda_1}\cdots f_{\lambda_k},
+                            \qquad
+                            F(x)^{k}=\sum_{n\ge k}F^{\Delta}(n,k)\,x^{n},
+                            \]
+                            the coefficients of powers of \(F\) indexed by integer compositions. Compositae multiply cleanly under
+                            composition of generating functions — see &ldquo;Composita and its properties&rdquo; — which is exactly
+                            why the <a href="composita.html">Composita Calculator</a> can assemble half-iterate series in exact
+                            rational arithmetic.
+                        </div>
+
+                        <div class="keypoint">
+                            <strong>Lagrange inversion</strong> handles the compositional inverse. For \(F\) with \(F(0)=0\),
+                            \(F'(0)\neq0\) and inverse \(G\),
+                            \[
+                            [x^{n}]\,\varphi\big(G(x)\big)=\tfrac1n\,[x^{n-1}]\,\varphi'(x)\Big(\tfrac{x}{F(x)}\Big)^{n}.
+                            \]
+                            Inverting the linearizing coordinate \(\psi\) — the last step of every Schröder half-iterate — is a
+                            Lagrange&ndash;Bürmann computation.
+                        </div>
+
+                        <details>
+                            <summary><strong>Formal groups &amp; \(p\)-adic dynamics (the number-theory branch)</strong></summary>
+                            <div class="details-content">
+                                <p>
+                                    A one-dimensional <strong>formal group law</strong> \(F(X,Y)\) satisfies \(F(X,0)=X\) and
+                                    associativity \(F(F(X,Y),Z)=F(X,F(Y,Z))\). Over a \(\mathbb{Q}\)-algebra it has a
+                                    <strong>logarithm</strong> \(\log_F\), the unique series with \(\log_F(X)\equiv X\pmod{X^2}\)
+                                    and \(F(X,Y)=\exp_F(\log_F X+\log_F Y)\) — a Schröder/Abel-type conjugation linearizing the
+                                    group law. <strong>Lubin&ndash;Tate (1965)</strong> single out the unique \(F\) over
+                                    \(\mathbb{Z}_p\) for which \(e(X)=pX+X^{p}\) is an endomorphism, with
+                                    \([a]_F(X)=\exp_F(a\,\log_F X)\). In \(p\)-adic dynamics, Lubin (1994) studied power series
+                                    commuting under composition on the open unit disk and conjectured that a noninvertible series
+                                    commuting with an invertible one forces a formal group &ldquo;in the background&rdquo;; the
+                                    height-one case over \(\mathbb{Z}_p\) has since been proved (Berger; Specter), using
+                                    crystalline-period methods from \(p\)-adic Hodge theory. The iterative structure
+                                    (\(f'(0)\) a uniformizer, roots of iterates) is precisely an iteration-theory condition.
+                                </p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 6 ================= -->
+                    <div id="section6">
+                        <h2>6. Probability &amp; Branching Processes</h2>
+                        <p>
+                            The cleanest applied appearance of iteration is the <strong>Galton&ndash;Watson</strong> branching
+                            process. The whole theory of extinction is iteration of a single analytic self-map of \([0,1]\).
+                        </p>
+
+                        <div class="theorem">
+                            <strong>PGF iteration and extinction.</strong> With offspring probability generating function
+                            \(f(s)=\sum_k p_k s^{k}\), the \(n\)-th generation PGF is the \(n\)-fold composition
+                            \(f_n=f^{\circ n}\). The <strong>extinction probability</strong> \(q\) is the smallest fixed point of
+                            \(f\) in \([0,1]\):
+                            \[
+                            q=f(q),\qquad q=\lim_{n\to\infty}f^{\circ n}(0),
+                            \]
+                            and \(f^{\circ n}(t)\to q\) for \(t\in[0,1)\). Criticality is read off the multiplier:
+                            \(q=1\iff m=f'(1)\le1\), while \(q&lt;1\) for \(m&gt;1\). Extinction is a
+                            <a href="theory.html#section2">fixed point</a>, and convergence to it is governed by the multiplier
+                            \(f'(q)\) — the Schröder/Koenigs picture, now with a probabilistic meaning.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>Koenigs function for PGFs (Goryainov).</strong> V.&nbsp;V.&nbsp;Goryainov, &ldquo;Koenigs
+                            function and fractional iterates of probability generating functions,&rdquo; <em>Sb. Math.</em>
+                            <strong>193</strong>:7 (2002), 1009&ndash;1025, characterizes which PGFs embed in a one-parameter group
+                            of fractional iterates: the Koenigs function \(\varphi\) (the limit of normalized iterates, solving the
+                            Schröder equation \(\varphi(f(z))=f'(q)\,\varphi(z)\)) must lie in a described class. This is precisely
+                            the test for embedding a discrete Galton&ndash;Watson process into a homogeneous
+                            <strong>Markov branching process</strong> — a &ldquo;fractional generation&rdquo; of the population.
+                        </div>
+
+                        <p>
+                            The embedding question was opened by <strong>Karlin &amp; McGregor</strong> in <em>Trans. Amer. Math.
+                            Soc.</em> <strong>132</strong> (1968), in two companion papers — &ldquo;Embedding iterates of analytic
+                            functions with two fixed points into continuous semigroups&rdquo; and &ldquo;Embeddability of
+                            discrete-time branching processes into continuous-time branching processes&rdquo; — where
+                            embeddability is governed by the solvability of the <a href="equations.html">Abel and Schröder
+                            functional equations</a>. The continuous-time, continuous-state analogue is the
+                            <strong>continuous-state branching process</strong> (Jiřina 1958; Lamperti): the
+                            <em>Lamperti transformation</em> time-changes a spectrally positive Lévy process into a CSBP,
+                            realizing the &ldquo;fractional iterate&rdquo; of the GW composition as a genuine flow
+                            (Athreya&ndash;Ney, <em>Branching Processes</em>).
+                        </p>
+
+                        <div class="keypoint">
+                            A branching process is the half-iterate problem wearing a probabilist's hat: a fractional generation
+                            number is a fractional iterate of the offspring PGF, and it exists exactly when the
+                            <a href="theory.html#section3">Koenigs / Schröder</a> coordinate of \(f\) at \(q\) is well behaved.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 7 ================= -->
+                    <div id="section7">
+                        <h2>7. Operator Theory</h2>
+                        <p>
+                            Composition with a fixed map is itself a linear operator, and iteration becomes its spectral theory.
+                            This reframes Schröder's equation as an <em>eigenvalue equation</em>.
+                        </p>
+
+                        <div class="definition">
+                            <strong>Composition operator.</strong> On a space of analytic functions, the composition operator is
+                            \(C_\varphi f=f\circ\varphi\) (Cowen&ndash;MacCluer, <em>Composition Operators on Spaces of Analytic
+                            Functions</em>; Shapiro). The <strong>Königs eigenfunction</strong> \(\sigma\) is precisely the
+                            Schröder solution: \(\sigma\circ\varphi=\varphi'(a)\,\sigma\), i.e. an eigenvector of \(C_\varphi\)
+                            with eigenvalue \(\varphi'(a)\).
+                        </div>
+
+                        <p>
+                            Koenigs' theorem (<a href="#section1">§1</a>) thus reads, operator-theoretically, as the statement that
+                            \(C_\varphi\) has the eigenvalue ladder \(\{\varphi'(a)^{k}\}_{k\ge0}\). Cowen&ndash;MacCluer show
+                            that for a univalently-induced \(C_\varphi\) on the Hardy space \(H^2\), the spectrum is the union of
+                            these Koenigs eigenvalues with a closed disk centered at \(0\) — a complete dictionary between the
+                            functional equation and the operator's spectrum.
+                        </p>
+
+                        <div class="method-callout">
+                            <strong>Koopman and transfer operators.</strong> The <strong>Koopman operator</strong> is the
+                            composition operator \(U_f g=g\circ f\) acting on observables; its adjoint is the
+                            <strong>transfer (Perron&ndash;Frobenius / Ruelle) operator</strong>, which propagates probability
+                            densities and whose eigenstate of eigenvalue \(1\) is the invariant measure. Crucially, the
+                            eigenfunctions of the Koopman operator are exactly the semiconjugacies \(\lambda\circ f=\mu\,\lambda\)
+                            — <strong>Schröder's equation again</strong>. Modern data-driven &ldquo;Koopman mode&rdquo; analysis is
+                            therefore numerically solving the same linearization the <a href="theory.html#section3">Theory</a> page
+                            solves symbolically.
+                        </div>
+
+                        <div class="keypoint">
+                            One equation, three operators: \(\sigma\circ\varphi=\varphi'(a)\,\sigma\) is the Königs eigenfunction of
+                            the composition operator, an eigenfunction of the Koopman operator, and (through the adjoint
+                            transfer operator) the linear theory behind invariant densities. The
+                            <a href="theory.html#section3">Schröder coordinate</a> is the eigenvector that diagonalizes
+                            iteration.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 8 ================= -->
+                    <div id="section8">
+                        <h2>8. Numerical Analysis &amp; Computer Science</h2>
+                        <p>
+                            Iteration is the native idiom of computation: a great deal of numerical analysis is the study of a
+                            cleverly chosen self-map whose fixed point is the answer.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Newton's method as fixed-point iteration.</strong> Root-finding for \(f\) is the fixed-point
+                            iteration \(x_{n+1}=\varphi(x_n)\) with
+                            \[
+                            \varphi(x)=x-\frac{f(x)}{f'(x)} ,
+                            \]
+                            whose fixed point \(\varphi(x^{*})=x^{*}\) is the sought root. Because \(\varphi'(x^{*})=0\) at a
+                            simple root, the root is a <strong>superattracting</strong> fixed point and convergence is
+                            <em>quadratic</em> (digits roughly double); a multiple root makes \(\varphi'(x^{*})\neq0\) and degrades
+                            convergence to linear. This is the <a href="theory.html#section2">multiplier classification</a> doing
+                            applied work.
+                        </div>
+
+                        <p>
+                            <strong>Aitken acceleration</strong> of a fixed-point iteration is <strong>Steffensen's method</strong>,
+                            which restores quadratic order without derivatives — convergence speed engineered by reshaping the
+                            multiplier. And <strong>computing fractional iterates numerically</strong> uses precisely the machinery
+                            of <a href="#section5">§5</a>: Carleman / Bell-matrix powers \(M^{t}(f)\), direct Schröder/Abel solving,
+                            or Chebyshev-series fits (for example of the Feigenbaum function). The link from functional equation to
+                            constructive numerics is direct — it is what the <a href="solver.html">Solver</a> on this site
+                            actually does.
+                        </p>
+
+                        <div class="keypoint">
+                            <strong>The half-iterate as a computation.</strong> &ldquo;No closed form&rdquo; (as for
+                            <a href="theory.html#section5">\(f(f(x))=x^2+1\)</a> or the half-exponential) does not mean
+                            &ldquo;no answer.&rdquo; The series, matrix-power and validated-enclosure methods turn an iterative
+                            functional equation into a finite numerical recipe; the
+                            <a href="post-numerical-half-iterate-methods.html">numerical-methods notes</a> work several through in
+                            detail.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 9 ================= -->
+                    <div id="section9">
+                        <h2>9. Physics &amp; the Renormalization Group</h2>
+                        <p>
+                            The renormalization group (RG) is functional iteration with units. &ldquo;Zoom out and rescale,&rdquo;
+                            applied repeatedly, is composition of a step-scaling map; its fixed points are scale-invariant
+                            theories. The most celebrated instance is the onset of chaos by period doubling.
+                        </p>
+
+                        <div class="theorem">
+                            <strong>Feigenbaum&ndash;Cvitanović equation.</strong> Period-doubling universality is the fixed-point
+                            equation of the renormalization (doubling) operator \(\mathcal{T}[g](x)=-\alpha\,g\!\big(g(-x/\alpha)\big)\):
+                            \[
+                            g(x)=-\alpha\,g\!\big(g(-x/\alpha)\big),\qquad g(0)=1,\ g'(0)=0,\ g''(0)&lt;0,
+                            \]
+                            equivalently \(g\!\big(g(x/\alpha)\big)=-g(x)/\alpha\). The universal constants are
+                            \[
+                            \alpha=2.502907875\ldots,\qquad \delta=4.669201609\ldots,
+                            \]
+                            the scaling and bifurcation-rate constants. <strong>Oscar Lanford</strong> gave the first
+                            (computer-assisted) proof that an even analytic solution \(g\) exists and is a <em>hyperbolic fixed
+                            point</em> of \(\mathcal{T}\) with one-dimensional unstable manifold — which is exactly what explains
+                            universality. Existence was also established by <strong>Campanino&ndash;Epstein</strong>, and the
+                            mechanism found independently by <strong>Coullet&ndash;Tresser</strong>.
+                        </div>
+
+                        <div class="notice-box">
+                            This is the very same self-referential shape as the equations on this site: \(g\) appears
+                            <em>composed with itself</em>, \(g(g(\cdot))\), just like the half-iterate condition
+                            \(f(f(x))=F(x)\). The difference is that here \(g\) is the unknown <em>and</em> appears inside its own
+                            argument with a rescaling \(\alpha\) — a fixed point of a renormalization map, not of a point map.
+                        </div>
+
+                        <div class="method-callout">
+                            <strong>RG as functional conjugation (Curtright&ndash;Zachos&ndash;Jin).</strong> T.&nbsp;L.&nbsp;Curtright
+                            &amp; C.&nbsp;K.&nbsp;Zachos, &ldquo;Renormalization Group Functional Equations,&rdquo;
+                            <em>Phys. Rev. D</em> <strong>83</strong> (2011) 065019, show that functional <strong>conjugation</strong>
+                            (Schröder / Abel) of step-scaling \(\sigma\)-functions produces continuous RG flows and exact relations
+                            for local \(\beta\)-functions — with the warning that fixed points of \(\sigma\) need not be true flow
+                            fixed points, and zeros of \(\beta\) may be mere turning points. Their follow-up, &ldquo;RG Flows,
+                            Cycles, and \(c\)-Theorem Folklore,&rdquo; <em>Phys. Rev. Lett.</em> <strong>108</strong> (2012) 131601,
+                            treats RG limit cycles by the same functional iteration.
+                        </div>
+
+                        <div class="keypoint">
+                            Physicists rediscovered Schröder and Abel as the language of scale transformations. A continuous RG
+                            flow is the <a href="#section3">flow embedding</a> of a discrete scaling step; a \(\beta\)-function is
+                            its <a href="#section3">infinitesimal generator</a>. The same conjugacy equation that halves an iterate
+                            on this site interpolates the RG scale parameter in quantum field theory.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= Section 10 ================= -->
+                    <div id="section10">
+                        <h2>10. The Whole Web at a Glance</h2>
+                        <p>
+                            Nine fields, one equation. The table below names, for each, the precise functional-equation link and
+                            the key people; the cards beneath point back to the rest of the site.
+                        </p>
+
+                        <div class="table-wrap">
+                            <table class="class-table">
+                                <thead>
+                                    <tr><th>Field</th><th>Functional-equation link</th><th>Key names</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Complex dynamics</td>
+                                        <td>Schröder/Koenigs, Böttcher, Fatou-coordinate (Abel); small divisors</td>
+                                        <td>Koenigs, Böttcher, Ritt, Leau&ndash;Fatou, Cremer, Siegel, Brjuno, Yoccoz</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dynamical systems</td>
+                                        <td>\(\psi\circ f=Df(0)\,\psi\); Poincaré&ndash;Dulac normal form; KAM</td>
+                                        <td>Hartman&ndash;Grobman, Sternberg, Kolmogorov&ndash;Arnold&ndash;Moser</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Continuous iteration</td>
+                                        <td>\(f^{t}=\alpha^{-1}(\alpha+t)\); generator ODE \(\dot f^{t}=G(f^{t})\)</td>
+                                        <td>Szekeres, Jabotinsky, Zdun, Berkson&ndash;Porta</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tetration</td>
+                                        <td>Abel equation of \(\exp\): \(A(b^{z})=A(z)+1\); half-exponential</td>
+                                        <td>Kneser, Paulsen&ndash;Cowgill, Trappmann&ndash;Kouznetsov</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Formal power series</td>
+                                        <td>\(B(f\circ g)=B(g)B(f)\); \(M^{t}(f)\) fractional iterate; composita</td>
+                                        <td>Bell, Faà di Bruno, Jabotinsky, Carleman, Lagrange, Kruchinin</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Branching processes</td>
+                                        <td>\(f_n=f^{\circ n}\); extinction \(q=f(q)\); Koenigs function for PGFs</td>
+                                        <td>Galton&ndash;Watson, Koenigs, Goryainov, Karlin&ndash;McGregor, Lamperti</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Operator theory</td>
+                                        <td>\(\sigma\circ\varphi=\varphi'(a)\,\sigma\) (Königs eigenfunction); Koopman/transfer</td>
+                                        <td>Koenigs, Cowen&ndash;MacCluer, Shapiro, Koopman, Perron&ndash;Frobenius, Ruelle</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Numerics &amp; CS</td>
+                                        <td>Newton fixed point, \(\varphi'(x^{*})=0\); fractional-iterate algorithms</td>
+                                        <td>Newton, Aitken&ndash;Steffensen, Carleman/Bell methods</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Physics / RG</td>
+                                        <td>\(g(g(x/\alpha))=-g(x)/\alpha\); RG flow = flow embedding of a scaling step</td>
+                                        <td>Feigenbaum, Cvitanović, Lanford, Coullet&ndash;Tresser, Curtright&ndash;Zachos</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-grid">
+                            <a class="card" href="theory.html">
+                                <span class="card-badge">Foundations</span>
+                                <h3><i class="fa-solid fa-compass-drafting"></i> Theory</h3>
+                                <p>Fixed points, multipliers and Schröder linearization — the conjugacy idea that this whole page builds on.</p>
+                            </a>
+                            <a class="card" href="equations.html">
+                                <span class="card-badge">Reference</span>
+                                <h3><i class="fa-solid fa-book"></i> Atlas of Equations</h3>
+                                <p>The Schröder, Abel and Böttcher equations themselves, side by side, with their normal forms.</p>
+                            </a>
+                            <a class="card" href="composita.html">
+                                <span class="card-badge">Tool</span>
+                                <h3><i class="fa-solid fa-table-cells"></i> Composita</h3>
+                                <p>The Kruchinin recurrence \(F^{\Delta}(n,k)\) — the algebra of §5 made into a calculator.</p>
+                            </a>
+                            <a class="card" href="solver.html">
+                                <span class="card-badge">Tool</span>
+                                <h3><i class="fa-solid fa-calculator"></i> Solver</h3>
+                                <p>Compute half-iterates by composita series and by local-analytic Schröder coordinates.</p>
+                            </a>
+                            <a class="card" href="history.html">
+                                <span class="card-badge">Context</span>
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> History</h3>
+                                <p>Abel, Schröder, Koenigs, Kneser and the people behind the equations cross-referenced above.</p>
+                            </a>
+                            <a class="card" href="bibliography.html">
+                                <span class="card-badge">Sources</span>
+                                <h3><i class="fa-solid fa-list-ul"></i> Bibliography</h3>
+                                <p>Full citations for Koenigs (1884), Kneser (1950), Szekeres (1958), Goryainov (2002) and more.</p>
+                            </a>
+                        </div>
+
+                        <div class="keypoint">
+                            <strong>The one-sentence takeaway.</strong> A half-iterate, a Fatou flower, a Siegel disk, a
+                            super-logarithm, a Jabotinsky matrix, an extinction probability, a Koopman eigenfunction, a Newton
+                            step and a Feigenbaum fixed point are all the same act — solving \(\psi\circ f=g\circ\psi\) — performed
+                            in nine different rooms of mathematics. Continue to the <a href="solver.html">Solver</a> to do it
+                            yourself, or browse the <a href="blog.html">Notes</a> for worked articles.
+                        </div>
+
+                        <p class="text-sm" style="color:var(--footer-text);">
+                            Further reading on this site:
+                            <a href="index.html">Home</a> ·
+                            <a href="shelf.html">The Shelf</a> ·
+                            <a href="history.html">History</a> ·
+                            <a href="theory.html">Theory</a> ·
+                            <a href="equations.html">Atlas of Equations</a> ·
+                            <a href="solver.html">Solver</a> ·
+                            <a href="composita.html">Composita</a> ·
+                            <a href="post-fixed-points-functional-iteration.html">Notes: fixed points</a> ·
+                            <a href="post-composita-half-iterates.html">Notes: composita half-iterates</a> ·
+                            <a href="post-numerical-half-iterate-methods.html">Notes: numerical methods</a> ·
+                            <a href="bibliography.html">Bibliography</a> ·
+                            <a href="blog.html">Notes index</a>.
+                        </p>
+                    </div>
+
+                </article>
+            </main>
+
+            <!-- Next Page -->
+            <div class="nextPage">
+                <a href="solver.html">Next: Iterative Function Solver <i class="fa-solid fa-angles-right"></i></a>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <div class="footer-links">
+            <a href="#top"><i class="fa-solid fa-house"></i> Top</a>
+            <a href="https://github.com/CarlXerophilem/SolveIterativeFunctions">Source</a>
+            <a href="bibliography.html">Bibliography</a>
+        </div>
+        <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+            <i class="fa-brands fa-creative-commons"></i>
+            <i class="fa-brands fa-creative-commons-by"></i>
+            <i class="fa-brands fa-creative-commons-sa"></i> CC BY-SA 4.0
+        </a>
+        <br>
+        &copy; 2024&ndash;2026 <a href="https://github.com/CarlXerophilem">CarlXerophilem</a> &amp; contributors
+    </footer>
+
+    <!-- Dark mode toggle -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const icon = toggle.querySelector('i');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('darkMode');
+            if (saved === 'true') { html.classList.add('dark'); icon.className = 'fa-regular fa-moon'; }
+            toggle.addEventListener('click', function() {
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
+            });
+        })();
+    </script>
+</body>
+</html>

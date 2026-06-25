@@ -36,12 +36,12 @@
 
     <div class="fixed-bar">
         <div class="link-container">
-            <a href="theory.html" id="prev-link" title="Theory"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
+            <a href="connections.html" id="prev-link" title="Connections"><span class="arrow"><i class="fa-solid fa-arrow-left"></i></span></a>
             <span class="dark-mode-button" id="dark-mode-toggle" title="Toggle dark mode"><i class="fa-regular fa-sun"></i></span>
         </div>
         <div class="center-link-group">
             <a href="solver.html" id="center-link">
-                <span class="hover-prev">Theory</span>
+                <span class="hover-prev">Connections</span>
                 <span class="title-main">Solver</span>
                 <span class="hover-next">Composita</span>
             </a>
@@ -78,10 +78,12 @@
                         This calculator implements two complementary methods. <strong>Composita / Paper Mode</strong>
                         builds the truncated power series of \(f\) from the triangular composita recurrence of
                         Kruchinin &amp; Kruchinin, extending naturally to the family \(A^{\circ 2^m}(x) = F(x)\).
-                        <strong>Analytic Fixed-Point Mode</strong> classifies a chosen real fixed point and, when the
-                        multiplier is suitable, constructs a local half-iterate through Schr&ouml;der / Koenigs
-                        linearization (see the <a href="theory.html">Theory</a> page). Everything below updates
-                        <em>live</em> as you edit \(F\).
+                        <strong>Analytic Fixed-Point Mode</strong> classifies a chosen real fixed point and constructs a
+                        local half-iterate — Schr&ouml;der / Koenigs linearization for hyperbolic points, or the
+                        <strong>Fatou / Abel coordinate</strong> for <strong>parabolic</strong> points \((\lambda = 1)\).
+                        This second route handles targets with \(F(0) \neq 0\) and a parabolic fixed point, such as
+                        \(F(x) = x^2 - x + 1\) at \(x_0 = 1\) (see the <a href="theory.html">Theory</a> page).
+                        Everything below updates <em>live</em> as you edit \(F\).
                     </p>
 
                     <div id="mode-panel">
@@ -165,6 +167,7 @@
                             <a href="#" onclick="setPreset('analytic-repelling'); return false;">Repelling \(2x + x^2\)</a>
                             <a href="#" onclick="setPreset('analytic-chebyshev'); return false;">\(x^2 - 2\) at \(2\)</a>
                             <a href="#" onclick="setPreset('analytic-parabolic'); return false;">Parabolic \(x + x^2\)</a>
+                            <a href="#" onclick="setPreset('analytic-xx1'); return false;">Parabolic \(x^2 - x + 1\) at \(1\)</a>
                             <a href="#" onclick="setPreset('analytic-nonpos'); return false;">\(x^2 - 2\) at \(-1\)</a>
                         </div>
 
@@ -455,12 +458,17 @@
             } else {
                 desc.innerHTML =
                     '<strong>Analytic Fixed-Point Mode.</strong> Near a chosen real fixed point with multiplier ' +
-                    '<span id="md-1"></span>, when <span id="md-2"></span>, it builds the Schr&ouml;der coordinate and returns ' +
-                    '<span id="md-3"></span>.';
+                    '<span id="md-1"></span> and <span id="md-2"></span>, it builds a local half-iterate — the ' +
+                    'Schr&ouml;der coordinate <span id="md-3"></span> when <span id="md-4"></span>, or the ' +
+                    'Fatou/Abel coordinate for a <strong>parabolic</strong> point (<span id="md-5"></span>), which also ' +
+                    'handles <span id="md-6"></span>.';
                 window.katexRender && window.katexRender(desc);
                 renderTex(document.getElementById('md-1'), '\\lambda = F\'(x_0)', false);
-                renderTex(document.getElementById('md-2'), '\\lambda > 0,\\ \\lambda \\neq 1', false);
+                renderTex(document.getElementById('md-2'), '\\lambda > 0', false);
                 renderTex(document.getElementById('md-3'), 'f = \\sigma^{-1}\\!\\big(\\sqrt{\\lambda}\\,\\sigma\\big)', false);
+                renderTex(document.getElementById('md-4'), '\\lambda \\neq 1', false);
+                renderTex(document.getElementById('md-5'), '\\lambda = 1', false);
+                renderTex(document.getElementById('md-6'), 'F(0) \\neq 0', false);
             }
         }
 
@@ -481,7 +489,8 @@
                 'analytic-attracting': { coeffs: [0, 0.5, 0.1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.5 },
                 'analytic-repelling': { coeffs: [0, 2, 1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.4 },
                 'analytic-chebyshev': { coeffs: [-2, 0, 1, 0, 0, 0, 0], mode: 'analytic', x0: 2, order: 8, radius: 0.35 },
-                'analytic-parabolic': { coeffs: [0, 1, 1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 8, radius: 0.35 },
+                'analytic-parabolic': { coeffs: [0, 1, 1, 0, 0, 0, 0], mode: 'analytic', x0: 0, order: 12, radius: 0.4 },
+                'analytic-xx1': { coeffs: [1, -1, 1, 0, 0, 0, 0], mode: 'analytic', x0: 1, order: 12, radius: 0.4 },
                 'analytic-nonpos': { coeffs: [-2, 0, 1, 0, 0, 0, 0], mode: 'analytic', x0: -1, order: 8, radius: 0.35 },
             };
             const preset = presets[name];
@@ -561,7 +570,7 @@
                     const x0 = parseFloat(document.getElementById('fixedpoint-input').value);
                     const order = parseInt(document.getElementById('analytic-order-input').value, 10) || 8;
                     const radius = parseFloat(document.getElementById('analytic-radius-input').value) || 0.35;
-                    const result = Engine.solveSchroederHalfIterate(coeffs, x0, order);
+                    const result = Engine.solveHalfIterateAtFixedPoint(coeffs, x0, order);
                     result.radius = radius;
                     result.fixedPoint = x0;
                     solverState.analyticResult = result;
@@ -620,6 +629,10 @@
             document.getElementById('display-classification').textContent = result.classification ? result.classification.label : 'n/a';
             document.getElementById('display-fixedpoint').textContent = Number.isFinite(result.fixedPoint) ? Engine.formatNumber(result.fixedPoint, 6) : 'n/a';
 
+            const thead = document.querySelector('#coeff-table thead');
+            const tbody = document.querySelector('#coeff-table tbody');
+            tbody.innerHTML = '';
+
             if (!result.supported) {
                 setStatusPill('warn', 'unsupported here');
                 renderTex(document.getElementById('display-candidate'), '\\text{No stable real local half-iterate in this mode.}', true);
@@ -630,19 +643,51 @@
                 }
                 document.getElementById('display-note').textContent = result.note || 'Unsupported analytic case.';
                 document.getElementById('display-residual').textContent = 'n/a';
-            } else {
-                setStatusPill('ok', 'half-iterate found');
-                renderTex(document.getElementById('display-candidate'), 'f(x) = ' + Engine.formatShiftedPolynomialLatex(result.localFunctionCoeffs, result.fixedPoint, { precision: 6 }), true);
-                renderTex(document.getElementById('display-iterate'), 'f(f(x)) \\approx F(x) \\quad \\text{near } x_0 = ' + Engine.formatNumber(result.fixedPoint, 6), true);
-                document.getElementById('display-note').textContent = result.note;
-                document.getElementById('display-residual').textContent = result.verification.maxError.toExponential(4);
+                document.getElementById('coeff-table-label').textContent = 'Local data';
+                thead.innerHTML = '<tr><th>degree</th><th>shifted F(x₀+y)−x₀</th></tr>';
+                const lm = result.localModelCoeffs || [];
+                for (let n = 1; n <= order; n += 1) {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = n;
+                    row.insertCell(1).textContent = Engine.formatNumber(lm[n] || 0, 6);
+                }
+                return;
             }
 
+            if (result.parabolic) {
+                document.getElementById('candidate-label').textContent = 'Candidate — parabolic (Fatou / Abel) half-iterate';
+                setStatusPill('ok', 'parabolic — Fatou');
+                const c2 = Engine.formatNumber(result.c2, 6);
+                const A = Engine.formatNumber(result.fatouA, 6);
+                renderTex(document.getElementById('display-candidate'),
+                    '\\Phi(y) = -\\dfrac{1}{' + c2 + '\\,y} + ' + A + '\\,\\ln|y| + \\sum_{k\\ge 1} p_k\\,y^k, \\quad y = x - x_0', true);
+                renderTex(document.getElementById('display-iterate'),
+                    'f(x) = x_0 + \\Phi^{-1}\\!\\big(\\Phi(x-x_0) + \\tfrac12\\big), \\quad x_0 = ' + Engine.formatNumber(result.fixedPoint, 6), true);
+                document.getElementById('display-note').textContent = result.note;
+                document.getElementById('display-residual').textContent = result.verification.maxError.toExponential(4);
+                document.getElementById('coeff-table-label').textContent = 'Parabolic germ & Fatou-coordinate data';
+                thead.innerHTML = '<tr><th>k</th><th>germ g coeff</th><th>Fatou p_k</th><th>formal half-iterate a_k</th></tr>';
+                const gm = result.localModelCoeffs || [];
+                const pk = result.fatouCoeffs || [];
+                const half = result.localHalfCoeffs || [];
+                for (let n = 1; n <= order; n += 1) {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = n;
+                    row.insertCell(1).textContent = Engine.formatNumber(gm[n] || 0, 6);
+                    row.insertCell(2).textContent = Engine.formatNumber(pk[n] || 0, 6);
+                    row.insertCell(3).textContent = half.length ? Engine.formatNumber(half[n] || 0, 6) : '—';
+                }
+                return;
+            }
+
+            // hyperbolic Schröder
+            setStatusPill('ok', 'half-iterate found');
+            renderTex(document.getElementById('display-candidate'), 'f(x) = ' + Engine.formatShiftedPolynomialLatex(result.localFunctionCoeffs, result.fixedPoint, { precision: 6 }), true);
+            renderTex(document.getElementById('display-iterate'), 'f(f(x)) \\approx F(x) \\quad \\text{near } x_0 = ' + Engine.formatNumber(result.fixedPoint, 6), true);
+            document.getElementById('display-note').textContent = result.note;
+            document.getElementById('display-residual').textContent = result.verification.maxError.toExponential(4);
             document.getElementById('coeff-table-label').textContent = 'Local Schröder data';
-            const thead = document.querySelector('#coeff-table thead');
-            const tbody = document.querySelector('#coeff-table tbody');
             thead.innerHTML = '<tr><th>degree</th><th>shifted F(x₀+y)−x₀</th><th>local half-iterate</th><th>Koenigs σ</th></tr>';
-            tbody.innerHTML = '';
             const localTarget = result.localModelCoeffs || [];
             const localHalf = result.localFunctionCoeffs || [];
             const koenigs = result.koenigsCoeffs || [];

@@ -1,0 +1,6 @@
+{
+  "_comment": "Operator-maintained ledger of session minutes spent this week (plan §9). The harness refuses to START a new Routine session if the running sum would exceed weekly_session_fraction. Bookkeeping, NOT a read of the account cap.",
+  "week_of": "2026-06-15",
+  "weekly_session_fraction_cap": 0.20,
+  "sessions": []
+}
