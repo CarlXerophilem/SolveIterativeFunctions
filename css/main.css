@@ -622,6 +622,35 @@ footer .footer-links {
 .coef-cell input[type='number'] { width: 100%; text-align: center; }
 .coef-cell input[type='range'] { width: 100%; margin: 0; accent-color: var(--link-color); cursor: pointer; }
 
+/* Elementary-function expression input */
+.expr-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.75rem 0 0.25rem;
+}
+.expr-label { font-weight: 600; white-space: nowrap; }
+.expr-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--toc-bg);
+    color: var(--text-color);
+}
+.expr-input:focus { outline: none; border-color: var(--link-color); box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25); }
+.expr-input.expr-error { border-color: #e74c3c; box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2); }
+.expr-help { font-size: 0.82rem; color: var(--footer-text); margin: 0.1rem 0 0; }
+.expr-help code {
+    background: var(--toc-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.02rem 0.3rem;
+}
+
 /* Reactivity toggle row */
 .solver-toolbar {
     display: flex;
