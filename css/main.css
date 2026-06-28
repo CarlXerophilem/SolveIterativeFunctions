@@ -333,31 +333,136 @@ button.secondary {
 }
 canvas { display: block; margin: 0 auto; background: var(--box-bg); }
 
-/* ----- Animated figures (manim videos) ----- */
+/* ----- Animated figures (manim videos): framed plates with a custom player ----- */
 .anim-figure {
-    margin: 1.75rem 0;
-    text-align: center;
+    margin: 1.9rem auto;
+    max-width: 680px;
+}
+.anim-figure .anim-stage {
+    position: relative;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0e1726;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+    line-height: 0;
 }
 .anim-figure video {
     display: block;
     width: 100%;
-    max-width: 660px;
-    margin: 0 auto;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    margin: 0;
     background: #0e1726;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    cursor: pointer;
+}
+/* centred play affordance shown while paused (purple = the half-iterate f) */
+.anim-figure .anim-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: rgba(10, 18, 32, 0.30);
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.anim-figure.is-paused .anim-overlay { opacity: 1; pointer-events: auto; }
+.anim-figure .anim-overlay span {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: rgba(124, 77, 255, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 4px;
+    font-size: 1.4rem;
+    line-height: 1;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+/* slim control bar, revealed on hover/focus or while paused */
+.anim-figure .anim-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 0.65rem;
+    line-height: 1;
+    background: linear-gradient(to top, rgba(7, 12, 22, 0.88), rgba(7, 12, 22, 0));
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.anim-figure .anim-stage:hover .anim-bar,
+.anim-figure .anim-stage:focus-within .anim-bar,
+.anim-figure.is-paused .anim-bar { opacity: 1; }
+.anim-figure .anim-btn {
+    background: transparent;
+    border: 0;
+    color: #eaf0fb;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.25rem;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.anim-figure .anim-btn:hover { color: #fff; }
+.anim-figure .anim-btn:focus-visible { outline: 2px solid #b388ff; outline-offset: 2px; }
+.anim-figure .anim-progress {
+    flex: 1;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+/* the scrubber runs F-blue -> f-purple, the figures' own colour code */
+.anim-figure .anim-progress > i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, #1a73e8, #7c4dff);
+    border-radius: 999px;
 }
 .anim-figure figcaption {
-    margin: 0.65rem auto 0;
+    margin: 0.75rem auto 0;
     font-size: 0.9rem;
     color: var(--footer-text);
-    max-width: 620px;
-    line-height: 1.5;
+    max-width: 640px;
+    line-height: 1.55;
+    text-align: center;
 }
-.anim-figure figcaption .fig-label {
-    font-weight: 600;
-    color: var(--text-color);
+.anim-figure figcaption .fig-no {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--link-color);
+    margin-bottom: 0.2rem;
+}
+.anim-figure figcaption .fig-label { font-weight: 600; color: var(--text-color); }
+/* inline colour keys matching what each animation draws */
+.k-F { color: #1a73e8; font-weight: 600; }
+.k-f { color: #7c4dff; font-weight: 600; }
+.k-g { color: #1a9e6a; font-weight: 600; }
+html.dark .k-F { color: #6ba7f5; }
+html.dark .k-f { color: #b388ff; }
+html.dark .k-g { color: #4cc38a; }
+@media (prefers-reduced-motion: reduce) {
+    .anim-figure .anim-overlay,
+    .anim-figure .anim-bar { transition: none; }
 }
 
 /* ----- Multiplier classification table ----- */

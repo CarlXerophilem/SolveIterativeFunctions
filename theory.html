@@ -121,14 +121,15 @@
                         </div>
 
                         <figure class="anim-figure">
-                            <video muted loop playsinline preload="metadata" controls>
+                            <video muted loop playsinline preload="metadata" aria-label="Animation: one full step of F is two equal half-iterate steps of f">
                                 <source src="visuals/half_iterate_idea.mp4" type="video/mp4">
                                 Your browser does not support embedded video.
                             </video>
                             <figcaption>
+                                <span class="fig-no">Fig. 1</span>
                                 <span class="fig-label">The whole idea.</span>
-                                One full step of \(F\) (blue) is made of <em>two equal</em> half-iterate steps of
-                                \(f\) (purple): \(f(f(x)) = F(x)\).
+                                One full step of \(F\) <span class="k-F">(blue)</span> is made of <em>two equal</em> half-iterate steps of
+                                \(f\) <span class="k-f">(purple)</span>: \(f(f(x)) = F(x)\).
                             </figcaption>
                         </figure>
 
@@ -185,11 +186,12 @@
                         </p>
 
                         <figure class="anim-figure">
-                            <video muted loop playsinline preload="metadata" controls>
+                            <video muted loop playsinline preload="metadata" aria-label="Animation: cobweb iteration converging to an attracting fixed point">
                                 <source src="visuals/cobweb_attracting.mp4" type="video/mp4">
                                 Your browser does not support embedded video.
                             </video>
                             <figcaption>
+                                <span class="fig-no">Fig. 2</span>
                                 <span class="fig-label">Cobweb dynamics.</span>
                                 Bounce vertically to the curve, horizontally to \(y=x\), repeat. For
                                 \(F=\cos\), \(|F'(x^*)| &lt; 1\), so every orbit is pulled into the fixed point \(x^*\).
@@ -308,11 +310,12 @@
                         </p>
 
                         <figure class="anim-figure">
-                            <video muted loop playsinline preload="metadata" controls>
+                            <video muted loop playsinline preload="metadata" aria-label="Animation: Schroeder conjugacy linearises iteration via the coordinate sigma">
                                 <source src="visuals/schroder_linearization.mp4" type="video/mp4">
                                 Your browser does not support embedded video.
                             </video>
                             <figcaption>
+                                <span class="fig-no">Fig. 3</span>
                                 <span class="fig-label">Conjugacy makes iteration linear.</span>
                                 Going around the square — coordinate \(\sigma\), multiply by \(\lambda\), coordinate back —
                                 reproduces \(F\). Replacing \(\lambda\) by \(\sqrt{\lambda}\) gives the half-iterate.
@@ -411,13 +414,14 @@
                         </p>
 
                         <figure class="anim-figure">
-                            <video muted loop playsinline preload="metadata" controls>
+                            <video muted loop playsinline preload="metadata" aria-label="Animation: two steps of the half-iterate f reproduce F(x)=x^2-2 at the fixed point (2,2)">
                                 <source src="visuals/chebyshev_half_iterate.mp4" type="video/mp4">
                                 Your browser does not support embedded video.
                             </video>
                             <figcaption>
+                                <span class="fig-no">Fig. 4</span>
                                 <span class="fig-label">The half-iterate sits between \(y=x\) and \(F\).</span>
-                                Starting from \(x_0\), two steps of \(f\) (green cobweb) land exactly on
+                                Starting from \(x_0\), two steps of \(f\) <span class="k-g">(green cobweb)</span> land exactly on
                                 \(F(x_0)=x_0^2-2\). The curves all meet at the fixed point \((2,2)\).
                             </figcaption>
                         </figure>
@@ -478,11 +482,12 @@
                         </p>
 
                         <figure class="anim-figure">
-                            <video muted loop playsinline preload="metadata" controls>
+                            <video muted loop playsinline preload="metadata" aria-label="Animation: with no fixed point the cobweb ratchets upward and escapes to infinity">
                                 <source src="visuals/divergence_no_fixed_point.mp4" type="video/mp4">
                                 Your browser does not support embedded video.
                             </video>
                             <figcaption>
+                                <span class="fig-no">Fig. 5</span>
                                 <span class="fig-label">Escape to infinity.</span>
                                 The graph of \(x^2+1\) stays a clear gap above \(y=x\) (at least \(\tfrac34\)), so the cobweb
                                 ratchets upward without ever settling. No fixed point means no place to linearise.
@@ -697,21 +702,97 @@
         });
     </script>
 
-    <!-- Play animated figures only while on screen (performance + focus) -->
+    <!-- Custom, on-brand player for the manim figures: framed plate, play/pause
+         overlay, replay, F->f progress scrubber. Keeps autoplay-on-scroll;
+         respects prefers-reduced-motion; keyboard-accessible controls. -->
     <script>
         (function() {
-            const vids = document.querySelectorAll('.anim-figure video');
-            if (!('IntersectionObserver' in window)) {
-                vids.forEach(v => { v.setAttribute('autoplay', ''); });
-                return;
-            }
-            const io = new IntersectionObserver(function(entries) {
-                entries.forEach(function(e) {
-                    if (e.isIntersecting) { e.target.play().catch(function(){}); }
-                    else { e.target.pause(); }
+            const figs = Array.prototype.slice.call(document.querySelectorAll('.anim-figure'));
+            const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const PLAY = '<i class="fa-solid fa-play" aria-hidden="true"></i>';
+            const PAUSE = '<i class="fa-solid fa-pause" aria-hidden="true"></i>';
+
+            figs.forEach(function(fig) {
+                const video = fig.querySelector('video');
+                if (!video) return;
+                video.removeAttribute('controls');
+
+                const stage = document.createElement('div');
+                stage.className = 'anim-stage';
+                video.parentNode.insertBefore(stage, video);
+                stage.appendChild(video);
+
+                const overlay = document.createElement('button');
+                overlay.type = 'button';
+                overlay.className = 'anim-overlay';
+                overlay.setAttribute('aria-label', 'Play animation');
+                overlay.innerHTML = '<span aria-hidden="true">▶</span>';
+                stage.appendChild(overlay);
+
+                const bar = document.createElement('div');
+                bar.className = 'anim-bar';
+                const playBtn = document.createElement('button');
+                playBtn.type = 'button';
+                playBtn.className = 'anim-btn';
+                playBtn.setAttribute('aria-label', 'Play or pause');
+                const replayBtn = document.createElement('button');
+                replayBtn.type = 'button';
+                replayBtn.className = 'anim-btn';
+                replayBtn.setAttribute('aria-label', 'Replay from start');
+                replayBtn.innerHTML = '<i class="fa-solid fa-rotate-left" aria-hidden="true"></i>';
+                const prog = document.createElement('div');
+                prog.className = 'anim-progress';
+                const fill = document.createElement('i');
+                prog.appendChild(fill);
+                bar.appendChild(playBtn);
+                bar.appendChild(replayBtn);
+                bar.appendChild(prog);
+                stage.appendChild(bar);
+
+                let userPaused = reduce; // reduced-motion users opt in
+                function sync() {
+                    const paused = video.paused;
+                    fig.classList.toggle('is-paused', paused);
+                    playBtn.innerHTML = paused ? PLAY : PAUSE;
+                }
+                function toggle() {
+                    if (video.paused) { userPaused = false; video.play().catch(function(){}); }
+                    else { userPaused = true; video.pause(); }
+                    sync();
+                }
+                overlay.addEventListener('click', toggle);
+                video.addEventListener('click', toggle);
+                playBtn.addEventListener('click', toggle);
+                replayBtn.addEventListener('click', function() {
+                    video.currentTime = 0; userPaused = false; video.play().catch(function(){}); sync();
                 });
-            }, { threshold: 0.25 });
-            vids.forEach(v => io.observe(v));
+                prog.addEventListener('click', function(e) {
+                    if (!video.duration) return;
+                    const r = prog.getBoundingClientRect();
+                    video.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * video.duration;
+                });
+                video.addEventListener('timeupdate', function() {
+                    if (video.duration) fill.style.width = (100 * video.currentTime / video.duration) + '%';
+                });
+                video.addEventListener('play', sync);
+                video.addEventListener('pause', sync);
+                sync();
+
+                if ('IntersectionObserver' in window) {
+                    const io = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(en) {
+                            if (en.isIntersecting) {
+                                if (!userPaused && !reduce) video.play().catch(function(){});
+                            } else {
+                                video.pause();
+                            }
+                        });
+                    }, { threshold: 0.25 });
+                    io.observe(video);
+                } else if (!reduce) {
+                    video.setAttribute('autoplay', '');
+                }
+            });
         })();
     </script>
 

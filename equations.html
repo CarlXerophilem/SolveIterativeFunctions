@@ -82,19 +82,60 @@
             color: var(--link-color);
             margin-right: 0.45rem;
         }
-        .eq-jump {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin: 0.6rem 0 0.2rem;
+        /* Atlas plate-index: the jump nav shows each equation, not just its name */
+        .atlas-index {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(198px, 1fr));
+            gap: 0.7rem;
+            margin: 1rem 0 0.3rem;
         }
-        .eq-jump a {
-            font-size: 0.82rem;
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            padding: 0.16rem 0.7rem;
-            background: var(--toc-bg);
+        .atlas-index a {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
             text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.6rem 0.7rem 0.7rem;
+            background: var(--toc-bg);
+            transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+        .atlas-index a:hover,
+        .atlas-index a:focus-visible {
+            border-color: var(--link-color);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+            background: var(--box-bg);
+        }
+        .atlas-index a:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
+        .atlas-index .ai-head { display: flex; align-items: baseline; gap: 0.45rem; }
+        .atlas-index .ai-no {
+            font-variant-numeric: tabular-nums;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+            color: var(--link-color);
+        }
+        .atlas-index .ai-name { font-size: 0.92rem; font-weight: 600; line-height: 1.2; color: var(--text-color); }
+        .atlas-index .ai-eq,
+        .atlas-index .ai-desc {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 2.5rem; padding: 0.4rem 0.1rem 0.05rem;
+            border-top: 1px dashed var(--border-color);
+            max-width: 100%; overflow-x: auto;
+        }
+        .atlas-index .ai-eq { color: var(--text-color); }
+        .atlas-index .ai-eq .katex { font-size: 1.04em; }
+        .atlas-index .ai-desc { font-size: 0.8rem; color: var(--footer-text); font-style: italic; }
+        /* scroll-spy: the entry for the section you are reading */
+        .atlas-index a.is-current {
+            border-color: var(--link-color);
+            background: var(--theorem-bg);
+            box-shadow: inset 3px 0 0 var(--link-color);
+        }
+        .atlas-index a.is-current .ai-name { color: var(--link-color); }
+        @media (prefers-reduced-motion: reduce) {
+            .atlas-index a { transition: none; }
+            .atlas-index a:hover, .atlas-index a:focus-visible { transform: none; }
         }
     </style>
 </head>
@@ -237,19 +278,19 @@
                             names attached to it.
                         </div>
 
-                        <div class="eq-jump">
-                            <a href="#section2">Babbage</a>
-                            <a href="#section3">Iterative root</a>
-                            <a href="#section4">Abel</a>
-                            <a href="#section5">Schröder</a>
-                            <a href="#section6">Böttcher</a>
-                            <a href="#section7">Julia</a>
-                            <a href="#section8">Conjugacy</a>
-                            <a href="#section9">Translation</a>
-                            <a href="#section10">Aczél–Jabotinsky</a>
-                            <a href="#section11">Commuting</a>
-                            <a href="#section12">Cocycle / Lévy</a>
-                        </div>
+                        <nav class="atlas-index" aria-label="Index of equations">
+                            <a href="#section2"><span class="ai-head"><span class="ai-no">02</span><span class="ai-name">Babbage</span></span><span class="ai-eq">\(F^{\circ n}=\mathrm{id}\)</span></a>
+                            <a href="#section3"><span class="ai-head"><span class="ai-no">03</span><span class="ai-name">Iterative root</span></span><span class="ai-eq">\(F^{\circ n}=G\)</span></a>
+                            <a href="#section4"><span class="ai-head"><span class="ai-no">04</span><span class="ai-name">Abel</span></span><span class="ai-eq">\(\alpha(F)=\alpha+1\)</span></a>
+                            <a href="#section5"><span class="ai-head"><span class="ai-no">05</span><span class="ai-name">Schröder</span></span><span class="ai-eq">\(\sigma(F)=s\,\sigma\)</span></a>
+                            <a href="#section6"><span class="ai-head"><span class="ai-no">06</span><span class="ai-name">Böttcher</span></span><span class="ai-eq">\(B(F)=B^{\,n}\)</span></a>
+                            <a href="#section7"><span class="ai-head"><span class="ai-no">07</span><span class="ai-name">Julia</span></span><span class="ai-eq">\(G(F)\,F'=G\)</span></a>
+                            <a href="#section8"><span class="ai-head"><span class="ai-no">08</span><span class="ai-name">Conjugacy</span></span><span class="ai-eq">\(f\circ h=h\circ g\)</span></a>
+                            <a href="#section9"><span class="ai-head"><span class="ai-no">09</span><span class="ai-name">Translation</span></span><span class="ai-eq">\(F_{s+t}=F_s\circ F_t\)</span></a>
+                            <a href="#section10"><span class="ai-head"><span class="ai-no">10</span><span class="ai-name">Aczél–Jabotinsky</span></span><span class="ai-eq">\(H\circ\Phi=\Phi'\,H\)</span></a>
+                            <a href="#section11"><span class="ai-head"><span class="ai-no">11</span><span class="ai-name">Commuting</span></span><span class="ai-eq">\(f\circ g=g\circ f\)</span></a>
+                            <a href="#section12"><span class="ai-head"><span class="ai-no">12</span><span class="ai-name">Cocycle / Lévy</span></span><span class="ai-desc">cross-map table</span></a>
+                        </nav>
                     </div>
 
                     <hr>
@@ -1051,6 +1092,31 @@
                 localStorage.setItem('darkMode', isDark);
                 icon.className = isDark ? 'fa-regular fa-moon' : 'fa-regular fa-sun';
             });
+        })();
+    </script>
+
+    <!-- Atlas index scroll-spy: highlight the entry for the section being read -->
+    <script>
+        (function() {
+            const links = Array.prototype.slice.call(document.querySelectorAll('.atlas-index a[href^="#"]'));
+            if (!links.length || !('IntersectionObserver' in window)) return;
+            const map = new Map();
+            links.forEach(function(a) {
+                const sec = document.getElementById(a.getAttribute('href').slice(1));
+                if (sec) map.set(sec, a);
+            });
+            let current = null;
+            const io = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (!e.isIntersecting) return;
+                    const a = map.get(e.target);
+                    if (!a || a === current) return;
+                    if (current) current.classList.remove('is-current');
+                    a.classList.add('is-current');
+                    current = a;
+                });
+            }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+            map.forEach(function(a, sec) { io.observe(sec); });
         })();
     </script>
 </body>
